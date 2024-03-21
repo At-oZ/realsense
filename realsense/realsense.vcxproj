@@ -113,6 +113,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\include</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +132,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\include</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +153,13 @@
     <ClCompile Include="sample1-6.cpp" />
     <ClCompile Include="sample5-1.cpp" />
     <ClCompile Include="sample6-1.cpp" />
+    <ClCompile Include="sample7-1.cpp" />
+    <ClCompile Include="sample7-2.cpp" />
+    <ClCompile Include="sample7-3.cpp" />
+    <ClCompile Include="sample7-4.cpp" />
+    <ClCompile Include="sample7-5.cpp" />
+    <ClCompile Include="sample8-1.cpp" />
+    <ClCompile Include="sample9-1.cpp" />
     <ClCompile Include="virtual-transparency-v2-2.cpp" />
     <ClCompile Include="virtual-transparency-v2-3.cpp" />
     <ClCompile Include="virtual-transparency-v2-4.cpp" />
@@ -163,8 +174,15 @@
     <ClCompile Include="sample2-2.cpp" />
     <ClCompile Include="sample3-1.cpp" />
     <ClCompile Include="sample4-1.cpp" />
+    <ClCompile Include="virtual-transparency2-2-1.cpp" />
+    <ClCompile Include="virtual-transparency2-2-2.cpp" />
+    <ClCompile Include="virtual-transparency2-2-3.cpp" />
+    <ClCompile Include="virtual-transparency2-2-4.cpp" />
+    <ClCompile Include="virtual-transparency2-2.cpp" />
     <ClCompile Include="virtual-transparency2.cpp" />
     <ClCompile Include="virtual-transparency-v2-1.cpp" />
+    <ClCompile Include="virtual-transparency3-2.cpp" />
+    <ClCompile Include="virtual-transparency3-3.cpp" />
     <ClCompile Include="virtual-transparency3.cpp" />
   </ItemGroup>
   <ItemGroup>

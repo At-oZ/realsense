@@ -11,10 +11,14 @@
 //#include <chrono>
 //#include <thread>
 //#include <cmath>
+//#include <time.h>
 //
 //void insert_pixels(int Hpin, int Wpin, int N, int D, double g, double wp, double inv_wp, int starty, int endy, std::vector<std::vector<double>>& uo, std::vector<std::vector<double>>& vo, std::vector<std::vector<cv::Mat>>& elem_img, std::vector<std::vector<double>>& pointclouddata) {
 //
 //    double inv_d, tmp_pcd0, tmp_pcd1, tmp_pcd2, tmp_pcd3, tmp_pcd4, tmp_pcd5;
+//    double newx, newy;
+//    int nx, ny;
+//
 //    for (int k = 0; k < pointclouddata.size(); k++) {
 //
 //        tmp_pcd0 = pointclouddata[k][0];
@@ -36,8 +40,6 @@
 //
 //        inv_d = 1.0 / (tmp_pcd2 * 1000 + D);
 //
-//        double newx, newy;
-//        int nx, ny;
 //        for (int i = 0; i < endy - starty; i++) {
 //            for (int j = 0; j < Wpin; j++) {
 //
@@ -69,8 +71,11 @@
 //int main(int argc, char* argv[]) try
 //{
 //
+//    double start, finish;
+//    clock_t cpu_time;
+//
 //    // 表示系のパラメータ(mm)
-//    int W = 280, H = 170;                                                                       // 表示の縦横幅
+//    int W = 170, H = 170;                                                                       // 表示の縦横幅
 //    double g = 4, wp = 2.5, a = 0.125;                                                          // ギャップ、ピッチ、ピンホール幅
 //    double ld = 13.4 * 25.4;                                                                    // ディスプレイサイズ
 //    int pw = 3840, ph = 2400;                                                                   // ディスプレイの縦横の解像度
@@ -138,13 +143,16 @@
 //    std::cout << colorSensors.get_info(RS2_CAMERA_INFO_NAME) << std::endl;
 //    std::cout << irSensor.get_info(RS2_CAMERA_INFO_NAME) << std::endl;
 //    colorSensors.set_option(RS2_OPTION_ENABLE_AUTO_EXPOSURE, 0);
-//    colorSensors.set_option(RS2_OPTION_EXPOSURE, 200);
+//    colorSensors.set_option(RS2_OPTION_EXPOSURE, 150);
 //    colorSensors.set_option(RS2_OPTION_GAIN, 64);
 //    irSensor.set_option(RS2_OPTION_ENABLE_AUTO_EXPOSURE, 1);
 //    irSensor.set_option(RS2_OPTION_LASER_POWER, 360);
 //
 //    //rs2::colorizer color_map;
 //    rs2::align align(RS2_STREAM_COLOR);
+//
+//    rs2::hole_filling_filter hole_filling_filter;
+//    hole_filling_filter.set_option(RS2_OPTION_HOLES_FILL, 1);
 //
 //    for (int i = 0; i < 3; i++)
 //    {
@@ -156,9 +164,6 @@
 //
 //        //std::cout << tt << std::endl;
 //
-//        // 計測開始時間
-//        auto start = std::chrono::high_resolution_clock::now();
-//
 //        // Wait for the next set of frames from the camera
 //        auto frames = pipe.wait_for_frames();
 //        auto aligned_frames = align.process(frames);
@@ -166,6 +171,7 @@
 //        //rs2::video_frame color_frame = aligned_frames.first(RS2_STREAM_COLOR);
 //        rs2::video_frame color_frame = aligned_frames.get_color_frame();
 //        rs2::video_frame depth_frame = aligned_frames.get_depth_frame();
+//        depth_frame = hole_filling_filter.process(depth_frame);
 //
 //        cv::Mat color_image_rgb(cv::Size(WIDTH, HEIGHT), CV_8UC3, (void*)color_frame.get_data(), cv::Mat::AUTO_STEP);
 //        cv::Mat depth_image(cv::Size(WIDTH, HEIGHT), CV_8UC3, (void*)depth_frame.get_data(), cv::Mat::AUTO_STEP);
@@ -180,6 +186,11 @@
 //        // 任意のキーが押されるまで待つ
 //        cv::waitKey(0);
 //
+//        // 計測開始時間
+//        //auto start = std::chrono::high_resolution_clock::now();
+//        cpu_time = clock();
+//        start = double(cpu_time) / double(CLOCKS_PER_SEC);
+//
 //        std::cout << "before pc calc" << std::endl;
 //
 //        // Generate the pointcloud and texture mappings
@@ -189,6 +200,7 @@
 //        pc.map_to(color_frame);
 //
 //        auto verts = points.get_vertices();
+//        std::cout << "num of points:" << sizeof(verts) << std::endl;
 //
 //        cv::Mat img_display(cv::Size(pw_disp, ph_disp), CV_8UC3);
 //
@@ -202,155 +214,142 @@
 //            vtx_y = verts[i].y;
 //            vtx_z = verts[i].z;
 //
-//            for (int j = 0; j < 6; j++) {
+//            raw_pointclouddata[i][0] = vtx_x;
+//            raw_pointclouddata[i][1] = vtx_y;
+//            raw_pointclouddata[i][2] = vtx_z;
+//            raw_pointclouddata[i][3] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[0];
+//            raw_pointclouddata[i][4] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[1];
+//            raw_pointclouddata[i][5] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[2];
 //
-//                //std::cout << "x:" << i % WIDTH << ", y:" << static_cast<int>(i * inv_WIDTH) << std::endl;
-//
-//                if (j == 0) {
-//                    raw_pointclouddata[i][j] = vtx_x;
-//                }
-//                else if (j == 1) {
-//                    raw_pointclouddata[i][j] = vtx_y;
-//                }
-//                else if (j == 2) {
-//                    raw_pointclouddata[i][j] = vtx_z;
-//                }
-//                else if (j == 3) {
-//                    raw_pointclouddata[i][j] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[0];
-//                }
-//                else if (j == 4) {
-//                    raw_pointclouddata[i][j] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[1];
-//                }
-//                else {
-//                    raw_pointclouddata[i][j] = color_image.at<cv::Vec3b>(static_cast<int>(i * inv_WIDTH), (i % WIDTH))[2];
-//                }
-//
-//            }
 //        }
 //
-//        std::cout << "before sort raw_pointclouddata" << std::endl;
+//        //std::cout << "before sort raw_pointclouddata" << std::endl;
 //
-//        // ソートする列のインデックス（0から始まる）
-//        int columnIndex = 2;
+//        //// ソートする列のインデックス（0から始まる）
+//        //int columnIndex = 2;
 //
-//        // カスタム比較関数
-//        auto compare = [columnIndex](const std::vector<double>& a, const std::vector<double>& b) {
-//            return a[columnIndex] < b[columnIndex];
-//        };
+//        //// カスタム比較関数
+//        //auto compare = [columnIndex](const std::vector<double>& a, const std::vector<double>& b) {
+//        //    return a[columnIndex] < b[columnIndex];
+//        //};
 //
-//        // 特定の列に基づいて全体を並べ替え
-//        std::sort(raw_pointclouddata.begin(), raw_pointclouddata.end(), compare);
+//        //// 特定の列に基づいて全体を並べ替え
+//        //std::sort(raw_pointclouddata.begin(), raw_pointclouddata.end(), compare);
 //
-//        std::cout << "before create pointclouddata" << std::endl;
+//        //std::cout << "before create pointclouddata" << std::endl;
 //
-//        // 条件に一致する行を削除する新たな二次元配列Bを作成
-//        std::vector<std::vector<double>> pointclouddata;
+//        //// 条件に一致する行を削除する新たな二次元配列Bを作成
+//        //std::vector<std::vector<double>> pointclouddata;
 //
-//        // 2列目が0でない行だけをBにコピー
-//        std::copy_if(raw_pointclouddata.begin(), raw_pointclouddata.end(), std::back_inserter(pointclouddata), [](const std::vector<double>& row) {
-//            return row[2] > 0; // zが0ではない行を選択
-//            });
+//        //// 2列目が0でない行だけをBにコピー
+//        //std::copy_if(raw_pointclouddata.begin(), raw_pointclouddata.end(), std::back_inserter(pointclouddata), [](const std::vector<double>& row) {
+//        //    return row[2] > 0; // zが0ではない行を選択
+//        //    });
 //
-//        //// 出力ファイルを開く
-//        //std::ofstream outputFile("output.csv");
+//        // 出力ファイルを開く
+//        std::ofstream outputFile("output.csv");
 //
-//        //if (!outputFile.is_open()) {
-//        //    std::cerr << "ファイルを開けませんでした。" << std::endl;
-//        //    return 1;
+//        if (!outputFile.is_open()) {
+//            std::cerr << "ファイルを開けませんでした。" << std::endl;
+//            return 1;
+//        }
+//
+//        // 二次元配列をループで走査し、CSV形式でファイルに出力
+//        for (int i = 0; i < raw_pointclouddata.size(); i++) {
+//            for (int j = 0; j < 6; j++) {
+//                outputFile << raw_pointclouddata[i][j];
+//                if (j < 5) {
+//                    outputFile << ","; // 列の間にカンマを出力
+//                }
+//            }
+//            outputFile << "\n"; // 行の終わりに改行を出力
+//        }
+//
+//        // ファイルを閉じる
+//        outputFile.close();
+//
+//        std::cout << "CSVファイルへの出力が完了しました。" << std::endl;
+//
+//        //const int numThreads = 17;
+//        //std::vector<std::thread> threads;
+//        //int rowsPerThread = Hpin / numThreads;
+//
+//        //int startRow, endRow;
+//        //for (int i = 0; i < numThreads; i++) {
+//        //    startRow = i * rowsPerThread;
+//        //    endRow = (i == numThreads - 1) ? Hpin : (i + 1) * rowsPerThread;
+//        //    threads.emplace_back(insert_pixels, Hpin, Wpin, N, D, g, wp, inv_wp, startRow, endRow, std::ref(uo), std::ref(vo), std::ref(elem_img), std::ref(pointclouddata));
 //        //}
 //
-//        //// 二次元配列をループで走査し、CSV形式でファイルに出力
-//        //for (int i = 0; i < pointclouddata.size(); i++) {
-//        //    for (int j = 0; j < 6; j++) {
-//        //        outputFile << pointclouddata[i][j];
-//        //        if (j < 5) {
-//        //            outputFile << ","; // 列の間にカンマを出力
+//        //for (auto& t : threads) {
+//        //    t.join();
+//        //}
+//
+//        //int startv, startu;
+//        //for (int i = 0; i < Hpin; i++) {
+//        //    for (int j = 0; j < Wpin; j++) {
+//
+//        //        //std::cout << "i:" << i << ", j:" << j << std::endl;
+//
+//        //        startv = static_cast<int>(i * intv);
+//        //        startu = static_cast<int>(j * intv);
+//
+//        //        for (int v = 0; v < N; v++) {
+//        //            for (int u = 0; u < N; u++) {
+//
+//        //                //std::cout << "u:" << u << ", v:" << v << std::endl;
+//
+//        //                img_display.at<cv::Vec3b>(startv + v, startu + u)[0] = elem_img[i][j].at<cv::Vec3b>(v, u)[0];
+//        //                img_display.at<cv::Vec3b>(startv + v, startu + u)[1] = elem_img[i][j].at<cv::Vec3b>(v, u)[1];
+//        //                img_display.at<cv::Vec3b>(startv + v, startu + u)[2] = elem_img[i][j].at<cv::Vec3b>(v, u)[2];
+//        //            }
 //        //        }
 //        //    }
-//        //    outputFile << "\n"; // 行の終わりに改行を出力
 //        //}
 //
-//        //// ファイルを閉じる
-//        //outputFile.close();
+//        //for (int i = 1; i < ph_disp - 1; i++) {
+//        //    for (int j = 1; j < pw_disp - 1; j++) {
+//        //        if (img_display.at<cv::Vec3b>(i, j)[0] < 10 && img_display.at<cv::Vec3b>(i, j)[1] < 10 && img_display.at<cv::Vec3b>(i, j)[2] < 10) {
 //
-//        //std::cout << "CSVファイルへの出力が完了しました。" << std::endl;
+//        //            img_display.at<cv::Vec3b>(i, j)[0]
+//        //                = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[0] + img_display.at<cv::Vec3b>(i - 1, j)[0]
+//        //                    + img_display.at<cv::Vec3b>(i - 1, j + 1)[0] + img_display.at<cv::Vec3b>(i, j - 1)[0]
+//        //                    + img_display.at<cv::Vec3b>(i, j + 1)[0] + img_display.at<cv::Vec3b>(i + 1, j - 1)[0]
+//        //                    + img_display.at<cv::Vec3b>(i + 1, j)[0] + img_display.at<cv::Vec3b>(i + 1, j + 1)[0]) / 8);
 //
-//        const int numThreads = 17;
-//        std::vector<std::thread> threads;
-//        int rowsPerThread = Hpin / numThreads;
+//        //            img_display.at<cv::Vec3b>(i, j)[1]
+//        //                = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[1] + img_display.at<cv::Vec3b>(i - 1, j)[1]
+//        //                    + img_display.at<cv::Vec3b>(i - 1, j + 1)[1] + img_display.at<cv::Vec3b>(i, j - 1)[1]
+//        //                    + img_display.at<cv::Vec3b>(i, j + 1)[1] + img_display.at<cv::Vec3b>(i + 1, j - 1)[1]
+//        //                    + img_display.at<cv::Vec3b>(i + 1, j)[1] + img_display.at<cv::Vec3b>(i + 1, j + 1)[1]) / 8);
 //
-//        int startRow, endRow;
-//        for (int i = 0; i < numThreads; i++) {
-//            startRow = i * rowsPerThread;
-//            endRow = (i == numThreads - 1) ? Hpin : (i + 1) * rowsPerThread;
-//            threads.emplace_back(insert_pixels, Hpin, Wpin, N, D, g, wp, inv_wp, startRow, endRow, std::ref(uo), std::ref(vo), std::ref(elem_img), std::ref(pointclouddata));
-//        }
+//        //            img_display.at<cv::Vec3b>(i, j)[2]
+//        //                = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[2] + img_display.at<cv::Vec3b>(i - 1, j)[2]
+//        //                    + img_display.at<cv::Vec3b>(i - 1, j + 1)[2] + img_display.at<cv::Vec3b>(i, j - 1)[2]
+//        //                    + img_display.at<cv::Vec3b>(i, j + 1)[2] + img_display.at<cv::Vec3b>(i + 1, j - 1)[2]
+//        //                    + img_display.at<cv::Vec3b>(i + 1, j)[2] + img_display.at<cv::Vec3b>(i + 1, j + 1)[2]) / 8);
 //
-//        for (auto& t : threads) {
-//            t.join();
-//        }
-//
-//        int startv, startu;
-//        for (int i = 0; i < Hpin; i++) {
-//            for (int j = 0; j < Wpin; j++) {
-//
-//                //std::cout << "i:" << i << ", j:" << j << std::endl;
-//
-//                startv = static_cast<int>(i * intv);
-//                startu = static_cast<int>(j * intv);
-//
-//                for (int v = 0; v < N; v++) {
-//                    for (int u = 0; u < N; u++) {
-//
-//                        //std::cout << "u:" << u << ", v:" << v << std::endl;
-//
-//                        img_display.at<cv::Vec3b>(startv + v, startu + u)[0] = elem_img[i][j].at<cv::Vec3b>(v, u)[0];
-//                        img_display.at<cv::Vec3b>(startv + v, startu + u)[1] = elem_img[i][j].at<cv::Vec3b>(v, u)[1];
-//                        img_display.at<cv::Vec3b>(startv + v, startu + u)[2] = elem_img[i][j].at<cv::Vec3b>(v, u)[2];
-//                    }
-//                }
-//            }
-//        }
-//
-//        for (int i = 1; i < ph_disp - 1; i++) {
-//            for (int j = 1; j < pw_disp - 1; j++) {
-//                if (img_display.at<cv::Vec3b>(i, j)[0] < 10 && img_display.at<cv::Vec3b>(i, j)[1] < 10 && img_display.at<cv::Vec3b>(i, j)[2] < 10) {
-//
-//                    img_display.at<cv::Vec3b>(i, j)[0]
-//                        = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[0] + img_display.at<cv::Vec3b>(i - 1, j)[0]
-//                            + img_display.at<cv::Vec3b>(i - 1, j + 1)[0] + img_display.at<cv::Vec3b>(i, j - 1)[0]
-//                            + img_display.at<cv::Vec3b>(i, j + 1)[0] + img_display.at<cv::Vec3b>(i + 1, j - 1)[0]
-//                            + img_display.at<cv::Vec3b>(i + 1, j)[0] + img_display.at<cv::Vec3b>(i + 1, j + 1)[0]) / 8);
-//
-//                    img_display.at<cv::Vec3b>(i, j)[1]
-//                        = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[1] + img_display.at<cv::Vec3b>(i - 1, j)[1]
-//                            + img_display.at<cv::Vec3b>(i - 1, j + 1)[1] + img_display.at<cv::Vec3b>(i, j - 1)[1]
-//                            + img_display.at<cv::Vec3b>(i, j + 1)[1] + img_display.at<cv::Vec3b>(i + 1, j - 1)[1]
-//                            + img_display.at<cv::Vec3b>(i + 1, j)[1] + img_display.at<cv::Vec3b>(i + 1, j + 1)[1]) / 8);
-//
-//                    img_display.at<cv::Vec3b>(i, j)[2]
-//                        = static_cast<int>((img_display.at<cv::Vec3b>(i - 1, j - 1)[2] + img_display.at<cv::Vec3b>(i - 1, j)[2]
-//                            + img_display.at<cv::Vec3b>(i - 1, j + 1)[2] + img_display.at<cv::Vec3b>(i, j - 1)[2]
-//                            + img_display.at<cv::Vec3b>(i, j + 1)[2] + img_display.at<cv::Vec3b>(i + 1, j - 1)[2]
-//                            + img_display.at<cv::Vec3b>(i + 1, j)[2] + img_display.at<cv::Vec3b>(i + 1, j + 1)[2]) / 8);
-//
-//                    //std::cout << "img_display 0:" << img_display.at<cv::Vec3b>(i, j)[0] << ", 1:" << img_display.at<cv::Vec3b>(i, j)[1] << ", 2:" << img_display.at<cv::Vec3b>(i, j)[2] << std::endl;
-//                }
-//            }
-//        }
+//        //            //std::cout << "img_display 0:" << img_display.at<cv::Vec3b>(i, j)[0] << ", 1:" << img_display.at<cv::Vec3b>(i, j)[1] << ", 2:" << img_display.at<cv::Vec3b>(i, j)[2] << std::endl;
+//        //        }
+//        //    }
+//        //}
 //
 //        // 計測終了時間
-//        auto finish = std::chrono::high_resolution_clock::now();
+//        //auto finish = std::chrono::high_resolution_clock::now();
+//        cpu_time = clock();
+//        finish = (double)cpu_time / (double)CLOCKS_PER_SEC;
 //
 //        // 経過時間を出力
-//        std::chrono::duration<double> elapsed = finish - start;
-//        std::cout << "Time to fill the array: " << elapsed.count() << " seconds" << std::endl;
+//        //std::chrono::duration<double> elapsed = finish - start;
+//        //std::cout << "Time to fill the array: " << elapsed.count() << " seconds" << std::endl;
 //
-//        std::ostringstream stream;
-//        stream << "v5_img_display_g" << g << "_wp" << std::fixed << std::setprecision(1) << wp << "_pd" << std::fixed << std::setprecision(3) << pd << "_D" << D << ".png"; // 小数点以下2桁で切り捨て
-//        cv::String filename = stream.str();
+//        std::cout << "Time to fill the array: " << finish - start << " seconds" << std::endl;
 //
-//        imwrite(filename, img_display);
+//        //std::ostringstream stream;
+//        //stream << "v9_1_img_display_g" << g << "_wp" << std::fixed << std::setprecision(1) << wp << "_pd" << std::fixed << std::setprecision(3) << pd << "_D" << D << ".png"; // 小数点以下2桁で切り捨て
+//        //cv::String filename = stream.str();
+//
+//        //imwrite(filename, img_display);
 //    }
 //
 //    return EXIT_SUCCESS;

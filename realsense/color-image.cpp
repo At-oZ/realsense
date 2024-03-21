@@ -173,7 +173,7 @@
 //        //stream << "v3_color_image_g" << g << "_wp" << std::fixed << std::setprecision(1) << wp << "_pd" << std::fixed << std::setprecision(3) << pd << "_D" << D << ".png"; // ¬”“_ˆÈ‰º2Œ…‚ÅØ‚èÌ‚Ä
 //        //cv::String filename = stream.str();
 //
-//        imwrite("v3_color_image.png", color_image);
+//        imwrite("v_apdt_color_image.png", color_image);
 //
 //    }
 //

@@ -15,7 +15,7 @@
 //void insert_pixels(int Hpin, int Wpin, int N, int D, double zo, double W, int starty, int endy, std::vector<std::vector<double>>& uo, std::vector<std::vector<double>>& vo, std::vector<std::vector<cv::Mat>>& elem_img, std::vector<std::vector<double>>& pointclouddata) {
 //
 //    double coef, tmp_pcd0, tmp_pcd1, tmp_pcd2, tmp_pcd3, tmp_pcd4, tmp_pcd5;
-//    double inv_W = 1.0 / W;
+//    double inv_2W = 1.0 / (2 * W);
 //    for (int k = 0; k < pointclouddata.size(); k++) {
 //
 //        tmp_pcd0 = pointclouddata[k][0];
@@ -47,8 +47,8 @@
 //                newx = -coef * (uo[i + starty][j] - tmp_pcd0 * 1000);
 //                newy = -coef * (vo[i + starty][j] - tmp_pcd1 * 1000);
 //
-//                nx = static_cast<int>(floor((newx + 0.5 * W) * inv_W * N));
-//                ny = static_cast<int>(floor((newy + 0.5 * W) * inv_W * N));
+//                nx = static_cast<int>(floor((newx + W) * inv_2W * N));
+//                ny = static_cast<int>(floor((newy + W) * inv_2W * N));
 //
 //                //std::cout << "newx:" << newx[i][j] << ", newy:" << newy[i][j] << std::endl;
 //                //std::cout << "nx:" << nx << ", ny:" << ny << std::endl;
@@ -74,16 +74,14 @@
 //    // 表示系のパラメータ(mm)
 //    int W = 170, H = 170;                                                                       // 表示の縦横幅
 //    double zo = 1450, wp = 8.5, a = 0.125;                                                          // ギャップ、ピッチ、ピンホール幅
-//    double ld = 13.4 * 25.4;                                                                    // ディスプレイサイズ
-//    int pw = 3840, ph = 2400;                                                                   // ディスプレイの縦横の解像度
-//    //double pd = ld / sqrtf(pw * pw + ph * ph);                                                  // 画素ピッチ
 //    int Nreal = static_cast<int>(floor(60.0 * 180.0 / PI * (2 * std::atan(W / zo))));
+//    double pd = 2 * W / Nreal;                                                  // 画素ピッチ
 //    int N = static_cast<int>(Nreal / 2);   // 要素画像の解像度
 //    //int pw_disp = static_cast<int>(floor(W / pd)), ph_disp = static_cast<int>(floor(H / pd));   // 表示画像の縦横の解像度
 //    int Wpin = 21, Hpin = 21;         // 縦横のピンホール数
 //    //double intv = wp / pd;                                                                      // 要素画像の間隔
 //
-//    std::cout << "Nreal:" << Nreal << ", N:" << N << std::endl;
+//    //std::cout << "Nreal:" << Nreal << ", N:" << N << std::endl;
 //
 //    // 要素画像群
 //    std::vector<std::vector<cv::Mat>> elem_img(Hpin, std::vector<cv::Mat>(Wpin));
@@ -157,6 +155,9 @@
 //    //rs2::colorizer color_map;
 //    rs2::align align(RS2_STREAM_COLOR);
 //
+//    rs2::hole_filling_filter hole_filling_filter;
+//    hole_filling_filter.set_option(RS2_OPTION_HOLES_FILL, 1);
+//
 //    for (int i = 0; i < 3; i++)
 //    {
 //        rs2::frameset frames = pipe.wait_for_frames();
@@ -177,6 +178,7 @@
 //        //rs2::video_frame color_frame = aligned_frames.first(RS2_STREAM_COLOR);
 //        rs2::video_frame color_frame = aligned_frames.get_color_frame();
 //        rs2::video_frame depth_frame = aligned_frames.get_depth_frame();
+//        depth_frame = hole_filling_filter.process(depth_frame);
 //
 //        cv::Mat color_image_rgb(cv::Size(WIDTH, HEIGHT), CV_8UC3, (void*)color_frame.get_data(), cv::Mat::AUTO_STEP);
 //        cv::Mat depth_image(cv::Size(WIDTH, HEIGHT), CV_8UC3, (void*)depth_frame.get_data(), cv::Mat::AUTO_STEP);
@@ -323,6 +325,32 @@
 //
 //                        //std::cout << "u:" << u << ", v:" << v << std::endl;
 //
+//                        if (v > 0 && v < N - 1 && u > 0 && u < N - 1) {
+//                            if (elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[0] < 10 && elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[1] < 10 && elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[2] < 10) {
+//
+//                                elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[0]
+//                                    = static_cast<int>((elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u - 1)[0] + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u)[0]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u + 1)[0] + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u - 1)[0]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u + 1)[0] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u - 1)[0]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u)[0] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u + 1)[0]) / 8);
+//
+//                                elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[1]
+//                                    = static_cast<int>((elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u - 1)[1] + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u)[1]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u + 1)[1] + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u - 1)[1]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u + 1)[1] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u - 1)[1]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u)[1] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u + 1)[1]) / 8);
+//
+//                                elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[2]
+//                                    = static_cast<int>((elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u - 1)[2] + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u)[2]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v - 1, startu + u + 1)[2] + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u - 1)[2]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u + 1)[2] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u - 1)[2]
+//                                        + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u)[2] + elem_img[i][j].at<cv::Vec3b>(startv + v + 1, startu + u + 1)[2]) / 8);
+//                            }
+//                        }
+//
+//
+//                        //std::cout << "u:" << u << ", v:" << v << std::endl;
+//
 //                        cliped_elem_img[i][j].at<cv::Vec3b>(v, u)[0] = elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[0];
 //                        cliped_elem_img[i][j].at<cv::Vec3b>(v, u)[1] = elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[1];
 //                        cliped_elem_img[i][j].at<cv::Vec3b>(v, u)[2] = elem_img[i][j].at<cv::Vec3b>(startv + v, startu + u)[2];
@@ -330,7 +358,7 @@
 //                }
 //
 //                std::ostringstream stream;
-//                stream << "./images/real_observe_images_" << i << "=" << j << ".png";
+//                stream << "./images/2/real_observe_images_" << i << "=" << j << ".png";
 //                cv::String filename = stream.str();
 //
 //                imwrite(filename, cliped_elem_img[i][j]);
