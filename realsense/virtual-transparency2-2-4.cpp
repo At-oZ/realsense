@@ -13,6 +13,7 @@
 #include <cmath>
 #include <time.h>
 #include <omp.h>
+#include <immintrin.h>
 
 using namespace std;
 
@@ -277,14 +278,15 @@ int main(int argc, char* argv[]) try
         int inv_WIDTH = 1.0 / WIDTH;
         auto verts = points.get_vertices();
 
+#pragma omp parallel for private(newx, newy, nx, ny, startv, startu, inv_d, vtx_z)
         for (int k = 0; k < WIDTH * HEIGHT; k++) {
 
             vtx_z = verts[k].z;
 
             //cout << "pcd0:" << tmp_pcd0 << ", pcd1:" << tmp_pcd1 << ", pcd2:" << vtx_z << ", pcd3:" << tmp_pcd3 << ", pcd4:" << tmp_pcd4 << ", pcd5:" << tmp_pcd5 << endl;
-            if (k % 1000 == 0) {
-                cout << "k:" << k << "\n" << endl;
-            }
+            //if (k % 1000 == 0) {
+            //    cout << "k:" << k << "\n" << endl;
+            //}
 
             //vector<vector<double>> newx(endy - starty, vector<double>(Wpin));
             //vector<vector<double>> newy(endy - starty, vector<double>(Wpin));
@@ -294,15 +296,16 @@ int main(int argc, char* argv[]) try
 
             inv_d = 1.0 / (vtx_z * 1000 + D);
 
-#pragma omp parallel for
             for (int i = 0; i < Hpin; i++) {
-
                 for (int j = 0; j < Wpin; j++) {
 
                     //cout << "i:" << i << ", j:" << j << endl;
 
                     newx = -(g * inv_d) * (uo[i * Wpin + j] - verts[k].x * 1000);
                     newy = -(g * inv_d) * (vo[i * Wpin + j] - verts[k].y * 1000);
+
+                    __m256d newx_vec = _mm256_set1_pd(newx);
+                    __m256d newy_vec = _mm256_set1_pd(newy);
 
                     nx = static_cast<int>(floor((newx + 0.5 * wp) * inv_wp * N));
                     ny = static_cast<int>(floor((newy + 0.5 * wp) * inv_wp * N));
