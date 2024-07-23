@@ -140,17 +140,21 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world490d.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="color-image.cpp" />
+    <ClCompile Include="display-image.cpp" />
+    <ClCompile Include="evaluation.cpp" />
+    <ClCompile Include="evaluationSSIM.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="observe-image.cpp" />
     <ClCompile Include="real-observe.cpp" />
     <ClCompile Include="rs-align.cpp" />
     <ClCompile Include="sample1-6.cpp" />
+    <ClCompile Include="sample10.cpp" />
     <ClCompile Include="sample5-1.cpp" />
     <ClCompile Include="sample6-1.cpp" />
     <ClCompile Include="sample7-1.cpp" />
@@ -185,6 +189,51 @@
     <ClCompile Include="virtual-transparency3-2.cpp" />
     <ClCompile Include="virtual-transparency3-3.cpp" />
     <ClCompile Include="virtual-transparency3.cpp" />
+    <ClCompile Include="vt-v1-2.cpp" />
+    <ClCompile Include="vt-v1-3-pdBase.cpp" />
+    <ClCompile Include="vt-v1-3-wpBase.cpp" />
+    <ClCompile Include="vt-v1-3trans.cpp" />
+    <ClCompile Include="vt-v1.cpp" />
+    <ClCompile Include="vt-v10-3.cpp" />
+    <ClCompile Include="vt-v10-4.cpp" />
+    <ClCompile Include="vt-v10-5.cpp" />
+    <ClCompile Include="vt-v10-6.cpp" />
+    <ClCompile Include="vt-v10-7-2.cpp" />
+    <ClCompile Include="vt-v10-7.cpp" />
+    <ClCompile Include="vt-v10-8.cpp" />
+    <ClCompile Include="vt-v10-9.cpp" />
+    <ClCompile Include="vt-v10.cpp" />
+    <ClCompile Include="vt-v11-2.cpp" />
+    <ClCompile Include="vt-v11-3.cpp" />
+    <ClCompile Include="vt-v11-4-2.cpp" />
+    <ClCompile Include="vt-v11-4.cpp" />
+    <ClCompile Include="vt-v11-5.cpp" />
+    <ClCompile Include="vt-v11-6.cpp" />
+    <ClCompile Include="vt-v11-6v.cpp" />
+    <ClCompile Include="vt-v11-7.cpp" />
+    <ClCompile Include="vt-v11-7check.cpp" />
+    <ClCompile Include="vt-v11-7v.cpp" />
+    <ClCompile Include="vt-v11.cpp" />
+    <ClCompile Include="vt-v2.cpp" />
+    <ClCompile Include="vt-v3.cpp" />
+    <ClCompile Include="vt-v4-2.cpp" />
+    <ClCompile Include="vt-v4-3.cpp" />
+    <ClCompile Include="vt-v4-4.cpp" />
+    <ClCompile Include="vt-v4-5.cpp" />
+    <ClCompile Include="vt-v4-6.cpp" />
+    <ClCompile Include="vt-v4.cpp" />
+    <ClCompile Include="vt-v5-2.cpp" />
+    <ClCompile Include="vt-v5.cpp" />
+    <ClCompile Include="vt-v6-2.cpp" />
+    <ClCompile Include="vt-v6-3.cpp" />
+    <ClCompile Include="vt-v6-4.cpp" />
+    <ClCompile Include="vt-v6-5.cpp" />
+    <ClCompile Include="vt-v6.cpp" />
+    <ClCompile Include="vt-v7.cpp" />
+    <ClCompile Include="vt-v8.cpp" />
+    <ClCompile Include="vt-v9.cpp" />
+    <ClCompile Include="vt_re2.cpp" />
+    <ClCompile Include="vvv.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
