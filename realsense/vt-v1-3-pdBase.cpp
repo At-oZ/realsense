@@ -38,7 +38,7 @@
 //int FPS = 30;
 //
 //// 点群データ配列の行数と列数
-//int rows = 5;
+//int rows = WIDTH * HEIGHT;
 //int cols = 6;
 //
 //int D = 100;                     // 表示系とカメラとの距離(mm)
@@ -80,7 +80,7 @@
 //
 //        tmp_pcd_x = data[k][0] * 1000.0;
 //        tmp_pcd_y = data[k][1] * 1000.0;
-//        tmp_pcd_z = data[k][2];
+//        tmp_pcd_z = data[k][2] * 1000.0 + (double)D;
 //        tmp_pcd_b = data[k][3];
 //        tmp_pcd_g = data[k][4];
 //        tmp_pcd_r = data[k][5];
@@ -163,7 +163,7 @@
 //    cv::Mat img = cv::Mat::zeros(cv::Size(pw_disp, ph_disp), CV_8UC3);
 //
 //    // CSVファイルのパス
-//    std::string filePath = "output_v3v.csv";
+//    std::string filePath = "output_v3.csv";
 //
 //    // double型の二次元配列を動的に確保
 //    double** data = new double* [rows];
@@ -201,11 +201,11 @@
 //        return 1; // エラーコード1で終了
 //    }
 //
-//    for (int tt = 0; tt <= 2000; tt += 50) {
+//    for (int tt = 0; tt <= 0; tt += 50) {
 //
-//        for (int k = 0; k < rows; k++) {
-//            data[k][2] = (double)tt + (double)D;
-//        }
+//        //for (int k = 0; k < rows; k++) {
+//        //    data[k][2] = (double)tt + (double)D;
+//        //}
 //
 //        // 測定開始時刻を記録
 //        auto start = std::chrono::high_resolution_clock::now();
@@ -217,42 +217,42 @@
 //            }
 //        }
 //
-//        int startu, startv;
-//        for (int i = 0; i < Hpin; i++) {
-//            startv = static_cast<int>(i * intv);
-//            for (int j = 0; j < pw_disp; j++) {
-//                img_display[startv][j] = 64 + 64 * 256 + 64 * 256 * 256;
-//            }
+//        //int startu, startv;
+//        //for (int i = 0; i < Hpin; i++) {
+//        //    startv = static_cast<int>(i * intv);
+//        //    for (int j = 0; j < pw_disp; j++) {
+//        //        img_display[startv][j] = 64 + 64 * 256 + 64 * 256 * 256;
+//        //    }
+//        //}
+//        //for (int i = 0; i < Wpin; i++) {
+//        //    startu = static_cast<int>(i * intv);
+//        //    for (int j = 0; j < ph_disp; j++) {
+//        //        img_display[j][startu] = 64 + 64 * 256 + 64 * 256 * 256;
+//        //    }
+//        //}
+//
+//        //insert_pixels(0, Hpin, uo, vo, std::ref(data), std::ref(img_display), val_z);
+//
+//        const int numThreads = 16;
+//        vector<thread> threads;
+//        int rowsPerThread = Hpin / numThreads;
+//
+//        int startRow, endRow;
+//        for (int i = 0; i < numThreads; i++) {
+//            startRow = i * rowsPerThread;
+//            endRow = (i == numThreads - 1) ? Hpin : (i + 1) * rowsPerThread;
+//            threads.emplace_back(insert_pixels, startRow, endRow, uo, vo, std::ref(data), std::ref(img_display), val_z);
 //        }
-//        for (int i = 0; i < Wpin; i++) {
-//            startu = static_cast<int>(i * intv);
-//            for (int j = 0; j < ph_disp; j++) {
-//                img_display[j][startu] = 64 + 64 * 256 + 64 * 256 * 256;
-//            }
+//
+//        for (auto& t : threads) {
+//            if(t.joinable()){t.join();}
 //        }
 //
-//        insert_pixels(0, Hpin, uo, vo, std::ref(data), std::ref(img_display), val_z);
-//
-//        //const int numThreads = 8;
-//        //vector<thread> threads;
-//        //int rowsPerThread = Hpin / numThreads;
-//
-//        //int startRow, endRow;
-//        //for (int i = 0; i < numThreads; i++) {
-//        //    startRow = i * rowsPerThread;
-//        //    endRow = (i == numThreads - 1) ? Hpin : (i + 1) * rowsPerThread;
-//        //    threads.emplace_back(insert_pixels, startRow, endRow, uo, vo, std::ref(data), std::ref(img_display), val_z);
-//        //}
-//
-//        //for (auto& t : threads) {
-//        //    if(t.joinable()){t.join();}
-//        //}
-//
-//        //// 全てのスレッドが終了するのを待つ
-//        //{
-//        //    std::unique_lock<std::mutex> lock(mtx);
-//        //    conv.wait(lock, []{return finished_threads == numThreads;});
-//        //}
+//        // 全てのスレッドが終了するのを待つ
+//        {
+//            std::unique_lock<std::mutex> lock(mtx);
+//            conv.wait(lock, []{return finished_threads == numThreads;});
+//        }
 //
 //        // for (int i = 1; i < ph_disp - 1; i++) {
 //        //    for (int j = 1; j < pw_disp - 1; j++) {
@@ -333,7 +333,7 @@
 //        }
 //
 //        ostringstream stream;
-//        stream << "./images/Truev_pdBase_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
+//        stream << "./images/True_pdBase_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
 //        cv::String filename = stream.str();
 //
 //        imwrite(filename, img);
