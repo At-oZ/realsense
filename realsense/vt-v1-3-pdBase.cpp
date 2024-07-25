@@ -163,7 +163,7 @@
 //    cv::Mat img = cv::Mat::zeros(cv::Size(pw_disp, ph_disp), CV_8UC3);
 //
 //    // CSVファイルのパス
-//    std::string filePath = "output_v3.csv";
+//    std::string filePath = "output.csv";
 //
 //    // double型の二次元配列を動的に確保
 //    double** data = new double* [rows];
@@ -212,7 +212,7 @@
 //
 //        for (int i = 0; i < ph_disp; i++) {
 //            for (int j = 0; j < pw_disp; j++) {
-//                val_z[i][j] = 100000;
+//                val_z[i][j] = 10000;
 //                img_display[i][j] = 0;
 //            }
 //        }
@@ -333,7 +333,7 @@
 //        }
 //
 //        ostringstream stream;
-//        stream << "./images/True_pdBase_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
+//        stream << "./images/True_pdBase_1_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
 //        cv::String filename = stream.str();
 //
 //        imwrite(filename, img);
