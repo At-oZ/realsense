@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\librealsense-2.54.2\include;C:\glad\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\librealsense-2.54.2\include;C:\glad\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,15 +112,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\lodepng-master\lodepng-master</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world490d.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;realsense2.lib;opengl32.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,7 +132,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\lodepng-master\lodepng-master</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -140,8 +142,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -208,12 +211,15 @@
     <ClCompile Include="vt-v11-4-2.cpp" />
     <ClCompile Include="vt-v11-4.cpp" />
     <ClCompile Include="vt-v11-5.cpp" />
+    <ClCompile Include="vt-v11-6-check.cpp" />
+    <ClCompile Include="vt-v11-6-trial.cpp" />
     <ClCompile Include="vt-v11-6.cpp" />
     <ClCompile Include="vt-v11-6v.cpp" />
     <ClCompile Include="vt-v11-7.cpp" />
     <ClCompile Include="vt-v11-7check.cpp" />
     <ClCompile Include="vt-v11-7v.cpp" />
     <ClCompile Include="vt-v11.cpp" />
+    <ClCompile Include="vt-v12-1.cpp" />
     <ClCompile Include="vt-v2.cpp" />
     <ClCompile Include="vt-v3.cpp" />
     <ClCompile Include="vt-v4-2.cpp" />

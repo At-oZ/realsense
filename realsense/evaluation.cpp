@@ -18,7 +18,7 @@
 //    Mat img2;
 //    std::string filename_original, filename_compared;
 //
-//    for (int tt = 10; tt <= 2560; tt *= 2) {
+//    for (int tt = 65; tt < 66; tt++) {
 //
 //        cout << "z:" << tt << endl;
 //
@@ -38,6 +38,7 @@
 //            //stream << "./images/v11-7check_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes1.000_boxSize1.png";
 //            //stream << "./images/v11-6v_ImgDisplay_NumZLevel500_z" << tt << "_Ddash100_pitchTimes1.000_boxSize1.png";
 //            //stream << "D:/Users/taw11/projects/realsense/observe-images/True_pdBase/img_view" << tt << ".png";
+//            //stream << "./images/True_pdBase_1/true_img_view" << tt << ".png";
 //
 //            filename_original = stream.str();
 //
@@ -47,10 +48,13 @@
 //            //stream << "./images/v11-7v_ImgDisplay_NumZLevel500_z" << tt << "_min_d100_max_d2650_pitchTimes1.000_boxSize1.png";
 //            //stream << "./images/v11-7check_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes1.000_boxSize1.png";
 //            //stream << "./images/v11-7_wpBase_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes0.500_boxSize3.png";
-//            stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
+//            //stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
 //            //stream << "./images/v11-7checkv_ImgDisplay_NumZLevel500_z" << tt << "_min_d100_max_d2650_pitchTimes1.000_boxSize1.png";
 //            //stream << "./images/v11-6v_ImgDisplay_NumZLevel500_z" << tt << "_Ddash100_pitchTimes1.000_boxSize1.png";
 //            //stream << "D:/Users/taw11/projects/realsense/observe-images/v11-7_NumZLevel25/img_view" << tt << ".png";
+//            //stream << "./images/v11-6_1_NumZLevel65/prop_img_view" << tt << ".png";
+//            //stream << "./images/v12_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
+//            //stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
 //
 //            filename_compared = stream.str();
 //
@@ -91,8 +95,9 @@
 //            //stream << "./images/True_wpBase_v11-7_pdBase_diff_img_NumZLevel" << tt << "_imgPitch0.500.png";
 //            //stream << "./images/True_pdBase_v11-7check_diff_img_NumZLevel" << tt << "_imgPitch1.000.png";
 //            //stream << "./images/v11-6v_v11-7checkv_diff_img_z" << tt << ".png";
-//            stream << "./images/True_pdBase_v11-6_1_diff_img_NumZLevel" << tt << ".png";
-//            //stream << "D:/Users/taw11/projects/realsense/observe-images/diff_images/True_pdBase_v11-7_NumZLevel25_view" << tt << ".png";
+//            //stream << "./images/True_pdBase_v11-6_1_diff_img_NumZLevel" << tt << ".png";
+//            //stream << "D:/Users/taw11/projects/realsense/observe-images/diff_images/True_pdBase_v11-6_NumZLevel25_view" << tt << ".png";
+//            stream << "./images/True_pdBase_v12-1_diff_img_NumZLevel" << tt << "_imgPitch1.000.png";
 //            cv::String filename = stream.str();
 //
 //            imwrite(filename, img_diff);
