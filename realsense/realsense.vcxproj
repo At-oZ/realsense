@@ -120,7 +120,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;realsense2.lib;opengl32.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -142,12 +142,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100d.lib;opencv_world4100.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="vt-v1-3-checkerboard.cpp" />
+    <ClCompile Include="vt-v11-6-checkerboard.cpp" />
     <ClCompile Include="color-image.cpp" />
     <ClCompile Include="display-image.cpp" />
     <ClCompile Include="evaluation.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="observe-image.cpp" />
     <ClCompile Include="real-observe.cpp" />
+    <ClCompile Include="real-scene.cpp" />
     <ClCompile Include="rs-align.cpp" />
     <ClCompile Include="sample1-6.cpp" />
     <ClCompile Include="sample10.cpp" />
