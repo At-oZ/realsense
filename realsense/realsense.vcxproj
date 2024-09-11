@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera-sim.cpp" />
     <ClCompile Include="vt-v1-3-checkerboard.cpp" />
     <ClCompile Include="vt-v11-6-checkerboard.cpp" />
     <ClCompile Include="color-image.cpp" />
@@ -215,6 +216,7 @@
     <ClCompile Include="vt-v11-4.cpp" />
     <ClCompile Include="vt-v11-5.cpp" />
     <ClCompile Include="vt-v11-6-check.cpp" />
+    <ClCompile Include="vt-v11-6-project.cpp" />
     <ClCompile Include="vt-v11-6-trial.cpp" />
     <ClCompile Include="vt-v11-6.cpp" />
     <ClCompile Include="vt-v11-6v.cpp" />

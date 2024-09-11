@@ -54,7 +54,7 @@
 //double inv_pd = 1.0 / pd;         // pdの逆数
 //
 //// パラメータ
-//int num_z_level = 320; // イメージプレーンの層数
+//int num_z_level = 65; // イメージプレーンの層数
 //double ptimes = 1; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
 //int box_size = 1; // 探索範囲
 //
@@ -462,7 +462,6 @@
 //                // cout << "pcd_box:" << pcd_box[nz][ny][nx] << endl;
 //            }
 //        }
-//
 //
 //        //insert_pixels(0, N, std::ref(img_display), std::ref(pcd_box), std::ref(sp), std::ref(tp));
 //
