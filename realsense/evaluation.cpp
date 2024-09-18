@@ -20,7 +20,11 @@
 //    std::vector<std::vector<double>> array(36, std::vector<double>(2));
 //
 //    int row = 0;
-//    for (int tt = 250; tt <= 2001; tt += 50) {
+//    int num_z_level = 40; // イメージプレーンの層数
+//    double ptimes = 0.1; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
+//    int box_size = 1; // 探索範囲
+//    int Ddash = 250;
+//    for (int tt = 0; tt < 1; tt += 50) {
 //
 //        cout << "z:" << tt << endl;
 //
@@ -41,7 +45,8 @@
 //            //stream << "./images/v11-6v_ImgDisplay_NumZLevel500_z" << tt << "_Ddash100_pitchTimes1.000_boxSize1.png";
 //            //stream << "D:/Users/taw11/projects/realsense/observe-images/True_pdBase/img_view" << tt << ".png";
 //            //stream << "./images/True_pdBase_1/true_img_view" << tt << ".png";
-//            stream << "./checkerboard/real-scene/real-scene_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
+//            //stream << "./checkerboard/real-scene/real-scene_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
+//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/DirectProjection_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
 //
 //            filename_original = stream.str();
 //
@@ -58,8 +63,9 @@
 //            //stream << "./images/v11-6_1_NumZLevel65/prop_img_view" << tt << ".png";
 //            //stream << "./images/v12_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
 //            //stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
-//            stream << "./checkerboard/vt-v1-3/vt-v1-3-pdBase-checkerboard_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
+//            //stream << "./checkerboard/vt-v1-3/vt-v1-3-pdBase-checkerboard_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
 //            //stream << "./checkerboard/vt-v11-6/vt-v11-6-checkerboard_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
+//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/v12-1/v12-1_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
 //
 //            filename_compared = stream.str();
 //
@@ -103,8 +109,10 @@
 //            //stream << "./images/True_pdBase_v11-6_1_diff_img_NumZLevel" << tt << ".png";
 //            //stream << "D:/Users/taw11/projects/realsense/observe-images/diff_images/True_pdBase_v11-6_NumZLevel25_view" << tt << ".png";
 //            //stream << "./images/True_pdBase_v12-1_diff_img_NumZLevel" << tt << "_imgPitch1.000.png";
-//            stream << "./checkerboard/diff-images/vt-v1-3/real-scene_v1-3_diff_img_z" << tt << ".png";
+//            //stream << "./checkerboard/diff-images/vt-v1-3/real-scene_v1-3_diff_img_z" << tt << ".png";
 //            //stream << "./checkerboard/diff-images/vt-v11-6/real-scene_v11-6_diff_img_z" << tt << ".png";
+//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/diff-images/DirectProjection_v12-1_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
+//
 //            cv::String filename = stream.str();
 //
 //            imwrite(filename, img_diff);

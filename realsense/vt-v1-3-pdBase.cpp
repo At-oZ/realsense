@@ -1,4 +1,5 @@
 ///* 点群データをcsvファイルから取得して表示画像を構成するプログラム */
+//// 直接投影手法（参照手法）
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -333,7 +334,7 @@
 //        }
 //
 //        ostringstream stream;
-//        stream << "./images/True_pdBase_1_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
+//        stream << "./images/DirectProjection_pdBase_img_display_z" << tt << "_g" << g << "_wp" << fixed << setprecision(1) << wp << "_pd" << fixed << setprecision(3) << pd << "_D" << D << ".png";
 //        cv::String filename = stream.str();
 //
 //        imwrite(filename, img);

@@ -177,7 +177,6 @@
 //            data[i][5] = 0;
 //        }
 //
-//
 //        for (int i = 0; i < board.rows; i++) {
 //            for (int j = 0; j < board.cols; j++) {
 //
