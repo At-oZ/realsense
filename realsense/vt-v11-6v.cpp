@@ -444,9 +444,9 @@
 //            //cout << "nx:" << nx << ", ny:" << ny << ", nz:" << nz << endl;
 //
 //            if (0 <= nx && nx < px_width_img && 0 <= ny && ny < px_height_img && 0 <= nz && nz < num_z_level) {
-//                if (pcd_box[nz][ny][nx] > 0) {
-//                    pcd_count++;
-//                }
+//                //if (pcd_box[nz][ny][nx] > 0) {
+//                //    pcd_count++;
+//                //}
 //
 //                if (val_z[nz][ny][nx] < zt) {
 //                    pcd_box[nz][ny][nx] = static_cast<unsigned char>(tmp_pcd_b) + static_cast<unsigned char>(tmp_pcd_g) * 256 + static_cast<unsigned char>(tmp_pcd_r) * 256 * 256 + 256 * 256 * 256;
@@ -461,7 +461,7 @@
 //
 //        //insert_pixels(0, N, std::ref(img_display), std::ref(pcd_box), std::ref(uo), std::ref(vo));
 //
-//        const int numThreads = 8;
+//        const int numThreads = 16;
 //        vector<thread> threads;
 //        int rowsPerThread = N / numThreads;
 //
@@ -491,7 +491,7 @@
 //        // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 //        cout << "実行時間: " << duration.count() << " ms" << std::endl;
-//        cout << "重なり回数:" << pcd_count << endl;
+//        //cout << "重なり回数:" << pcd_count << endl;
 //
 //        //display = XOpenDisplay(nullptr);
 //        //if (display == nullptr) {

@@ -90,7 +90,7 @@
 //    return i;   // 配列の長さを返す
 //}
 //
-//void insert_pixels(int start, int end, int** img_display, int*** pcd_box, double* sp, double* tp, bool** flag_z) {
+//void insert_pixels(int start, int end, cv::Mat img_display, int*** pcd_box, double* sp, double* tp, bool** flag_z) {
 //
 //    int nx, ny, tmp_pcd_color, sum_zi, tmp_pcd_b, tmp_pcd_g, tmp_pcd_r;
 //    int alpha = 256 * 256 * 256;
@@ -136,7 +136,9 @@
 //                            if (0 <= u && u < N && 0 <= v && v < N) {
 //                                if (flag_z[startv + v][startu + u]) {
 //                                    //cout << "eee" << endl;
-//                                    img_display[startv + v][startu + u] = pcd_box[nz][ny][nx] - alpha;
+//                                    img_display.at<cv::Vec3b>(startv + v, startu + u)[2] = static_cast<int>(floor((pcd_box[nz][ny][nx] - 256 * 256 * 256) / (256 * 256)));
+//                                    img_display.at<cv::Vec3b>(startv + v, startu + u)[1] = static_cast<int>(floor((pcd_box[nz][ny][nx] - 256 * 256 * 256) / 256 - img_display.at<cv::Vec3b>(startv + v, startu + u)[2] * 256));
+//                                    img_display.at<cv::Vec3b>(startv + v, startu + u)[0] = static_cast<int>(floor((pcd_box[nz][ny][nx] - 256 * 256 * 256) - (img_display.at<cv::Vec3b>(startv + v, startu + u)[2] * 256 - img_display.at<cv::Vec3b>(startv + v, startu + u)[1]) * 256));
 //                                    flag_z[startv + v][startu + u] = false;
 //                                }
 //                            }
@@ -231,12 +233,6 @@
 //        }
 //    }
 //
-//    int** img_display;
-//    img_display = (int**)malloc(sizeof(int*) * ph_disp);
-//    for (int i = 0; i < ph_disp; i++) {
-//        img_display[i] = (int*)malloc(sizeof(int) * pw_disp);
-//    }
-//
 //    // CSVファイルのパス
 //    std::string filePath = "output.csv";
 //
@@ -276,12 +272,8 @@
 //        return 1; // エラーコード1で終了
 //    }
 //
-//    // cv::Mat img_display = cv::Mat::zeros(cv::Size(pw_disp, ph_disp), CV_8UC3);
+//    cv::Mat img_display = cv::Mat::zeros(cv::Size(pw_disp, ph_disp), CV_8UC3);
 //    cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
-//    // unsigned char* img_display = new unsigned char[pw_disp * ph_disp * 4];
-//    // unsigned char* img = new unsigned char[(N * range) * (N * range) * 3];
-//    // int* img;
-//    // img = (int*)malloc(sizeof(int) * (N * range) * (N * range));
 //
 //    int*** pcd_box;
 //    double*** val_z;
@@ -312,7 +304,7 @@
 //    // }
 //
 //    // フレーム処理
-//    for (int tt = 0; tt < 1; tt++) {
+//    for (int tt = 0; tt < 10; tt++) {
 //
 //        // 測定開始時刻を記録
 //        auto start = std::chrono::high_resolution_clock::now();
@@ -330,7 +322,9 @@
 //
 //        for (int i = 0; i < ph_disp; i++) {
 //            for (int j = 0; j < pw_disp; j++) {
-//                img_display[i][j] = 0;
+//                img_display.at<cv::Vec3b>(i, j)[0] = 0;
+//                img_display.at<cv::Vec3b>(i, j)[1] = 0;
+//                img_display.at<cv::Vec3b>(i, j)[2] = 0;
 //                flag_z[i][j] = true;
 //            }
 //        }
@@ -401,28 +395,38 @@
 //            }
 //        }
 //
-//        insert_pixels(0, Hpin, std::ref(img_display), std::ref(pcd_box), std::ref(sp), std::ref(tp), std::ref(flag_z));
+//        //insert_pixels(0, Hpin, std::ref(img_display), std::ref(pcd_box), std::ref(sp), std::ref(tp), std::ref(flag_z));
 //
-//        //const int numThreads = 16;
-//        //vector<thread> threads;
-//        //int rowsPerThread = N / numThreads;
+//        int count = 0;
+//        for (int i = 0; i < num_z_level; i++) {
+//            for (int j = 0; j < px_height_img; j++) {
+//                for (int k = 0; k < px_width_img; k++) {
+//                    if (pcd_box[i][j][k] > 0) count++;
+//                }
+//            }
+//        }
+//        cout << "count:" << count << endl;
 //
-//        //int startRow, endRow;
-//        //for (int i = 0; i < numThreads; i++) {
-//        //    startRow = i * rowsPerThread;
-//        //    endRow = (i == numThreads - 1) ? N : (i + 1) * rowsPerThread;
-//        //    threads.emplace_back(insert_pixels, startRow, endRow, std::ref(img_display), std::ref(pcd_box), std::ref(sp), std::ref(tp), std::ref(flag_z));
-//        //}
+//        const int numThreads = 16;
+//        vector<thread> threads;
+//        int rowsPerThread = N / numThreads;
 //
-//        //for (auto& t : threads) {
-//        //    if (t.joinable()) { t.join(); }
-//        //}
+//        int startRow, endRow;
+//        for (int i = 0; i < numThreads; i++) {
+//            startRow = i * rowsPerThread;
+//            endRow = (i == numThreads - 1) ? N : (i + 1) * rowsPerThread;
+//            threads.emplace_back(insert_pixels, startRow, endRow, std::ref(img_display), std::ref(pcd_box), std::ref(sp), std::ref(tp), std::ref(flag_z));
+//        }
 //
-//        //// 全てのスレッドが終了するのを待つ
-//        //{
-//        //    std::unique_lock<std::mutex> lock(mtx);
-//        //    conv.wait(lock, [] {return finished_threads == numThreads; });
-//        //}
+//        for (auto& t : threads) {
+//            if (t.joinable()) { t.join(); }
+//        }
+//
+//        // 全てのスレッドが終了するのを待つ
+//        {
+//            std::unique_lock<std::mutex> lock(mtx);
+//            conv.wait(lock, [] {return finished_threads == numThreads; });
+//        }
 //
 //        cout << "calc finished" << endl;
 //        finished_threads = 0;
@@ -471,19 +475,19 @@
 //        //XDestroyWindow(display, window);
 //        //XCloseDisplay(display);
 //
-//        for (int i = 0; i < ph_disp; i++) {
-//            for (int j = 0; j < pw_disp; j++) {
+//        //for (int i = 0; i < ph_disp; i++) {
+//        //    for (int j = 0; j < pw_disp; j++) {
 //
-//                img_save.at<cv::Vec3b>(i, j)[2] = static_cast<int>(floor(img_display[i][j] / (256 * 256)));
-//                img_save.at<cv::Vec3b>(i, j)[1] = static_cast<int>(floor(img_display[i][j] / 256 - img_save.at<cv::Vec3b>(i, j)[2] * 256));
-//                img_save.at<cv::Vec3b>(i, j)[0] = static_cast<int>(floor(img_display[i][j] - (img_save.at<cv::Vec3b>(i, j)[2] * 256 - img_save.at<cv::Vec3b>(i, j)[1]) * 256));
-//            }
-//        }
+//        //        img_save.at<cv::Vec3b>(i, j)[2] = static_cast<int>(floor(img_display[i][j] / (256 * 256)));
+//        //        img_save.at<cv::Vec3b>(i, j)[1] = static_cast<int>(floor(img_display[i][j] / 256 - img_save.at<cv::Vec3b>(i, j)[2] * 256));
+//        //        img_save.at<cv::Vec3b>(i, j)[0] = static_cast<int>(floor(img_display[i][j] - (img_save.at<cv::Vec3b>(i, j)[2] * 256 - img_save.at<cv::Vec3b>(i, j)[1]) * 256));
+//        //    }
+//        //}
 //
 //        ostringstream stream;
 //        stream << "./images/v11-6-project_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
 //        cv::String filename = stream.str();
-//        imwrite(filename, img_save);
+//        imwrite(filename, img_display);
 //
 //        //stream.str("");
 //        //stream.clear(ostringstream::goodbit);
@@ -586,10 +590,8 @@
 //    // delete[] data;    
 //
 //    for (int i = 0; i < ph_disp; i++) {
-//        free(img_display[i]);
 //        free(flag_z[i]);
 //    }
-//    free(img_display);
 //    free(flag_z);
 //
 //    for (int i = 0; i < num_z_level; i++) {

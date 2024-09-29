@@ -66,6 +66,8 @@
 //int px_height_img = static_cast<int>(round(55 / ptimes));
 //int px_width_img = static_cast<int>(round(55 / ptimes));
 //
+//int TIMES = 100;
+//
 //// ファイル読み込み
 //// 引数で配列のポインタを受け取りそこに値を書き込み
 //int fileread(double* test, string fname) {
@@ -386,8 +388,9 @@
 //    //     }
 //    // }
 //
+//    double sum_time = 0;
 //    // フレーム処理
-//    for (int tt = 0; tt < 1; tt++) {
+//    for (int tt = 0; tt < TIMES; tt++) {
 //
 //        // 測定開始時刻を記録
 //        auto start = std::chrono::high_resolution_clock::now();
@@ -496,6 +499,7 @@
 //        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 //        cout << "実行時間: " << duration.count() << " ms" << std::endl;
 //        //cout << "重なり回数:" << pcd_count << endl;
+//        sum_time += duration.count();
 //
 //        //display = XOpenDisplay(nullptr);
 //        //if (display == nullptr) {
@@ -577,6 +581,8 @@
 //
 //
 //    }
+//
+//    cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
 //
 //    //try {
 //    //    std::string filename_original, filename_compared;

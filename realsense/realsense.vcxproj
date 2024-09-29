@@ -148,7 +148,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera-array-sim-v1.cpp" />
+    <ClCompile Include="camera-array-sim-v2.cpp" />
+    <ClCompile Include="camera-array-sim-v3.cpp" />
     <ClCompile Include="camera-sim.cpp" />
+    <ClCompile Include="DirectProjection-v1.cpp" />
+    <ClCompile Include="observe-image-v1.cpp" />
+    <ClCompile Include="observe-image-v2.cpp" />
+    <ClCompile Include="observe-image-v3.cpp" />
+    <ClCompile Include="prop-v1-10.cpp" />
+    <ClCompile Include="prop-v1-2.cpp" />
+    <ClCompile Include="prop-v1-3.cpp" />
+    <ClCompile Include="prop-v1-4-check.cpp" />
+    <ClCompile Include="prop-v1-4.cpp" />
+    <ClCompile Include="prop-v1-5.cpp" />
+    <ClCompile Include="prop-v1-6.cpp" />
+    <ClCompile Include="prop-v1-7.cpp" />
+    <ClCompile Include="prop-v1-8.cpp" />
+    <ClCompile Include="prop-v1-9.cpp" />
+    <ClCompile Include="prop-v1-v1-2_check.cpp" />
+    <ClCompile Include="prop-v1.cpp" />
+    <ClCompile Include="propv1-4-2.cpp" />
     <ClCompile Include="vt-v1-3-checkerboard.cpp" />
     <ClCompile Include="vt-v11-6-checkerboard.cpp" />
     <ClCompile Include="color-image.cpp" />

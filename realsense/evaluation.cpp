@@ -21,7 +21,7 @@
 //
 //    int row = 0;
 //    int num_z_level = 40; // イメージプレーンの層数
-//    double ptimes = 0.1; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
+//    double ptimes = 1; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
 //    int box_size = 1; // 探索範囲
 //    int Ddash = 250;
 //    for (int tt = 0; tt < 1; tt += 50) {
@@ -38,34 +38,18 @@
 //            stream.str("");
 //            stream.clear(ostringstream::goodbit);
 //
-//            //stream << "./images/v11-7v_ImgDisplay_NumZLevel500_z" << tt << "_min_d100_max_d2650_pitchTimes1.000_boxSize1.png";
-//            //stream << "./images/Truev_pdBase_img_display_z" << tt << "_g4_wp1.2_pd0.075_D100.png";
-//            /*stream << "./images/True/True_pdBase_1_img_display_g4_wp1.2_pd0.075_D100.png";*/
-//            //stream << "./images/v11-7check_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes1.000_boxSize1.png";
-//            //stream << "./images/v11-6v_ImgDisplay_NumZLevel500_z" << tt << "_Ddash100_pitchTimes1.000_boxSize1.png";
-//            //stream << "D:/Users/taw11/projects/realsense/observe-images/True_pdBase/img_view" << tt << ".png";
-//            //stream << "./images/True_pdBase_1/true_img_view" << tt << ".png";
-//            //stream << "./checkerboard/real-scene/real-scene_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
-//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/DirectProjection_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
+//            //stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/DirectProjection_output-v3_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
+//            //stream << "./images/v2-observe-DirectProjection_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
+//            stream << "./images/lenna/observe-lenna-throughPinhole_zi512.png";
 //
 //            filename_original = stream.str();
 //
 //            stream.str("");
 //            stream.clear(ostringstream::goodbit);
 //
-//            //stream << "./images/v11-7v_ImgDisplay_NumZLevel500_z" << tt << "_min_d100_max_d2650_pitchTimes1.000_boxSize1.png";
-//            //stream << "./images/v11-7check_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes1.000_boxSize1.png";
-//            //stream << "./images/v11-7_wpBase_ImgDisplay_NumZLevel" << tt << "_min_d250_max_d2650_pitchTimes0.500_boxSize3.png";
-//            //stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
-//            //stream << "./images/v11-7checkv_ImgDisplay_NumZLevel500_z" << tt << "_min_d100_max_d2650_pitchTimes1.000_boxSize1.png";
-//            //stream << "./images/v11-6v_ImgDisplay_NumZLevel500_z" << tt << "_Ddash100_pitchTimes1.000_boxSize1.png";
-//            //stream << "D:/Users/taw11/projects/realsense/observe-images/v11-7_NumZLevel25/img_view" << tt << ".png";
-//            //stream << "./images/v11-6_1_NumZLevel65/prop_img_view" << tt << ".png";
-//            //stream << "./images/v12_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
-//            //stream << "./images/v11-6_1_ImgDisplay_NumZLevel" << tt << "_Ddash250_pitchTimes1.00_boxSize1.png";
-//            //stream << "./checkerboard/vt-v1-3/vt-v1-3-pdBase-checkerboard_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
-//            //stream << "./checkerboard/vt-v11-6/vt-v11-6-checkerboard_img_display_g4_wp1.2_pd0.075_val-z" << tt << ".png";
-//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/v12-1/v12-1_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
+//            //stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/prop-v1-7_ImgDisplay_output-v3_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
+//            //stream << "./images/v2-observe_prop-v1-10_ImgDisplay_NumZLevel65_Ddash250_pitchTimes0.20_boxSize4.png";
+//            stream << "./images/lenna/weightedAveraging_observe-lenna-throughDisplay_zi512.png";
 //
 //            filename_compared = stream.str();
 //
@@ -84,14 +68,14 @@
 //            double psnrValue = getPSNR(img1, img2);
 //            cout << "PSNR value is: " << psnrValue << " dB" << endl;
 //
-//            Mat img_diff = getDiff(img1, img2);
+//            //Mat img_diff = getDiff(img1, img2);
 //
-//            // img_diffをファイルとして保存して内容を確認する
-//            imwrite("img_diff.png", img_diff);
+//            //// img_diffをファイルとして保存して内容を確認する
+//            //imwrite("img_diff.png", img_diff);
 //
-//            // img_diffのコントラストを強調する
-//            Mat img_diff_enhanced;
-//            normalize(img_diff, img_diff_enhanced, 0, 255, NORM_MINMAX, CV_8U);
+//            //// img_diffのコントラストを強調する
+//            //Mat img_diff_enhanced;
+//            //normalize(img_diff, img_diff_enhanced, 0, 255, NORM_MINMAX, CV_8U);
 //
 //            //cv::namedWindow("Difference image", cv::WINDOW_AUTOSIZE);
 //            //cv::imshow("Difference image", img_diff_enhanced);
@@ -111,11 +95,11 @@
 //            //stream << "./images/True_pdBase_v12-1_diff_img_NumZLevel" << tt << "_imgPitch1.000.png";
 //            //stream << "./checkerboard/diff-images/vt-v1-3/real-scene_v1-3_diff_img_z" << tt << ".png";
 //            //stream << "./checkerboard/diff-images/vt-v11-6/real-scene_v11-6_diff_img_z" << tt << ".png";
-//            stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/diff-images/DirectProjection_v12-1_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
+//            //stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/diff-images/DirectProjection_prop-v1-7_ImgDisplay_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
 //
-//            cv::String filename = stream.str();
+//            //cv::String filename = stream.str();
 //
-//            imwrite(filename, img_diff);
+//            //imwrite(filename, img_diff);
 //
 //            array[row][0] = (double)tt;
 //            array[row][1] = psnrValue;
@@ -137,7 +121,7 @@
 //
 //    }
 //
-//    writeCSV(array);
+//    //writeCSV(array);
 //
 //    return 0;
 //}
