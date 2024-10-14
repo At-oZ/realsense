@@ -422,6 +422,7 @@
 //                    green[i][j][k] = 0;
 //                    blue[i][j][k] = 0;
 //                    alpha[i][j][k] = false;
+//                    num_pcd[i][j][k] = 0;
 //                    //val_z[i][j][k] = 0;
 //                }
 //            }

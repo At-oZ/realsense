@@ -8,28 +8,35 @@
 //#include <vector>
 //
 //int main() {
+//
+//    // ピクセルサイズの計算
+//    const double pixelSize = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4;
+//    std::cout << "camera pixel size:" << pixelSize << std::endl;
+//
+//    // ディスプレイの設定
+//    const int displayImageSize = 2400;
+//    const double displayAreaSize = displayImageSize * pixelSize;
+//    cv::Mat displayImage = cv::Mat::zeros(cv::Size(displayImageSize, displayImageSize), CV_8UC3);
+//
 //    // タイルの設定
-//    const double tileSize = 170.0; // タイルのサイズ（mm）
+//    const double tileSize = displayAreaSize; // タイルのサイズ（mm）
 //    const int tileResolution = 256; // タイルの解像度（ピクセル）
 //    //const double tileZ = 1024.0; // タイルの位置（z座標、mm）
 //    const double tilePixelSize = tileSize / tileResolution; // ピクセルサイズ(mm)
 //    std::cout << "tile pixel size:" << tilePixelSize << std::endl;
 //
+//    // カメラのグリッド設定
+//    const int gridSize = 40; // グリッドサイズ
+//    const double gridSpacing = displayAreaSize / gridSize; // グリッド間隔（mm）
+//    const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
+//
 //    // カメラの設定
 //    const double focalLength = 4.0; // 焦点距離（mm）
-//    const double sensorSize = 5.0; // センサーサイズ（mm）
-//    const int imageResolution = 64; // 画像の解像度（ピクセル）
+//    const double sensorSize = gridSpacing; // センサーサイズ（mm）
+//    const int imageResolution = static_cast<int>(floor(displayImageSize / gridSize)); // 画像の解像度（ピクセル）
 //
 //    // 画像中心からのオフセット計算用
 //    const double halfSensorSize = sensorSize / 2.0;
-//
-//    const int displayImageSize = 2261;
-//    const double displayAreaSize = 170.0;
-//    cv::Mat displayImage = cv::Mat::zeros(cv::Size(displayImageSize, displayImageSize), CV_8UC3);
-//
-//    // ピクセルサイズの計算
-//    const double pixelSize = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4;
-//    std::cout << "camera pixel size:" << pixelSize << std::endl;
 //    const double intv = sensorSize / pixelSize;
 //
 //    // タイル画像の読み込み
@@ -40,12 +47,7 @@
 //    }
 //    cv::resize(tileImage, tileImage, cv::Size(tileResolution, tileResolution));
 //
-//    // カメラのグリッド設定
-//    const int gridSize = 34; // グリッドサイズ
-//    const double gridSpacing = sensorSize; // グリッド間隔（mm）
-//    const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
-//
-//    for (double tileZ = 4.0; tileZ <= 1024; tileZ *= 2) {
+//    for (double tileZ = 256; tileZ <= 1024; tileZ *= 2) {
 //
 //        std::cout << "tileZ:" << tileZ << std::endl;
 //
@@ -80,19 +82,19 @@
 //        int startu, startv;
 //        for (int m = 0; m < gridSize; ++m) {
 //
-//            startv = static_cast<int>(round(m * intv));
+//            //startv = static_cast<int>(round(m * intv));
 //
 //            for (int n = 0; n < gridSize; ++n) {
 //
-//                startu = static_cast<int>(round(n * intv));
+//                //startu = static_cast<int>(round(n * intv));
 //
 //                // 出力画像の初期化
 //                cv::Mat outputImage(imageResolution, imageResolution, CV_8UC3, cv::Scalar(0, 0, 0));
 //
 //                int pixelIndex = 0;
 //                const auto& cameraPos = cameraPositions[cameraIndex++];
-//                //startu = static_cast<int>(std::round((cameraPos.x + displayAreaSize / 2 - sensorSize / 2) / pixelSize));
-//                //startv = static_cast<int>(std::round((cameraPos.y + displayAreaSize / 2 - sensorSize / 2) / pixelSize));
+//                startu = static_cast<int>(std::round((cameraPos.x + displayAreaSize / 2 - halfSensorSize) / pixelSize));
+//                startv = static_cast<int>(std::round((cameraPos.y + displayAreaSize / 2 - halfSensorSize) / pixelSize));
 //
 //                //std::cout << "cameraPos:" << cameraPos << std::endl;
 //
@@ -210,7 +212,7 @@
 //        }
 //
 //        // 画像の保存
-//        std::string filename = "./images/lenna/weightedAveraging_captured_image_imageResolution" + std::to_string(static_cast<int>(imageResolution)) + "_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
+//        std::string filename = "./images/lenna/camera-array-sim/weightedAveraging_captured_image_imageResolution" + std::to_string(static_cast<int>(imageResolution)) + "_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
 //        
 //        cv::imwrite(filename, displayImage);
 //

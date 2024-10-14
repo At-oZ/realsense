@@ -30,28 +30,28 @@
 //
 //        try {
 //
-//            //std::cout << "Please enter the name of original image file: ";
-//            //std::getline(std::cin, filename_original);
-//            //std::cout << "Please enter the name of compared image file: ";
-//            //std::getline(std::cin, filename_compared);
+//            std::cout << "Please enter the name of original image file: ";
+//            std::getline(std::cin, filename_original);
+//            std::cout << "Please enter the name of compared image file: ";
+//            std::getline(std::cin, filename_compared);
 //
-//            stream.str("");
-//            stream.clear(ostringstream::goodbit);
+//            //stream.str("");
+//            //stream.clear(ostringstream::goodbit);
 //
-//            //stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/DirectProjection_output-v3_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
-//            //stream << "./images/v2-observe-DirectProjection_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
-//            stream << "./images/lenna/observe-lenna-throughPinhole_zi512.png";
+//            ////stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/DirectProjection_output-v3_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
+//            ////stream << "./images/v2-observe-DirectProjection_pdBase_img_display_z0_g4_wp1.2_pd0.075_D100.png";
+//            //stream << "./images/lenna/observe-lenna-throughPinhole_zi512.png";
 //
-//            filename_original = stream.str();
+//            //filename_original = stream.str();
 //
-//            stream.str("");
-//            stream.clear(ostringstream::goodbit);
+//            //stream.str("");
+//            //stream.clear(ostringstream::goodbit);
 //
-//            //stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/prop-v1-7_ImgDisplay_output-v3_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
-//            //stream << "./images/v2-observe_prop-v1-10_ImgDisplay_NumZLevel65_Ddash250_pitchTimes0.20_boxSize4.png";
-//            stream << "./images/lenna/weightedAveraging_observe-lenna-throughDisplay_zi512.png";
+//            ////stream << "C:/Users/taw11/source/repos2/At-oZ/realsense/realsense/images/prop-v1-7_ImgDisplay_output-v3_NumZLevel" << num_z_level << "_Ddash" << Ddash << "_pitchTimes" << fixed << setprecision(2) << ptimes << "_boxSize" << box_size << ".png";
+//            ////stream << "./images/v2-observe_prop-v1-10_ImgDisplay_NumZLevel65_Ddash250_pitchTimes0.20_boxSize4.png";
+//            //stream << "./images/lenna/weightedAveraging_observe-lenna-throughDisplay_zi512.png";
 //
-//            filename_compared = stream.str();
+//            //filename_compared = stream.str();
 //
 //            img1 = readImage(filename_original);
 //            img2 = readImage(filename_compared);

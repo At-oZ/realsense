@@ -1,3 +1,8 @@
+//// ピンホールを通して画像を観察したときの観察画像の作成
+///*
+//   ピンホールアレイに対してその中の色を計算
+//*/
+//
 //#include <opencv2/opencv.hpp>
 //#include <iostream>
 //#include <vector>
