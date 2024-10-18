@@ -31,7 +31,7 @@
 //    const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
 //
 //    // カメラの設定
-//    const double focalLength = 4.0; // 焦点距離（mm）
+//    const double focalLength = 4.0 * 160.0 / (double)gridSize; // 焦点距離（mm）
 //    const double sensorSize = gridSpacing; // センサーサイズ（mm）
 //    const int imageResolution = static_cast<int>(floor(displayImageSize / gridSize)); // 画像の解像度（ピクセル）
 //

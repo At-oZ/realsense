@@ -160,6 +160,8 @@
     <ClCompile Include="observe-image-v3.cpp" />
     <ClCompile Include="observe-image-v4-2.cpp" />
     <ClCompile Include="observe-image-v4.cpp" />
+    <ClCompile Include="prop-lenna-v0.cpp" />
+    <ClCompile Include="prop-lenna-v1-2.cpp" />
     <ClCompile Include="prop-lenna-v1.cpp" />
     <ClCompile Include="prop-lenna-v2-2.cpp" />
     <ClCompile Include="prop-lenna-v2.cpp" />

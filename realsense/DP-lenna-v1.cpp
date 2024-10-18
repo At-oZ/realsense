@@ -146,7 +146,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-DP.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-DP-2.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -174,10 +174,10 @@
 //
 //    cout << "DP-lenna-v1" << endl;
 //
-//    std::vector<double> result(9);
+//    std::vector<double> result(3);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 20; nph >= 20; nph /= 2) {
 //
 //        for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
 //
@@ -194,7 +194,7 @@
 //            double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //            // 表示系のパラメータ(mm)
-//            double gap = 4.0; // ギャップ
+//            double gap = 4.0 * 160.0 / (double)nph; // ギャップ
 //            int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //            int display_image_px = 2400; // 各軸方向の表示画像の解像度
 //            double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔

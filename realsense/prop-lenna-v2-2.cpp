@@ -56,7 +56,7 @@
 //    return i;   // 配列の長さを返す
 //}
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, int intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
 //
 //    int tmp_nx, tmp_ny;
 //    int tmp_startu, tmp_startv;
@@ -111,7 +111,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-prop.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -139,10 +139,10 @@
 //
 //    cout << "prop-lenna-v2-2" << endl;
 //
-//    std::vector<double> result(90);
+//    std::vector<double> result(120);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 160; nph >= 20; nph /= 2) {
 //
 //
 //        for (int nzl = 128; nzl >= 64; nzl /= 2) {
@@ -164,7 +164,7 @@
 //                    double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                    // 表示系のパラメータ(mm)
-//                    double gap = 4.0; // ギャップ
+//                    double gap = 4.0 * 160.0 / (double)nph; // ギャップ
 //                    int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                    int display_px = 2400; // 各軸方向の表示画像の解像度
 //                    double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
