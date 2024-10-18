@@ -139,10 +139,10 @@
 //
 //    cout << "prop-lenna-v2-2" << endl;
 //
-//    std::vector<double> result(120);
+//    std::vector<double> result(90);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 20; nph /= 2) {
+//    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
 //        for (int nzl = 128; nzl >= 64; nzl /= 2) {
@@ -191,8 +191,8 @@
 //
 //                    double img_pitch = display_pixel_pitch / ptimes;
 //
-//                    int px_height_img = static_cast<int>(round(55 * ptimes));
-//                    int px_width_img = static_cast<int>(round(55 * ptimes));
+//                    int px_height_img = static_cast<int>(round(50 * ptimes * gap / 4.0));
+//                    int px_width_img = static_cast<int>(round(50 * ptimes * gap / 4.0));
 //
 //                    int TIMES = 100;
 //
@@ -518,33 +518,6 @@
 //                        //stream.str("");
 //                        //stream.clear(ostringstream::goodbit);
 //
-//                        //// 各イメージプレーンの画像を保存（テスト用）
-//                        //// ostringstream stream;
-//                        //// cv::String filename;
-//                        //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
-//                        //for (int zi = 0; zi < num_z_level; zi++) {
-//
-//                        //    stream << "./images/lenna/image-plane/prop-lenna-v2_imagePlane_NumZLevel" << num_z_level << "_zi" << zi << "_Ddash" << Ddash << "_pitchTimes" << static_cast<int>(ptimes) << ".png";
-//                        //    cout << "zi:" << zi << endl;
-//
-//                        //    for (int i = 0; i < px_height_img; i++) {
-//                        //        for (int j = 0; j < px_width_img; j++) {
-//                        //            if (alpha[zi][i][j] > 0) {
-//                        //                img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
-//                        //                img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
-//                        //                img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
-//                        //            }
-//                        //        }
-//                        //    }
-//                        //    filename = stream.str();
-//                        //    imwrite(filename, img);
-//                        //    stream.str("");
-//                        //    stream.clear(ostringstream::goodbit);
-//                        //    img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
-//
-//                        //}
-//
-//
 //                    }
 //
 //                    // 表示画像の保存
@@ -553,6 +526,32 @@
 //                    cv::String filename = stream.str();
 //                    imwrite(filename, img_display);
 //
+//
+//                    //// 各イメージプレーンの画像を保存（テスト用）
+//                    //// ostringstream stream;
+//                    //// cv::String filename;
+//                    //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
+//                    //for (int zi = 0; zi < num_z_level; zi++) {
+//
+//                    //    stream << "./images/lenna/image-plane/v2-2/prop-lenna-v2-2_imagePlane_NumZLevel" << num_z_level << "_zi" << zi << "_Ddash" << Ddash << "_pitchTimes" << static_cast<int>(ptimes) << ".png";
+//                    //    cout << "zi:" << zi << endl;
+//
+//                    //    for (int i = 0; i < px_height_img; i++) {
+//                    //        for (int j = 0; j < px_width_img; j++) {
+//                    //            if (alpha[zi][i][j] > 0) {
+//                    //                img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
+//                    //                img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
+//                    //                img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
+//                    //            }
+//                    //        }
+//                    //    }
+//                    //    filename = stream.str();
+//                    //    imwrite(filename, img);
+//                    //    stream.str("");
+//                    //    stream.clear(ostringstream::goodbit);
+//                    //    img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
+//
+//                    //}
 //
 //                    cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
 //                    result[index++] = sum_time / TIMES;

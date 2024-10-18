@@ -26,7 +26,7 @@
 //    std::cout << "tile pixel size:" << tilePixelSize << std::endl;
 //
 //    // カメラのグリッド設定
-//    const int gridSize = 40; // グリッドサイズ
+//    const int gridSize = 20; // グリッドサイズ
 //    const double gridSpacing = displayAreaSize / gridSize; // グリッド間隔（mm）
 //    const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
 //
