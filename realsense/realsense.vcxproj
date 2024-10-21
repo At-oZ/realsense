@@ -154,6 +154,7 @@
     <ClCompile Include="camera-sim.cpp" />
     <ClCompile Include="DirectProjection-v1.cpp" />
     <ClCompile Include="evaluation-comparison.cpp" />
+    <ClCompile Include="ideal-v1.cpp" />
     <ClCompile Include="observe-image-v1.cpp" />
     <ClCompile Include="observe-image-v2.cpp" />
     <ClCompile Include="observe-image-v3-2.cpp" />
@@ -161,10 +162,13 @@
     <ClCompile Include="observe-image-v4-1.cpp" />
     <ClCompile Include="observe-image-v4-2.cpp" />
     <ClCompile Include="observe-image-v4.cpp" />
+    <ClCompile Include="prop-lenna-v0-2.cpp" />
     <ClCompile Include="prop-lenna-v0.cpp" />
     <ClCompile Include="prop-lenna-v1-2.cpp" />
+    <ClCompile Include="prop-lenna-v1-3.cpp" />
     <ClCompile Include="prop-lenna-v1.cpp" />
     <ClCompile Include="prop-lenna-v2-2.cpp" />
+    <ClCompile Include="prop-lenna-v2-3.cpp" />
     <ClCompile Include="prop-lenna-v2.cpp" />
     <ClCompile Include="DP-lenna-v1.cpp" />
     <ClCompile Include="prop-v1-10.cpp" />

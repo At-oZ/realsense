@@ -1,6 +1,6 @@
 ///* 点群データをcsvファイルから取得して表示画像を構成するプログラム */
 ///* lenna画像を用いたプログラム */
-///* v1-7と同じアルゴリズム */
+///* v1-7と同じアルゴリズム(テーブルによる高速化のみ、最近傍処理) */
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -108,7 +108,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-fast-pre-prop.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-fast-pre-prop-home.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -186,7 +186,7 @@
 //                int px_height_img = static_cast<int>(round(50 * gap / 4.0));
 //                int px_width_img = static_cast<int>(round(50 * gap / 4.0));
 //
-//                int TIMES = 100;
+//                int TIMES = 1;
 //
 //                cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << endl;
 //
@@ -472,7 +472,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/v1-2/comparison/prop-lenna-v1-2_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "./images/lenna/prop-reconstruction/v1-2/prop-lenna-v1-2_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //
@@ -492,7 +492,6 @@
 //                        free(green[i][j]);
 //                        free(blue[i][j]);
 //                        free(alpha[i][j]);
-//                        //free(num_pcd[i][j]);
 //                        free(val_z[i][j]);
 //                    }
 //                    free(red[i]);
@@ -534,7 +533,7 @@
 //        }
 //    }
 //
-//    writeCSV1(result);
+//    //writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}

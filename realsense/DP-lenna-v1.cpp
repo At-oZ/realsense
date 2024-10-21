@@ -174,10 +174,10 @@
 //
 //    cout << "DP-lenna-v1" << endl;
 //
-//    std::vector<double> result(3);
+//    std::vector<double> result(9);
 //
 //    int index = 0;
-//    for (int nph = 20; nph >= 20; nph /= 2) {
+//    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //        for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
 //
@@ -210,7 +210,7 @@
 //            int rows = subject_image_resolution * subject_image_resolution;
 //            int cols = 6;
 //
-//            int TIMES = 100;
+//            int TIMES = 1;
 //
 //            // 視点パラメータ(mm)
 //            double* sp;
@@ -434,7 +434,7 @@
 //        }
 //    }
 //
-//    writeCSV1(result);
+//    //writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}

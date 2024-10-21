@@ -111,7 +111,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-prop.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-prop-home.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -194,7 +194,7 @@
 //                    int px_height_img = static_cast<int>(round(50 * ptimes * gap / 4.0));
 //                    int px_width_img = static_cast<int>(round(50 * ptimes * gap / 4.0));
 //
-//                    int TIMES = 100;
+//                    int TIMES = 1;
 //
 //                    cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -522,7 +522,7 @@
 //
 //                    // 表示画像の保存
 //                    ostringstream stream;
-//                    stream << "./images/lenna/prop-reconstruction/v2-2/comparison/prop-lenna-v2-2_ImgDisplay_NumPinhole" << num_pinhole << "NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
+//                    stream << "./images/lenna/prop-reconstruction/v2-2/prop-lenna-v2-2_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
 //                    cv::String filename = stream.str();
 //                    imwrite(filename, img_display);
 //
