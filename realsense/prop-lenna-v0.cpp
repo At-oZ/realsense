@@ -126,7 +126,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-pre-prop.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v0-note.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -160,7 +160,7 @@
 //    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 128; nzl >= 64; nzl /= 2) {
+//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -205,7 +205,7 @@
 //                int px_height_img = static_cast<int>(floor(50 * gap / 4.0));
 //                int px_width_img = static_cast<int>(floor(50 * gap / 4.0));
 //
-//                int TIMES = 1;
+//                int TIMES = 100;
 //
 //                cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", gap:" << gap << endl;
 //

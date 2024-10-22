@@ -111,7 +111,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v1-3-home.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v1-3-note-nzl64-img_px=nph.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -145,7 +145,7 @@
 //    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 40; nzl >= 40; nzl /= 2) {
+//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -176,8 +176,8 @@
 //                // 点群取得カメラのパラメータ(mm)
 //                double boxel_cam_focal_length = -1500;
 //                double boxel_cam_sensor_size = pinhole_array_size;
-//                int boxel_cam_height_px = 50;
-//                int boxel_cam_width_px = 50;
+//                int boxel_cam_height_px = nph;
+//                int boxel_cam_width_px = nph;
 //                double boxel_cam_px_pitch = boxel_cam_sensor_size / (double)boxel_cam_width_px;
 //
 //                // 点群データ配列の行数と列数

@@ -112,7 +112,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v2-3-home.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v2-3-note-nzl64-img_px240-nonInterpolation.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -143,10 +143,11 @@
 //    std::vector<double> result(45);
 //
 //    int index = 0;
+//    bool interpolation = false; // 補間処理を行うかのフラッグ
 //    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 40; nzl >= 40; nzl /= 2) {
+//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -180,8 +181,8 @@
 //                    // 点群取得カメラのパラメータ(mm)
 //                    double boxel_cam_focal_length = -1500;
 //                    double boxel_cam_sensor_size = pinhole_array_size;
-//                    int boxel_cam_height_px = 50 * pt;
-//                    int boxel_cam_width_px = 50 * pt;
+//                    int boxel_cam_height_px = 240 * pt;
+//                    int boxel_cam_width_px = 240 * pt;
 //                    double boxel_cam_px_pitch = boxel_cam_sensor_size / (double)boxel_cam_width_px;
 //
 //                    // 点群データ配列の行数と列数
@@ -382,8 +383,8 @@
 //                        double tmp_xt, tmp_yt, tmp_zt;
 //                        int tmp_nx, tmp_ny, tmp_nz;
 //
-//                        //点群を箱に格納
-//                        if ((int)ptimes % 2 == 1) {
+//                        // 補間処理を行わない場合
+//                        if (!interpolation) {
 //                            for (int k = 0; k < rows; k++) {
 //
 //                                tmp_pcd_x = data[k][0];
@@ -405,69 +406,104 @@
 //
 //                                if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //
-//                                    for (int m = -half_box_size; m <= half_box_size; m++) {
-//                                        for (int n = -half_box_size; n <= half_box_size; n++) {
-//                                            if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
-//                                                //cout << "nz:" << tmp_nz << endl;
-//                                                blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
-//                                                green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
-//                                                red[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_r);
-//                                                alpha[tmp_nz][tmp_ny + m][tmp_nx + n] = true;
-//                                                num_pcd[tmp_nz][tmp_ny + m][tmp_nx + n]++;
-//                                            }
-//                                        }
+//                                    if (0 <= tmp_nx && tmp_nx < boxel_cam_width_px && 0 <= tmp_ny && tmp_ny < boxel_cam_height_px) {
+//                                        //cout << "nz:" << tmp_nz << endl;
+//                                        blue[tmp_nz][tmp_ny][tmp_nx] += static_cast<unsigned char>(tmp_pcd_b);
+//                                        green[tmp_nz][tmp_ny][tmp_nx] += static_cast<unsigned char>(tmp_pcd_g);
+//                                        red[tmp_nz][tmp_ny][tmp_nx] += static_cast<unsigned char>(tmp_pcd_r);
+//                                        alpha[tmp_nz][tmp_ny][tmp_nx] = true;
+//                                        num_pcd[tmp_nz][tmp_ny][tmp_nx]++;
 //                                    }
 //                                }
 //                            }
 //                        }
 //                        else {
+//                            //点群を箱に格納
+//                            if ((int)ptimes % 2 == 1) {
+//                                for (int k = 0; k < rows; k++) {
 //
-//                            double dx, dy;
-//                            int half_box_size_min_x, half_box_size_max_x, half_box_size_min_y, half_box_size_max_y;
+//                                    tmp_pcd_x = data[k][0];
+//                                    tmp_pcd_y = data[k][1];
+//                                    tmp_pcd_z = data[k][2] - boxel_cam_focal_length;
+//                                    tmp_pcd_b = data[k][3];
+//                                    tmp_pcd_g = data[k][4];
+//                                    tmp_pcd_r = data[k][5];
 //
-//                            for (int k = 0; k < rows; k++) {
+//                                    tmp_zt = 1.0 / tmp_pcd_z;
+//                                    tmp_xt = tmp_pcd_x * tmp_zt;
+//                                    tmp_yt = tmp_pcd_y * tmp_zt;
 //
-//                                tmp_pcd_x = data[k][0];
-//                                tmp_pcd_y = data[k][1];
-//                                tmp_pcd_z = data[k][2] - boxel_cam_focal_length;
-//                                tmp_pcd_b = data[k][3];
-//                                tmp_pcd_g = data[k][4];
-//                                tmp_pcd_r = data[k][5];
+//                                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
+//                                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
+//                                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
 //
-//                                tmp_zt = 1.0 / tmp_pcd_z;
-//                                tmp_xt = tmp_pcd_x * tmp_zt;
-//                                tmp_yt = tmp_pcd_y * tmp_zt;
+//                                    //cout << "dx:" << dx << ", dy:" << dy << endl;
 //
-//                                tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
-//                                tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
-//                                tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
+//                                    if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //
-//                                dx = tmp_pcd_x - (tmp_nx - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
-//                                dy = tmp_pcd_y - (tmp_ny - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
-//
-//                                half_box_size_min_x = static_cast<int>(round(dx / abs(dx) * 0.5 - half_box_size * 0.5));
-//                                half_box_size_max_x = static_cast<int>(round(dx / abs(dx) * 0.5 + half_box_size * 0.5));
-//                                half_box_size_min_y = static_cast<int>(round(dy / abs(dy) * 0.5 - half_box_size * 0.5));
-//                                half_box_size_max_y = static_cast<int>(round(dy / abs(dy) * 0.5 + half_box_size * 0.5));
-//
-//                                //cout << "min x:" << half_box_size_min_x << ", max x:" << half_box_size_max_x << ", min y:" << half_box_size_min_y << ", max y:" << half_box_size_max_y << endl;
-//
-//                                if (0 <= tmp_nz && tmp_nz < num_z_level) {
-//                                    for (int m = half_box_size_min_y; m <= half_box_size_max_y; m++) {
-//                                        for (int n = half_box_size_min_x; n <= half_box_size_max_x; n++) {
-//                                            if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
-//                                                //cout << "nz:" << tmp_nz << endl;
-//                                                blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
-//                                                green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
-//                                                red[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_r);
-//                                                alpha[tmp_nz][tmp_ny + m][tmp_nx + n] = true;
-//                                                num_pcd[tmp_nz][tmp_ny + m][tmp_nx + n]++;
+//                                        for (int m = -half_box_size; m <= half_box_size; m++) {
+//                                            for (int n = -half_box_size; n <= half_box_size; n++) {
+//                                                if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
+//                                                    //cout << "nz:" << tmp_nz << endl;
+//                                                    blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
+//                                                    green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
+//                                                    red[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_r);
+//                                                    alpha[tmp_nz][tmp_ny + m][tmp_nx + n] = true;
+//                                                    num_pcd[tmp_nz][tmp_ny + m][tmp_nx + n]++;
+//                                                }
 //                                            }
 //                                        }
 //                                    }
 //                                }
 //                            }
+//                            else { // 補間処理を行う場合
 //
+//                                double dx, dy;
+//                                int half_box_size_min_x, half_box_size_max_x, half_box_size_min_y, half_box_size_max_y;
+//
+//                                for (int k = 0; k < rows; k++) {
+//
+//                                    tmp_pcd_x = data[k][0];
+//                                    tmp_pcd_y = data[k][1];
+//                                    tmp_pcd_z = data[k][2] - boxel_cam_focal_length;
+//                                    tmp_pcd_b = data[k][3];
+//                                    tmp_pcd_g = data[k][4];
+//                                    tmp_pcd_r = data[k][5];
+//
+//                                    tmp_zt = 1.0 / tmp_pcd_z;
+//                                    tmp_xt = tmp_pcd_x * tmp_zt;
+//                                    tmp_yt = tmp_pcd_y * tmp_zt;
+//
+//                                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
+//                                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
+//                                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
+//
+//                                    dx = tmp_pcd_x - (tmp_nx - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
+//                                    dy = tmp_pcd_y - (tmp_ny - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
+//
+//                                    half_box_size_min_x = static_cast<int>(round(dx / abs(dx) * 0.5 - half_box_size * 0.5));
+//                                    half_box_size_max_x = static_cast<int>(round(dx / abs(dx) * 0.5 + half_box_size * 0.5));
+//                                    half_box_size_min_y = static_cast<int>(round(dy / abs(dy) * 0.5 - half_box_size * 0.5));
+//                                    half_box_size_max_y = static_cast<int>(round(dy / abs(dy) * 0.5 + half_box_size * 0.5));
+//
+//                                    //cout << "min x:" << half_box_size_min_x << ", max x:" << half_box_size_max_x << ", min y:" << half_box_size_min_y << ", max y:" << half_box_size_max_y << endl;
+//
+//                                    if (0 <= tmp_nz && tmp_nz < num_z_level) {
+//                                        for (int m = half_box_size_min_y; m <= half_box_size_max_y; m++) {
+//                                            for (int n = half_box_size_min_x; n <= half_box_size_max_x; n++) {
+//                                                if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
+//                                                    //cout << "nz:" << tmp_nz << endl;
+//                                                    blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
+//                                                    green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
+//                                                    red[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_r);
+//                                                    alpha[tmp_nz][tmp_ny + m][tmp_nx + n] = true;
+//                                                    num_pcd[tmp_nz][tmp_ny + m][tmp_nx + n]++;
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
 //                        }
 //
 //                        for (int i = 0; i < num_z_level; i++) {
@@ -529,11 +565,11 @@
 //
 //                    }
 //
-//                    // 表示画像の保存
-//                    ostringstream stream;
-//                    stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
-//                    cv::String filename = stream.str();
-//                    imwrite(filename, img_display);
+//                    //// 表示画像の保存
+//                    //ostringstream stream;
+//                    //stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
+//                    //cv::String filename = stream.str();
+//                    //imwrite(filename, img_display);
 //
 //
 //                    //// 各イメージプレーンの画像を保存（テスト用）

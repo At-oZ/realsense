@@ -146,7 +146,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-DP-2.csv");
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-DP-note.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -210,7 +210,7 @@
 //            int rows = subject_image_resolution * subject_image_resolution;
 //            int cols = 6;
 //
-//            int TIMES = 1;
+//            int TIMES = 10;
 //
 //            // 視点パラメータ(mm)
 //            double* sp;
@@ -285,7 +285,7 @@
 //
 //                // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //
-//                const int numThreads = 16;
+//                const int numThreads = 15;
 //                vector<thread> threads;
 //                int rowsPerThread = num_pinhole / numThreads;
 //
@@ -434,7 +434,7 @@
 //        }
 //    }
 //
-//    //writeCSV1(result);
+//    writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}
