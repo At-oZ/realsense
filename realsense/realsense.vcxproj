@@ -116,6 +116,7 @@
       </AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +137,7 @@
       </AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,12 +157,15 @@
     <ClCompile Include="DirectProjection-v1.cpp" />
     <ClCompile Include="evaluation-comparison.cpp" />
     <ClCompile Include="ideal-v1.cpp" />
+    <ClCompile Include="ideal-v2.cpp" />
+    <ClCompile Include="observe-evaluation.cpp" />
     <ClCompile Include="observe-image-v1.cpp" />
     <ClCompile Include="observe-image-v2.cpp" />
     <ClCompile Include="observe-image-v3-2.cpp" />
     <ClCompile Include="observe-image-v3.cpp" />
     <ClCompile Include="observe-image-v4-1.cpp" />
     <ClCompile Include="observe-image-v4-2.cpp" />
+    <ClCompile Include="observe-image-v4-3.cpp" />
     <ClCompile Include="observe-image-v4.cpp" />
     <ClCompile Include="prop-lenna-v0-2.cpp" />
     <ClCompile Include="prop-lenna-v0.cpp" />
@@ -183,6 +188,9 @@
     <ClCompile Include="prop-v1-9.cpp" />
     <ClCompile Include="prop-v1-v1-2_check.cpp" />
     <ClCompile Include="prop-v1.cpp" />
+    <ClCompile Include="prop-v2.cpp" />
+    <ClCompile Include="prop-v3-SIMD.cpp" />
+    <ClCompile Include="prop-v3.cpp" />
     <ClCompile Include="propv1-4-2.cpp" />
     <ClCompile Include="vt-v1-3-checkerboard.cpp" />
     <ClCompile Include="vt-v11-6-checkerboard.cpp" />

@@ -19,14 +19,15 @@
 //    Mat img1;
 //    Mat img2;
 //
-//    std::vector<std::vector<double>> array(9, std::vector<double>(101)); // DirectProjectionなら9列、propなら90列
+//    std::vector<std::vector<double>> array(132, std::vector<double>(101)); // DirectProjectionなら9列、propなら90列
 //
 //    // ピクセルサイズの計算
-//    const double pixel_size = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4;
+//    const double coef = 2.0;
+//    const double pixel_size = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4 / coef;
 //    std::cout << "camera pixel size:" << pixel_size << std::endl;
 //
 //    // ディスプレイの設定
-//    const int display_image_px = 2400;
+//    const int display_image_px = 2400 * coef;
 //    const double display_area_size = display_image_px * pixel_size;
 //    cv::Mat display_image = cv::Mat::zeros(cv::Size(display_image_px, display_image_px), CV_8UC3);
 //
@@ -55,13 +56,18 @@
 //    }
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//
+//    int nphs[22] = { 16, 20, 24, 25, 30, 32, 40, 48, 50, 60, 64, 75, 80, 96, 100, 120, 150, 160, 192, 200, 240, 300 };
+//
+//    for (int idx_nph = 0; idx_nph < 22; idx_nph++) {
+//
+//        int nph = nphs[idx_nph];
 //
 //        //int image_resolution = 2400 / nph;
 //
 //        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
-//            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
+//            for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
 //
 //                for (int pt = 1; pt >= 1; pt--) {
 //
@@ -82,19 +88,28 @@
 //                    const int num_z_level = nzl;
 //                    const double Ddash = 250.0;
 //                    const double ptimes = pt;
+//                    const int NxNy = 50;
 //
 //                    double sum_psnr = 0;
 //                    for (int nobs = 0; nobs < 100; nobs++) {
 //
 //                        try {
 //
-//                            std::string filename_original = "V:/images/lenna/observe-image/real/gridSize" + std::to_string(num_pinhole_per_axis) + "/real-observe-lenna_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                            //std::string filename_original = "V:/images/lenna/observe-image/ideal/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_original = "./images/lenna/observe-image/real/gridSize" + std::to_string(num_pinhole_per_axis) + "/real-observe-lenna_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            std::string filename_original = "./images/lenna/observe-image/real-direct/real-direct-observe-lenna_2400px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_original = "./images/lenna/observe-image/ideal/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //
+//                            //std::string filename_compared = "./images/lenna/observe-image/v2-2/gridSize" + std::to_string(num_pinhole_per_axis) + "/v2-2-observe-lenna_NxNy" + std::to_string((int)round(50 * ptimes * 160.0 / (double)nph)) + "_Nz" + std::to_string(num_z_level) + "_pitchTimes" + std::to_string(static_cast<int>(ptimes)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                            //std::string filename_compared = "V:/images/lenna/observe-image/v2-3/gridSize" + std::to_string(num_pinhole_per_axis) + "/v2-3-observe-lenna_NumZLevel" + std::to_string(num_z_level) + "_Ddash" + std::to_string(static_cast<int>(Ddash)) + "_pitchTimes" + std::to_string(static_cast<int>(ptimes)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                            //std::string filename_compared = "V:/images/lenna/observe-image/v1-3/gridSize" + std::to_string(num_pinhole_per_axis) + "/v1-3-observe-lenna_NumZLevel" + std::to_string(num_z_level) + "_Ddash" + std::to_string(static_cast<int>(Ddash)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                            //std::string filename_compared = "V:/images/lenna/observe-image/v0-2/gridSize" + std::to_string(num_pinhole_per_axis) + "/v0-2-observe-lenna_NumZLevel" + std::to_string(num_z_level) + "_Ddash" + std::to_string(static_cast<int>(Ddash)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                            std::string filename_compared = "V:/images/lenna/observe-image/DP/gridSize" + std::to_string(num_pinhole_per_axis) + "/DP-observe-lenna-throughPinhole_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png"; +".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/v1-2/gridSize" + std::to_string(num_pinhole_per_axis) + "/v1-2-observe-lenna_NxNy" + std::to_string((int)round(50 * ptimes * 160.0 / (double)nph)) + "_Nz" + std::to_string(num_z_level) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/v1-3/gridSize" + std::to_string(num_pinhole_per_axis) + "/v1-3-observe-lenna_NxNy" + std::to_string(NxNy) + "_Nz" + std::to_string(num_z_level) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/v0/gridSize" + std::to_string(num_pinhole_per_axis) + "/v0-observe-lenna_NxNy" + std::to_string((int)round(50 * ptimes * 160.0 / (double)nph)) + "_Nz" + std::to_string(num_z_level) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/DP/gridSize" + std::to_string(num_pinhole_per_axis) + "/DP-observe-lenna-throughPinhole_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/v2-3/gridSize" + std::to_string(num_pinhole_per_axis) + "/v2-3-observe-lenna_interpolation=F_NxNy" + std::to_string((int)(NxNy * ptimes)) + "_Nz" + std::to_string(num_z_level) + "_pitchTimes" + std::to_string(static_cast<int>(ptimes)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/real/gridSize" + std::to_string(num_pinhole_per_axis) + "/real-observe-lenna_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            //std::string filename_compared = "./images/lenna/observe-image/real-direct/real-direct-observe-lenna_2400px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                            std::string filename_compared = "./images/lenna/observe-image/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //
 //                            img1 = readImage(filename_original);
 //                            img2 = readImage(filename_compared);
@@ -240,7 +255,7 @@
 //int writeCSV2(const std::vector<std::vector<double>> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("V:/images/lenna/observe-image/psnr-DP_real.csv");
+//    std::ofstream file("./images/lenna/psnr-real-direct_ideal-pixelSize37um.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {

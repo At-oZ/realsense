@@ -205,7 +205,7 @@
 //                int px_height_img = static_cast<int>(floor(50 * gap / 4.0));
 //                int px_width_img = static_cast<int>(floor(50 * gap / 4.0));
 //
-//                int TIMES = 100;
+//                int TIMES = 1;
 //
 //                cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", gap:" << gap << endl;
 //
@@ -435,7 +435,7 @@
 //
 //                // •\Ž¦‰æ‘œ‚Ì•Û‘¶
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/v0/prop-lenna-v0_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "./images/lenna/prop-reconstruction/v0/prop-lenna-v0_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << px_width_img << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //
@@ -519,7 +519,7 @@
 //        }
 //    }
 //
-//    writeCSV1(result);
+//    //writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}

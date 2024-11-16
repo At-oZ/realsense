@@ -147,7 +147,7 @@
 //    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
+//        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -181,8 +181,8 @@
 //                    // 点群取得カメラのパラメータ(mm)
 //                    double boxel_cam_focal_length = -1500;
 //                    double boxel_cam_sensor_size = pinhole_array_size;
-//                    int boxel_cam_height_px = 240 * pt;
-//                    int boxel_cam_width_px = 240 * pt;
+//                    int boxel_cam_height_px = 50 * pt;
+//                    int boxel_cam_width_px = 50 * pt;
 //                    double boxel_cam_px_pitch = boxel_cam_sensor_size / (double)boxel_cam_width_px;
 //
 //                    // 点群データ配列の行数と列数
@@ -198,7 +198,7 @@
 //                    double coef = (double)num_z_level * Ddash;
 //                    double inv_coef = 1.0 / coef;
 //
-//                    int TIMES = 100;
+//                    int TIMES = 1;
 //
 //                    cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -382,9 +382,12 @@
 //                        double tmp_pcd_x, tmp_pcd_y, tmp_pcd_z, tmp_pcd_b, tmp_pcd_g, tmp_pcd_r;
 //                        double tmp_xt, tmp_yt, tmp_zt;
 //                        int tmp_nx, tmp_ny, tmp_nz;
+//                        double dz;
 //
 //                        // 補間処理を行わない場合
 //                        if (!interpolation) {
+//
+//                            cout << "no interpolation" << endl;
 //                            for (int k = 0; k < rows; k++) {
 //
 //                                tmp_pcd_x = data[k][0];
@@ -401,8 +404,10 @@
 //                                tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
 //                                tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
 //                                tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
+//                                dz = coef / tmp_nz - tmp_pcd_z;
 //
 //                                //cout << "dx:" << dx << ", dy:" << dy << endl;
+//                                if (k == 0) cout << "nz:" << tmp_nz << "dz:" << dz << endl;
 //
 //                                if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //
@@ -417,7 +422,8 @@
 //                                }
 //                            }
 //                        }
-//                        else {
+//                        else { // 補間処理を行う場合
+//                            cout << "interpolation" << endl;
 //                            //点群を箱に格納
 //                            if ((int)ptimes % 2 == 1) {
 //                                for (int k = 0; k < rows; k++) {
@@ -436,8 +442,11 @@
 //                                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
 //                                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
 //                                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
+//                                    dz = coef / tmp_nz - tmp_pcd_z;
 //
 //                                    //cout << "dx:" << dx << ", dy:" << dy << endl;
+//                                    if (k == 0) cout << "nz:" << tmp_nz << "dz:" << dz << endl;
+//
 //
 //                                    if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //
@@ -456,7 +465,7 @@
 //                                    }
 //                                }
 //                            }
-//                            else { // 補間処理を行う場合
+//                            else {
 //
 //                                double dx, dy;
 //                                int half_box_size_min_x, half_box_size_max_x, half_box_size_min_y, half_box_size_max_y;
@@ -477,6 +486,10 @@
 //                                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
 //                                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
 //                                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
+//                                    dz = coef / tmp_nz - tmp_pcd_z;
+//
+//                                    //cout << "dx:" << dx << ", dy:" << dy << endl;
+//                                    if (k == 0) cout << "nz:" << tmp_nz << "dz:" << dz << endl;
 //
 //                                    dx = tmp_pcd_x - (tmp_nx - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
 //                                    dy = tmp_pcd_y - (tmp_ny - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
@@ -554,23 +567,17 @@
 //                        //cout << "重なり回数:" << pcd_count << endl;
 //                        sum_time += duration.count();
 //
-//                        //// 表示画像の保存
-//                        //ostringstream stream;
-//                        //stream << "./images/lenna/prop-reconstruction/v2-2/comparison/prop-lenna-v2-2_ImgDisplay_NumPinhole" << num_pinhole << "NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
-//                        //cv::String filename = stream.str();
-//                        //imwrite(filename, img_display);
-//
-//                        //stream.str("");
-//                        //stream.clear(ostringstream::goodbit);
-//
 //                    }
 //
 //                    //// 表示画像の保存
 //                    //ostringstream stream;
-//                    //stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
+//                    //if (interpolation) stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
+//                    //else stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
 //                    //cv::String filename = stream.str();
 //                    //imwrite(filename, img_display);
 //
+//                    //stream.str("");
+//                    //stream.clear(ostringstream::goodbit);
 //
 //                    //// 各イメージプレーンの画像を保存（テスト用）
 //                    //// ostringstream stream;
@@ -658,7 +665,7 @@
 //        }
 //    }
 //
-//    writeCSV1(result);
+//    //writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}

@@ -145,7 +145,7 @@
 //    for (int nph = 160; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
+//        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -176,8 +176,8 @@
 //                // 点群取得カメラのパラメータ(mm)
 //                double boxel_cam_focal_length = -1500;
 //                double boxel_cam_sensor_size = pinhole_array_size;
-//                int boxel_cam_height_px = nph;
-//                int boxel_cam_width_px = nph;
+//                int boxel_cam_height_px = 50;
+//                int boxel_cam_width_px = 50;
 //                double boxel_cam_px_pitch = boxel_cam_sensor_size / (double)boxel_cam_width_px;
 //
 //                // 点群データ配列の行数と列数
@@ -191,9 +191,9 @@
 //                double coef = (double)num_z_level * Ddash;
 //                double inv_coef = 1.0 / coef;
 //
-//                int TIMES = 100;
+//                int TIMES = 1;
 //
-//                cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << endl;
+//                cout << "NumPinhole:" << num_pinhole << ", NxNy:" << boxel_cam_width_px << ", Nz:" << num_z_level << ", subjectZ:" << subject_z << ", gap:" << gap << endl;
 //
 //                // 各要素画像の原点画素位置(左上)
 //                int* startu = (int*)malloc(sizeof(int) * num_pinhole);
@@ -484,7 +484,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/v1-3/prop-lenna-v1-3_ImgDisplay_NumPinhole" << num_pinhole << "_NumZLevel" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "./images/lenna/prop-reconstruction/v1-3/prop-lenna-v1-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //
@@ -545,7 +545,7 @@
 //        }
 //    }
 //
-//    writeCSV1(result);
+//    //writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}
