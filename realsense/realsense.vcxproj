@@ -188,6 +188,7 @@
     <ClCompile Include="prop-v1-9.cpp" />
     <ClCompile Include="prop-v1-v1-2_check.cpp" />
     <ClCompile Include="prop-v1.cpp" />
+    <ClCompile Include="prop-v2-3-trial.cpp" />
     <ClCompile Include="prop-v2.cpp" />
     <ClCompile Include="prop-v3-SIMD.cpp" />
     <ClCompile Include="prop-v3.cpp" />
