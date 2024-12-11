@@ -18,7 +18,7 @@
 //{
 //
 //    // ピクセルサイズの計算
-//    const double coef = 2.0;
+//    const double coef = 1.0;
 //    const double pixel_size = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4 / coef;
 //    std::cout << "camera pixel size:" << pixel_size << std::endl;
 //
@@ -41,37 +41,37 @@
 //
 //    std::uniform_real_distribution<double> dist(-display_area_size / 2.0, display_area_size / 2.0);
 //
-//    int rand_size = 100;
+//    int rand_size = 1;
 //    double* observer_x = (double*)malloc(sizeof(double) * rand_size);
 //    double* observer_y = (double*)malloc(sizeof(double) * rand_size);
 //
 //    for (int i = 0; i < rand_size; i++) {
-//        observer_x[i] = dist(enginex);
-//        observer_y[i] = dist(enginey);
-//        //observer_x[i] = 0.0;
-//        //observer_y[i] = 0.0;
+//        //observer_x[i] = dist(enginex);
+//        //observer_y[i] = dist(enginey);
+//        observer_x[i] = 0.0;
+//        observer_y[i] = 0.0;
 //
 //        //std::cout << "observer_x:" << observer_x[i] << ", observer_y:" << observer_y[i] << std::endl;
 //    }
 //
-//    int nphs[22] = { 16, 20, 24, 25, 30, 32, 40, 48, 50, 60, 64, 75, 80, 96, 100, 120, 150, 160, 192, 200, 240, 300 };
+//    int nphs[3] = { 40, 80, 160 };
 //
-//    for (int idx_nph = 0; idx_nph < 22; idx_nph++) {
+//    for (int idx_nph = 0; idx_nph < 3; idx_nph++) {
 //
 //        int nph = nphs[idx_nph];
 //
-//        fs::path dir = "./images/lenna/observe-image/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/gridSize" + std::to_string(nph); // 作成するディレクトリのパス
+//        //fs::path dir = "./images/lenna/observe-image/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/gridSize" + std::to_string(nph); // 作成するディレクトリのパス
 //
-//        // ディレクトリが存在しない場合に作成
-//        if (!fs::exists(dir)) {
-//            fs::create_directory(dir);
-//            std::cout << "ディレクトリを作成しました: " << dir << std::endl;
-//        }
-//        else {
-//            std::cout << "ディレクトリは既に存在します: " << dir << std::endl;
-//        }
+//        //// ディレクトリが存在しない場合に作成
+//        //if (!fs::exists(dir)) {
+//        //    fs::create_directory(dir);
+//        //    std::cout << "ディレクトリを作成しました: " << dir << std::endl;
+//        //}
+//        //else {
+//        //    std::cout << "ディレクトリは既に存在します: " << dir << std::endl;
+//        //}
 //
-//        for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
+//        for (double subz = 512.0; subz <= 512.0; subz *= 2) {
 //
 //            // ピンホールの設定
 //            const int num_pinhole_per_axis = nph;     // 各軸のピンホール数
@@ -88,7 +88,8 @@
 //
 //
 //                // 画像を読み込む
-//                std::string filenamein = "./images/lenna/prop-reconstruction/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + ".png";
+//                //std::string filenamein = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + ".png";
+//                std::string filenamein = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + ".png";
 //                //std::string filenamein = "./images/lenna.bmp";
 //                cv::Mat image = cv::imread(filenamein);
 //
@@ -217,7 +218,7 @@
 //
 //                // 出力画像を保存
 //                //std::string filenameout = "./images/lenna/observe-image/real/gridSize" + std::to_string(num_pinhole_per_axis) + "/real-observe-lenna_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                std::string filenameout = "./images/lenna/observe-image/ideal_pixelSize" + std::to_string(static_cast<int>(pixel_size * 1000)) + "um/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                std::string filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/ideal/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                //std::string filenameout = "V:/images/lenna/observe-image/real/gridSize" + std::to_string(num_pinhole_per_axis) + "/real-observe-lenna_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                //std::string filenameout = "V:/images/lenna/observe-image/ideal/gridSize" + std::to_string(num_pinhole_per_axis) + "/ideal-observe-lenna-throughPinhole_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                cv::Mat resizedOutput;
