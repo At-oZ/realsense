@@ -15,14 +15,13 @@
 //{
 //
 //    // ピクセルサイズの計算
-//    const double coef = 2.0;
+//    const double coef = 1.0;
 //    const double pixel_size = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4 / coef;
 //    std::cout << "camera pixel size:" << pixel_size << std::endl;
 //
 //    // ディスプレイの設定
 //    const int display_image_px = 2400 * coef;
 //    const double display_area_size = display_image_px * pixel_size;
-//    cv::Mat display_image = cv::Mat::zeros(cv::Size(display_image_px, display_image_px), CV_8UC3);
 //
 //    // タイルの設定
 //    const double tile_size_mm = display_area_size;  // タイルのサイズ（mm）
@@ -51,14 +50,14 @@
 //        //std::cout << "observer_x:" << observer_x[i] << ", observer_y:" << observer_y[i] << std::endl;
 //    }
 //
-//    for (int nph = 4800; nph >= 4800; nph /= 2) {
+//    for (int nph = 40; nph >= 40; nph /= 2) {
 //
-//        for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
+//        for (double subz = 500.0; subz <= 500.0; subz *= 2) {
 //
 //            // ピンホールの設定
-//            const int num_pinhole_per_axis = nph;     // 各軸のピンホール数
+//            const int num_pinhole_per_axis = 2400;     // 各軸のピンホール数
 //            const double pinhole_spacing = display_area_size / num_pinhole_per_axis;    // ピンホール間の間隔（mm）
-//            const double pinhole_size = pinhole_spacing;        // ピンホールの一辺の長さ（mm）
+//            const double pinhole_size = pinhole_spacing;        // ピンホールの一辺の長さ（mm）(lennaの画像を直接みるときはpinhole_spacingと同じ, 表示系の再現の場合は指定する)
 //
 //            // 観察者とタイルの位置
 //            const double observer_z = -1500.0; // mm
@@ -70,8 +69,8 @@
 //
 //
 //                // 画像を読み込む
-//                //std::string filenamein = "./images/lenna/prop-reconstruction/ideal/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + ".png";
-//                std::string filenamein = "./images/lenna.bmp";
+//                //std::string filenamein = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/ideal/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(image_resolution)) + "_gridSize" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "_zi" + std::to_string(static_cast<int>(subject_z)) + ".png";
+//                std::string filenamein = "./images/standard/mandrill.bmp";
 //                cv::Mat image = cv::imread(filenamein);
 //
 //                if (image.empty())
@@ -79,7 +78,6 @@
 //                    std::cout << "画像を開くことができませんでした。\n";
 //                    return -1;
 //                }
-//
 //
 //                // ピンホールの位置を計算
 //                std::vector<cv::Point2d> pinhole_positions;
@@ -198,9 +196,11 @@
 //                }
 //
 //                // 出力画像を保存
-//                std::string filenameout = "./images/lenna/observe-image/real-direct/real-direct-observe-lenna_" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                std::string filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/mandrill/real-direct/real-direct-observe-lenna_" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                //std::string filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/mandrill/lensarray/ideal/gridSize40/ideal-observe-lenna_" + std::to_string(static_cast<int>(num_pinhole_per_axis)) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                //cv::Mat resizedOutput;
 //                //cv::resize(output_image, resizedOutput, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
+//                //cv::imwrite(filenameout, resizedOutput);
 //                cv::imwrite(filenameout, output_image);
 //
 //                std::cout << "出力画像を" << filenameout << "として保存しました。\n";

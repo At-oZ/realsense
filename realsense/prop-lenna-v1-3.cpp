@@ -142,13 +142,13 @@
 //    std::vector<double> result(9);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 40; nph >= 40; nph /= 2) {
 //
 //
 //        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
 //
-//            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
+//            for (double subz = 500.0; subz >= 500.0; subz /= 2) {
 //
 //                // ディスプレイのパラメータ(mm)
 //                double display_size = 13.4 * 25.4; // ディスプレイサイズ
@@ -161,7 +161,7 @@
 //                double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                // 表示系のパラメータ(mm)
-//                double gap = 4.0 * 160.0 / (double)nph; // ギャップ
+//                double gap = 16; // ギャップ
 //                int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                int display_px = 2400; // 各軸方向の表示画像の解像度
 //                double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -262,7 +262,7 @@
 //                    data[i] = (double*)malloc(sizeof(double) * cols);
 //                }
 //
-//                std::string filenamein = "./images/lenna.bmp";
+//                std::string filenamein = "./images/mandrill.bmp";
 //                cv::Mat image_input = cv::imread(filenamein);
 //
 //                if (image_input.empty())
@@ -484,7 +484,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/v1-3/prop-lenna-v1-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/v1-3/prop-lenna-v1-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //

@@ -9,7 +9,7 @@
 //
 //int main() {
 //
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 40; nph >= 40; nph /= 2) {
 //
 //        // ピクセルサイズの計算
 //        const double pixelSize = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4;
@@ -33,7 +33,7 @@
 //        const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
 //
 //        // カメラの設定
-//        const double focalLength = 4.0 * 160.0 / (double)gridSize; // 焦点距離（mm）
+//        const double focalLength = 16; // 焦点距離（mm）
 //        const double sensorSize = gridSpacing; // センサーサイズ（mm）
 //        const int imageResolution = static_cast<int>(floor(displayImageSize / gridSize)); // 画像の解像度（ピクセル）
 //
@@ -42,14 +42,14 @@
 //        const double intv = sensorSize / pixelSize;
 //
 //        // タイル画像の読み込み
-//        cv::Mat tileImage = cv::imread("./images/lenna.bmp");
+//        cv::Mat tileImage = cv::imread("./images/mandrill.bmp");
 //        if (tileImage.empty()) {
 //            std::cerr << "タイル画像が見つかりません。" << std::endl;
 //            return -1;
 //        }
 //        cv::resize(tileImage, tileImage, cv::Size(tileResolution, tileResolution));
 //
-//        for (double tileZ = 256; tileZ <= 1024; tileZ *= 2) {
+//        for (double tileZ = 500.0; tileZ <= 500.0; tileZ *= 2) {
 //
 //            std::cout << "tileZ:" << tileZ << std::endl;
 //
@@ -214,7 +214,7 @@
 //            }
 //
 //            // 画像の保存
-//            std::string filename = "./images/lenna/prop-reconstruction/ideal/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(imageResolution)) + "_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
+//            std::string filename = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/ideal/ideal_captured_image_imageResolution" + std::to_string(static_cast<int>(imageResolution)) + "_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
 //
 //            cv::imwrite(filename, displayImage);
 //
