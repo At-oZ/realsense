@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     std::vector<std::vector<double>> array(10, std::vector<double>(6)); // 横：subz, 縦：nzl
 
     // 被写体の画像
-    std::string filenamein = "./images/standard/aerial.bmp";
+    std::string filenamein = "./images/standard/mandrill.bmp";
     cv::Mat image_input = cv::imread(filenamein);
 
     if (image_input.empty())
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
     double img_pitch = display_pixel_pitch;
 
-    int TIMES = 1;
+    int TIMES = 100;
 
     int index = 0;
     for (int nph = 40; nph <= 40; nph *= 2) {
@@ -309,13 +309,13 @@ int main(int argc, char* argv[])
                 }
 
                 // 表示画像の保存
-                ostringstream stream;
-                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-aerial_tileExpand_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
-                cv::String filename = stream.str();
-                imwrite(filename, img_display);
+                //ostringstream stream;
+                //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-mandrill_tileExpand_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
+                //cv::String filename = stream.str();
+                //imwrite(filename, img_display);
 
-                stream.str("");
-                stream.clear(ostringstream::goodbit);
+                //stream.str("");
+                //stream.clear(ostringstream::goodbit);
 
                 cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
                 array[idx_nzl][idx_subz++] = sum_time / TIMES;
@@ -445,7 +445,7 @@ void insert_pixels(int start, int end, int element_image_px, double display_pixe
 int writeCSV2(const std::vector<std::vector<double>> array) {
 
     // 出力ファイルを開く
-    std::ofstream file("C:/Users/taw11/EvacuatedStorage/prop-reconstruction/speed-prop-original-v1-aerial_tileExpand.csv");
+    std::ofstream file("./numbers/speed/speed-prop-original-v1-mandrill_tileExpand.csv");
 
     // ファイルが正しく開けたか確認
     if (!file.is_open()) {
