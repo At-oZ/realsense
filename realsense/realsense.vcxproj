@@ -173,6 +173,7 @@
     <ClCompile Include="prop-lenna-v1-3.cpp" />
     <ClCompile Include="prop-lenna-v1.cpp" />
     <ClCompile Include="prop-lenna-v2-2.cpp" />
+    <ClCompile Include="prop-lenna-v2-3-trial-wideview.cpp" />
     <ClCompile Include="prop-lenna-v2-3-wideview.cpp" />
     <ClCompile Include="prop-lenna-v2-3.cpp" />
     <ClCompile Include="prop-lenna-v2.cpp" />
