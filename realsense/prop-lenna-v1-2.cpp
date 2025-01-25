@@ -139,10 +139,10 @@
 //    std::vector<double> result(90);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 40; nph >= 40; nph /= 2) {
 //
 //
-//        for (int nzl = 64; nzl >= 64; nzl /= 2) {
+//        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
 //
 //            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
@@ -250,7 +250,7 @@
 //                    data[i] = (double*)malloc(sizeof(double) * cols);
 //                }
 //
-//                std::string filenamein = "./images/lenna.bmp";
+//                std::string filenamein = "./images/mandrill.bmp";
 //                cv::Mat image_input = cv::imread(filenamein);
 //
 //                if (image_input.empty())
@@ -472,7 +472,7 @@
 //
 //                // •\Ž¦‰æ‘œ‚Ì•Û‘¶
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/v1-2/prop-lenna-v1-2_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << px_width_img << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/v1-2/prop-lenna-v1-2_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << px_width_img << "_Nz" << num_z_level << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //

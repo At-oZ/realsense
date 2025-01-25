@@ -177,9 +177,9 @@
 //    std::vector<double> result(9);
 //
 //    int index = 0;
-//    for (int nph = 160; nph >= 40; nph /= 2) {
+//    for (int nph = 40; nph >= 40; nph /= 2) {
 //
-//        for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
+//        for (double subz = 500.0; subz >= 500.0; subz /= 2) {
 //
 //            cout << "num pinhole:" << nph << ", subject z:" << subz << endl;
 //
@@ -194,7 +194,7 @@
 //            double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //            // 表示系のパラメータ(mm)
-//            double gap = 4.0 * 160.0 / (double)nph; // ギャップ
+//            double gap = 16; // ギャップ
 //            int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //            int display_image_px = 2400; // 各軸方向の表示画像の解像度
 //            double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -210,7 +210,7 @@
 //            int rows = subject_image_resolution * subject_image_resolution;
 //            int cols = 6;
 //
-//            int TIMES = 10;
+//            int TIMES = 1;
 //
 //            // 視点パラメータ(mm)
 //            double* sp;
@@ -233,7 +233,7 @@
 //                data[i] = (double*)malloc(sizeof(double) * cols);
 //            }
 //
-//            std::string filenamein = "./images/lenna.bmp";
+//            std::string filenamein = "./images/mandrill.bmp";
 //            cv::Mat image_input = cv::imread(filenamein);
 //
 //            if (image_input.empty())
@@ -320,7 +320,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "./images/lenna/prop-reconstruction/DirectProjection/DP-lenna_ImgDisplay_gridSize" << num_pinhole << "_subjectZ" << (int)subject_z << ".png";
+//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/DirectProjection/DP-lenna_ImgDisplay_gridSize" << num_pinhole << "_subjectZ" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //

@@ -150,7 +150,7 @@
 //        for (int nzl = 40; nzl >= 40; nzl /= 2) {
 //
 //
-//            for (double subz = 1024.0; subz >= 256.0; subz /= 2) {
+//            for (double subz = 500.0; subz >= 500.0; subz /= 2) {
 //
 //
 //                for (int pt = 4; pt > 3; pt--) {
@@ -166,7 +166,7 @@
 //                    double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                    // 表示系のパラメータ(mm)
-//                    double gap = 8.4; // ギャップ
+//                    double gap = 16; // ギャップ
 //                    int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                    int display_px = 2400; // 各軸方向の表示画像の解像度
 //                    double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -269,7 +269,7 @@
 //                        data[i] = (double*)malloc(sizeof(double) * cols);
 //                    }
 //
-//                    std::string filenamein = "./images/lenna.bmp";
+//                    std::string filenamein = "./images/Mandrill.bmp";
 //                    cv::Mat image_input = cv::imread(filenamein);
 //
 //                    if (image_input.empty())
@@ -571,8 +571,8 @@
 //
 //                    // 表示画像の保存
 //                    ostringstream stream;
-//                    if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
-//                    else stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
+//                    if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
+//                    else stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/mandrill/lensarray/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
 //                    cv::String filename = stream.str();
 //                    imwrite(filename, img_display);
 //
