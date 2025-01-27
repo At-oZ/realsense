@@ -17,6 +17,7 @@
 //#include <condition_variable>
 //#include <cmath>
 //#include <time.h>
+//#include <Windows.h>
 //
 //using namespace std;
 //using namespace cv;
@@ -35,6 +36,13 @@
 //
 //    std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
+//    std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME);
+//    HWND window = FindWindow(NULL, L"image");
+//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//
+//
 //    int index = 0;
 //    bool interpolation = true;
 //    for (int nph = 40; nph <= 40; nph *= 2) {
@@ -46,7 +54,7 @@
 //            for (double subz = 512.0; subz <= 512.0; subz *= 2) {
 //
 //                int idx_pt = 0;
-//                for (int pt = 1; pt <= 5; pt++) {
+//                for (int pt = 3; pt <= 3; pt++) {
 //
 //                    // 観察者のパラメータ
 //                    double zo_min = 1000.0;
@@ -62,7 +70,7 @@
 //                    double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                    // 表示系のパラメータ(mm)
-//                    double focal_length = zo_min / (3 * nph - 1); // ギャップ
+//                    double focal_length = 8.4; // ギャップ
 //                    int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                    int display_px = 2400; // 各軸方向の表示画像の解像度
 //                    double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -244,7 +252,7 @@
 //                        }
 //                    }
 //
-//                    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_px, display_px), CV_8UC3);
+//                    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_width_px, display_px + 20), CV_8UC3);
 //
 //                    double sum_time = 0;
 //                    // フレーム処理
@@ -457,14 +465,14 @@
 //
 //                    }
 //
-//                    //cv::imshow("image", img_display);
-//                    //cv::waitKey(0);
+//                    cv::imshow(WINNAME, img_display);
+//                    cv::waitKey(0);
 //
 //                    // 表示画像の保存
-//                    ostringstream stream;
-//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v2/prop-improve-v2-parrots_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
-//                    cv::String filename = stream.str();
-//                    imwrite(filename, img_display);
+//                    //ostringstream stream;
+//                    //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v2/prop-improve-v2-parrots_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
+//                    //cv::String filename = stream.str();
+//                    //imwrite(filename, img_display);
 //
 //                    //stream.str("");
 //                    //stream.clear(ostringstream::goodbit);
@@ -591,9 +599,9 @@
 //                        if (0 <= tmp_nx && tmp_nx < px_width_img && 0 <= tmp_ny && tmp_ny < px_height_img) {
 //                            if (alpha[nz][tmp_ny][tmp_nx]) {
 //
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(tmp_startv + m + 10, tmp_startu + n + 720)[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(tmp_startv + m + 10, tmp_startu + n + 720)[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(tmp_startv + m + 10, tmp_startu + n + 720)[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
 //                                // cout << "v, u:" << startv + m << ", " << startu + n << endl;
 //                                break;
 //                            }

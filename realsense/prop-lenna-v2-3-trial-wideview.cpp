@@ -308,14 +308,14 @@
 //        data[i] = (double*)malloc(sizeof(double) * cols);
 //    }
 //
-//    std::string filenamein = "./images/lenna.bmp";
-//    cv::Mat image_input = cv::imread(filenamein);
+//    //std::string filenamein = "./images/standard/lenna.bmp";
+//    //cv::Mat image_input = cv::imread(filenamein);
 //
-//    if (image_input.empty())
-//    {
-//        std::cout << "画像を開くことができませんでした。\n";
-//        return -1;
-//    }
+//    //if (image_input.empty())
+//    //{
+//    //    std::cout << "画像を開くことができませんでした。\n";
+//    //    return -1;
+//    //}
 //
 //    int*** red;
 //    int*** green;

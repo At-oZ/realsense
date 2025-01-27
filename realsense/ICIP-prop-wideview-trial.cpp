@@ -22,10 +22,6 @@
 //#include <cmath>
 //#include <time.h>
 //#include <Windows.h>
-////#include <X11/Xlib.h>
-////#include <X11/Xutil.h>
-////
-//// #include </opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin22/13/include/omp.h>
 //
 //using namespace std;
 //using namespace cv;
@@ -39,11 +35,11 @@
 //int fileread(double* test, string fname) {
 //    ifstream fin(fname);
 //    if (!fin) {
-//        cout << "ファイルをオープンできませんでした。\n";
+//        std::cout << "ファイルをオープンできませんでした。\n";
 //        getchar();
 //        exit(0);		// プログラムの終了
 //    }
-//    else cout << "ファイルをオープンしました。\n";
+//    else std::cout << "ファイルをオープンしました。\n";
 //
 //    // eofが検出されるまで配列に書き込む
 //    int i = 1;
@@ -53,31 +49,24 @@
 //        i++;
 //    }
 //    fin.close();
-//    cout << "ファイルをクローズしました。\n";
+//    std::cout << "ファイルをクローズしました。\n";
 //
 //    return i;   // 配列の長さを返す
 //}
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int boxel_cam_width_px, int boxel_cam_height_px, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
+//void insert_pixels(int start, int end, int each_camera_px, int num_pinhole, int num_z_level, int boxel_cam_width_px, int boxel_cam_height_px, cv::Mat img_camera_array, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny) {
 //
 //    int tmp_nx, tmp_ny;
-//    int tmp_startu, tmp_startv;
 //
 //    // 各要素画像の各画素ごとに
 //    for (int m = start; m < end; m++) {
 //
-//        for (int n = 0; n < element_image_px; n++) {
+//        for (int n = 0; n < each_camera_px; n++) {
 //
 //            // 各要素カメラごとに
 //            for (int i = 0; i < num_pinhole; i++) {
 //
-//                //tmp_startv = startv[i];
-//                tmp_startv = static_cast<int>(round(i * intv));
-//
 //                for (int j = 0; j < num_pinhole; j++) {
-//
-//                    //tmp_startu = startv[j];
-//                    tmp_startu = static_cast<int>(round(j * intv));
 //
 //                    // 各奥行きレベルごとに(手前から)
 //                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
@@ -89,9 +78,9 @@
 //                        if (0 <= tmp_nx && tmp_nx < boxel_cam_width_px && 0 <= tmp_ny && tmp_ny < boxel_cam_height_px) {
 //                            if (alpha[nz][tmp_ny][tmp_nx]) {
 //
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n + 720)[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n + 720)[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n + 720)[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
+//                                img_camera_array.at<cv::Vec3b>(i * each_camera_px + m, j * each_camera_px + n)[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
+//                                img_camera_array.at<cv::Vec3b>(i * each_camera_px + m, j * each_camera_px + n)[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
+//                                img_camera_array.at<cv::Vec3b>(i * each_camera_px + m, j * each_camera_px + n)[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
 //                                // cout << "v, u:" << startv + m << ", " << startu + n << endl;
 //                                break;
 //                            }
@@ -110,10 +99,36 @@
 //    }
 //}
 //
-//int main(int argc, char* argv[]) try
+//int writeCSV1(const std::vector<double> array) {
+//
+//    // 出力ファイルを開く
+//    std::ofstream file("./images/lenna/prop-reconstruction/average-time-v2-3-note-nzl64-img_px240-nonInterpolation.csv");
+//
+//    // ファイルが正しく開けたか確認
+//    if (!file.is_open()) {
+//        std::cerr << "ファイルが開けませんでした" << std::endl;
+//        return 1;
+//    }
+//
+//    // 1次元配列の内容をCSV形式でファイルに書き込む
+//    for (const auto& row : array) {
+//
+//        file << row;
+//        file << "\n"; // 行の終わりに改行を挿入
+//    }
+//
+//    // ファイルを閉じる
+//    file.close();
+//
+//    std::cout << "書き込みが完了しました。" << std::endl;
+//
+//    return 0;
+//}
+//
+//int main(int argc, char* argv[])
 //{
 //
-//    cout << "prop-v2-3-trial" << endl;
+//    std::cout << "ICIP-prop-trial-wideview" << endl;
 //
 //    std::vector<double> result(45);
 //
@@ -121,20 +136,23 @@
 //    cv::namedWindow(WINNAME);
 //    HWND window = FindWindow(NULL, L"image");
 //    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    SetWindowPos(window, NULL, 2560, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //
 //    int index = 0;
-//    bool interpolation = false; // 補間処理を行うかのフラッグ
+//    bool interpolation = true; // 補間処理を行うかのフラッグ
 //    int nph = 40;
 //    int nzl = 40;
-//    int pt = 4;
+//    int pt = 3;
 //
 //    int WIDTH = 640;
 //    int HEIGHT = 480;
 //    int FPS = 30;
 //    double inv_WIDTH = 1.0 / (double)WIDTH;
 //    double D = 150.0;
+//
+//    // 観察者のパラメータ
+//    double zo_min = 1000.0;
 //
 //    // ディスプレイのパラメータ(mm)
 //    double display_size = 13.4 * 25.4; // ディスプレイサイズ
@@ -146,18 +164,28 @@
 //    int num_pinhole = nph;  // 各軸方向のピンホール数
 //    double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
-//    // 表示系のパラメータ(mm)
-//    double gap = 8.4; // ギャップ
-//    int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
-//    int display_px = 2400; // 各軸方向の表示画像の解像度
-//    double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//    std::cout << "pinhole pitch:" << pinhole_pitch << "mm" << std::endl;
 //
-//    // 点群取得カメラのパラメータ(mm)
-//    double boxel_cam_focal_length = -1500;
-//    double boxel_cam_sensor_size = pinhole_array_size;
-//    int boxel_cam_height_px = 50 * pt;
-//    int boxel_cam_width_px = 50 * pt;
-//    double boxel_cam_px_pitch = boxel_cam_sensor_size / (double)boxel_cam_width_px;
+//    // 表示系のパラメータ(mm)
+//    double focal_length = 8.4; // ギャップ
+//    std::cout << "focal length:" << focal_length << std::endl;
+//
+//    // 観察者のパラメータ
+//    double observe_z = 1000.0; // 観察者と表示系の距離
+//    double observe_range = (observe_z + focal_length) / focal_length * pinhole_pitch; // 視域
+//
+//    // 要素画像のパラメータ
+//    double interval_element_image = focal_length / observe_z * observe_range; // 要素画像の物理的間隔(mm)
+//    int element_image_px = static_cast<int>(floor(interval_element_image / display_pixel_pitch)); // 要素画像の解像度
+//    int display_px = static_cast<int>(floor(interval_element_image * num_pinhole / display_pixel_pitch)); // 各軸方向の表示画像の解像度
+//
+//    std::cout << "element image pixel:" << element_image_px << "px" << std::endl;
+//    std::cout << "interval element image:" << interval_element_image << "mm" << std::endl;
+//    std::cout << "display pixel:" << display_px << "px" << std::endl;
+//
+//    // 表示系用カメラアレイのパラメータ
+//    double camera_array_range = focal_length / observe_z * (pinhole_array_size + observe_range); // 要素カメラの画角
+//    int each_camera_px = static_cast<int>(floor(camera_array_range / display_pixel_pitch)); // 要素カメラの解像度
 //
 //    // 点群データ配列の行数と列数
 //    int rows = WIDTH * HEIGHT;
@@ -168,11 +196,18 @@
 //    double ptimes = pt; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
 //    int half_box_size = static_cast<int>(floor(ptimes / 2.0)); // 探索範囲
 //
-//    double Ddash = 200.0 - boxel_cam_focal_length;
+//    double Ddash = 200.0;
 //    double coef = (double)num_z_level * Ddash;
 //    double inv_coef = 1.0 / coef;
 //
-//    cout << "NumPinhole:" << num_pinhole  << ", NumZLevel:" << num_z_level << ", pitchTimes:" << ptimes << endl;
+//    double img_pitch = display_pixel_pitch / ptimes;
+//    int px_height_img = static_cast<int>(round(100 * ptimes));
+//    int px_width_img = static_cast<int>(round(100 * ptimes));
+//    std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
+//
+//    int TIMES = 1;
+//
+//    std::cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", pitchTimes:" << ptimes << endl;
 //
 //    // 各要素画像の原点画素位置(左上)
 //    int* startu = (int*)malloc(sizeof(int) * num_pinhole);
@@ -183,9 +218,9 @@
 //    }
 //
 //    // 3次元配列のインデックス
-//    int*** nx = (int***)malloc(sizeof(int**) * element_image_px);
-//    int*** ny = (int***)malloc(sizeof(int**) * element_image_px);
-//    for (int i = 0; i < element_image_px; i++) {
+//    int*** nx = (int***)malloc(sizeof(int**) * each_camera_px);
+//    int*** ny = (int***)malloc(sizeof(int**) * each_camera_px);
+//    for (int i = 0; i < each_camera_px; i++) {
 //
 //        nx[i] = (int**)malloc(sizeof(int*) * num_pinhole);
 //        ny[i] = (int**)malloc(sizeof(int*) * num_pinhole);
@@ -199,43 +234,34 @@
 //    }
 //
 //    double u, x, y, z, xt, yt, zt, nz;
-//    for (int i = 0; i < element_image_px; i++) {
+//    for (int i = 0; i < each_camera_px; i++) {
 //
-//        u = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch;
+//        u = ((double)i - (double)(each_camera_px - 1) * 0.5) * display_pixel_pitch;
 //
 //        for (int j = 0; j < num_pinhole; j++) {
 //
 //            zt = (double)(num_z_level - 1) * inv_coef;
+//            xt = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + u / focal_length;
 //
 //            for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                
-//                z = 1.0 / zt + boxel_cam_focal_length;
-//                x = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch + u / gap * z;
-//                xt = x * zt;
-//
-//                nx[i][j][nz] = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * xt + 0.5) + boxel_cam_width_px * 0.5);
+//                nx[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
 //                zt -= inv_coef;
-//                //xt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                xt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //            }
 //        }
 //
 //        for (int j = 0; j < num_pinhole; j++) {
 //
 //            zt = (double)(num_z_level - 1) * inv_coef;
+//            yt = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + u / focal_length;
 //
 //            for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//
-//                z = 1.0 / zt + boxel_cam_focal_length;
-//                y = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch + u / gap * z;
-//                yt = y * zt;
-//
-//                ny[i][j][nz] = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * yt + 0.5) + boxel_cam_height_px * 0.5);
+//                ny[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
 //                zt -= inv_coef;
-//                //xt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                yt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //            }
 //        }
 //    }
-//
 //
 //    rs2::config config;
 //    config.enable_stream(RS2_STREAM_COLOR, WIDTH, HEIGHT, RS2_FORMAT_BGR8, FPS);
@@ -276,6 +302,20 @@
 //        cv::waitKey(10);
 //    }
 //
+//    double** data = (double**)malloc(sizeof(double*) * rows);
+//    for (int i = 0; i < rows; i++) {
+//        data[i] = (double*)malloc(sizeof(double) * cols);
+//    }
+//
+//    //std::string filenamein = "./images/standard/lenna.bmp";
+//    //cv::Mat image_input = cv::imread(filenamein);
+//
+//    //if (image_input.empty())
+//    //{
+//    //    std::cout << "画像を開くことができませんでした。\n";
+//    //    return -1;
+//    //}
+//
 //    int*** red;
 //    int*** green;
 //    int*** blue;
@@ -298,39 +338,41 @@
 //
 //    for (int i = 0; i < num_z_level; i++) {
 //
-//        // red[i] = new int*[boxel_cam_height_px];
-//        // green[i] = new int*[boxel_cam_height_px];
-//        // blue[i] = new int*[boxel_cam_height_px];
-//        // alpha[i] = new bool*[boxel_cam_height_px];
-//        // val_z[i] = new int*[boxel_cam_height_px];
+//        // red[i] = new int*[px_height_img];
+//        // green[i] = new int*[px_height_img];
+//        // blue[i] = new int*[px_height_img];
+//        // alpha[i] = new bool*[px_height_img];
+//        // val_z[i] = new int*[px_height_img];
 //
-//        red[i] = (int**)malloc(sizeof(int*) * boxel_cam_height_px);
-//        green[i] = (int**)malloc(sizeof(int*) * boxel_cam_height_px);
-//        blue[i] = (int**)malloc(sizeof(int*) * boxel_cam_height_px);
-//        alpha[i] = (bool**)malloc(sizeof(bool*) * boxel_cam_height_px);
-//        num_pcd[i] = (int**)malloc(sizeof(int*) * boxel_cam_height_px);
-//        //val_z[i] = (double**)malloc(sizeof(double*) * boxel_cam_height_px);
+//        red[i] = (int**)malloc(sizeof(int*) * px_height_img);
+//        green[i] = (int**)malloc(sizeof(int*) * px_height_img);
+//        blue[i] = (int**)malloc(sizeof(int*) * px_height_img);
+//        alpha[i] = (bool**)malloc(sizeof(bool*) * px_height_img);
+//        num_pcd[i] = (int**)malloc(sizeof(int*) * px_height_img);
+//        //val_z[i] = (double**)malloc(sizeof(double*) * px_height_img);
 //
-//        for (int j = 0; j < boxel_cam_height_px; j++) {
+//        for (int j = 0; j < px_height_img; j++) {
 //
-//            // red[i][j] = new int[boxel_cam_width_px];
-//            // green[i][j] = new int[boxel_cam_width_px];
-//            // blue[i][j] = new int[boxel_cam_width_px];
-//            // alpha[i][j] = new bool[boxel_cam_width_px];
-//            // val_z[i][j] = new int[boxel_cam_width_px];
+//            // red[i][j] = new int[px_width_img];
+//            // green[i][j] = new int[px_width_img];
+//            // blue[i][j] = new int[px_width_img];
+//            // alpha[i][j] = new bool[px_width_img];
+//            // val_z[i][j] = new int[px_width_img];
 //
-//            red[i][j] = (int*)malloc(sizeof(int) * boxel_cam_width_px);
-//            green[i][j] = (int*)malloc(sizeof(int) * boxel_cam_width_px);
-//            blue[i][j] = (int*)malloc(sizeof(int) * boxel_cam_width_px);
-//            alpha[i][j] = (bool*)malloc(sizeof(bool) * boxel_cam_width_px);
-//            num_pcd[i][j] = (int*)malloc(sizeof(int) * boxel_cam_width_px);
-//            //val_z[i][j] = (double*)malloc(sizeof(double) * boxel_cam_width_px);
+//            red[i][j] = (int*)malloc(sizeof(int) * px_width_img);
+//            green[i][j] = (int*)malloc(sizeof(int) * px_width_img);
+//            blue[i][j] = (int*)malloc(sizeof(int) * px_width_img);
+//            alpha[i][j] = (bool*)malloc(sizeof(bool) * px_width_img);
+//            num_pcd[i][j] = (int*)malloc(sizeof(int) * px_width_img);
+//            //val_z[i][j] = (double*)malloc(sizeof(double) * px_width_img);
 //
 //        }
 //    }
 //
-//    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_width_px, display_height_px), CV_8UC3);
+//    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
+//    cv::Mat img_camera_array = cv::Mat::zeros(cv::Size(each_camera_px * num_pinhole, each_camera_px * num_pinhole), CV_8UC3);
 //
+//    double sum_time = 0;
 //    // フレーム処理
 //    while (true) {
 //
@@ -358,8 +400,8 @@
 //
 //        // 箱とzバッファをオフセット
 //        for (int i = 0; i < num_z_level; i++) {
-//            for (int j = 0; j < boxel_cam_height_px; j++) {
-//                for (int k = 0; k < boxel_cam_width_px; k++) {
+//            for (int j = 0; j < px_height_img; j++) {
+//                for (int k = 0; k < px_width_img; k++) {
 //                    //pcd_box[i][j][k] = static_cast<unsigned char>(((num_z_level - 1) - i) / (num_z_level - 1)) + static_cast<unsigned char>(((num_z_level - 1) - i) / (num_z_level - 1) * 255) + static_cast<unsigned char>(((num_z_level - 1) - i) / (num_z_level - 1) * 255 * 255);
 //                    red[i][j][k] = 0;
 //                    green[i][j][k] = 0;
@@ -371,6 +413,7 @@
 //        }
 //
 //        img_display = cv::Scalar::all(0);
+//        img_camera_array = cv::Scalar::all(0);
 //
 //        //for (int i = 0; i < display_px; i++) {
 //        //    for (int j = 0; j < display_px; j++) {
@@ -378,6 +421,10 @@
 //        //        img_display.at<cv::Vec3b>(i, j)[0] = 0;
 //        //        img_display.at<cv::Vec3b>(i, j)[1] = 0;
 //        //        img_display.at<cv::Vec3b>(i, j)[2] = 0;
+//
+//        //        img_camera_array.at<cv::Vec3b>(i, j)[0] = 0;
+//        //        img_camera_array.at<cv::Vec3b>(i, j)[1] = 0;
+//        //        img_camera_array.at<cv::Vec3b>(i, j)[2] = 0;
 //
 //        //    }
 //        //}
@@ -387,6 +434,7 @@
 //        int tmp_nx, tmp_ny, tmp_nz;
 //        double dz;
 //
+//
 //        // 補間処理を行わない場合
 //        if (!interpolation) {
 //
@@ -395,7 +443,7 @@
 //
 //                tmp_pcd_x = verts[k].x * 1000.0;
 //                tmp_pcd_y = verts[k].y * 1000.0;
-//                tmp_pcd_z = verts[k].z * 1000.0 + D - boxel_cam_focal_length;
+//                tmp_pcd_z = verts[k].z * 1000.0 + D;
 //                tmp_pcd_b = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[2];
 //                tmp_pcd_g = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[1];
 //                tmp_pcd_r = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[0];
@@ -404,8 +452,8 @@
 //                tmp_xt = tmp_pcd_x * tmp_zt;
 //                tmp_yt = tmp_pcd_y * tmp_zt;
 //
-//                tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
-//                tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
+//                tmp_nx = static_cast<int>(floor((focal_length / img_pitch) * tmp_xt + 0.5) + px_width_img * 0.5);
+//                tmp_ny = static_cast<int>(floor((focal_length / img_pitch) * tmp_yt + 0.5) + px_height_img * 0.5);
 //                tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
 //                dz = coef / tmp_nz - tmp_pcd_z;
 //
@@ -414,7 +462,7 @@
 //
 //                if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //
-//                    if (0 <= tmp_nx && tmp_nx < boxel_cam_width_px && 0 <= tmp_ny && tmp_ny < boxel_cam_height_px) {
+//                    if (0 <= tmp_nx && tmp_nx < px_width_img && 0 <= tmp_ny && tmp_ny < px_height_img) {
 //                        //cout << "nz:" << tmp_nz << endl;
 //                        blue[tmp_nz][tmp_ny][tmp_nx] += static_cast<unsigned char>(tmp_pcd_b);
 //                        green[tmp_nz][tmp_ny][tmp_nx] += static_cast<unsigned char>(tmp_pcd_g);
@@ -433,7 +481,7 @@
 //
 //                    tmp_pcd_x = verts[k].x * 1000.0;
 //                    tmp_pcd_y = verts[k].y * 1000.0;
-//                    tmp_pcd_z = verts[k].z * 1000.0 + D - boxel_cam_focal_length;
+//                    tmp_pcd_z = verts[k].z * 1000.0 + D;
 //                    tmp_pcd_b = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[2];
 //                    tmp_pcd_g = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[1];
 //                    tmp_pcd_r = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[0];
@@ -442,8 +490,8 @@
 //                    tmp_xt = tmp_pcd_x * tmp_zt;
 //                    tmp_yt = tmp_pcd_y * tmp_zt;
 //
-//                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
-//                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
+//                    tmp_nx = static_cast<int>(floor((focal_length / img_pitch) * tmp_xt + 0.5) + px_width_img * 0.5);
+//                    tmp_ny = static_cast<int>(floor((focal_length / img_pitch) * tmp_yt + 0.5) + px_height_img * 0.5);
 //                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
 //                    dz = coef / tmp_nz - tmp_pcd_z;
 //
@@ -455,7 +503,7 @@
 //
 //                        for (int m = -half_box_size; m <= half_box_size; m++) {
 //                            for (int n = -half_box_size; n <= half_box_size; n++) {
-//                                if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
+//                                if (0 <= tmp_nx + n && tmp_nx + n < px_width_img && 0 <= tmp_ny + m && tmp_ny + m < px_height_img) {
 //                                    //cout << "nz:" << tmp_nz << endl;
 //                                    blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
 //                                    green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
@@ -477,7 +525,7 @@
 //
 //                    tmp_pcd_x = verts[k].x * 1000.0;
 //                    tmp_pcd_y = verts[k].y * 1000.0;
-//                    tmp_pcd_z = verts[k].z * 1000.0 + D - boxel_cam_focal_length;
+//                    tmp_pcd_z = verts[k].z * 1000.0 + D;
 //                    tmp_pcd_b = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[2];
 //                    tmp_pcd_g = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[1];
 //                    tmp_pcd_r = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[0];
@@ -486,16 +534,16 @@
 //                    tmp_xt = tmp_pcd_x * tmp_zt;
 //                    tmp_yt = tmp_pcd_y * tmp_zt;
 //
-//                    tmp_nx = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_xt + 0.5) + boxel_cam_width_px * 0.5);
-//                    tmp_ny = static_cast<int>(floor((boxel_cam_focal_length / boxel_cam_px_pitch) * tmp_yt + 0.5) + boxel_cam_height_px * 0.5);
+//                    tmp_nx = static_cast<int>(floor((focal_length / img_pitch) * tmp_xt + 0.5) + px_width_img * 0.5);
+//                    tmp_ny = static_cast<int>(floor((focal_length / img_pitch) * tmp_yt + 0.5) + px_height_img * 0.5);
 //                    tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
 //                    dz = coef / tmp_nz - tmp_pcd_z;
 //
 //                    //cout << "dx:" << dx << ", dy:" << dy << endl;
 //                    //if (k == 0) cout << "nz:" << tmp_nz << "dz:" << dz << endl;
 //
-//                    dx = tmp_pcd_x - (tmp_nx - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
-//                    dy = tmp_pcd_y - (tmp_ny - 0.5 - boxel_cam_width_px * 0.5) * boxel_cam_px_pitch / boxel_cam_focal_length * tmp_zt;
+//                    dx = tmp_pcd_x - (tmp_nx - 0.5 - px_width_img * 0.5) * img_pitch / focal_length * tmp_zt;
+//                    dy = tmp_pcd_y - (tmp_ny - 0.5 - px_width_img * 0.5) * img_pitch / focal_length * tmp_zt;
 //
 //                    half_box_size_min_x = static_cast<int>(round(dx / abs(dx) * 0.5 - half_box_size * 0.5));
 //                    half_box_size_max_x = static_cast<int>(round(dx / abs(dx) * 0.5 + half_box_size * 0.5));
@@ -507,7 +555,7 @@
 //                    if (0 <= tmp_nz && tmp_nz < num_z_level) {
 //                        for (int m = half_box_size_min_y; m <= half_box_size_max_y; m++) {
 //                            for (int n = half_box_size_min_x; n <= half_box_size_max_x; n++) {
-//                                if (0 <= tmp_nx + n && tmp_nx + n < boxel_cam_width_px && 0 <= tmp_ny + m && tmp_ny + m < boxel_cam_height_px) {
+//                                if (0 <= tmp_nx + n && tmp_nx + n < px_width_img && 0 <= tmp_ny + m && tmp_ny + m < px_height_img) {
 //                                    //cout << "nz:" << tmp_nz << endl;
 //                                    blue[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_b);
 //                                    green[tmp_nz][tmp_ny + m][tmp_nx + n] += static_cast<unsigned char>(tmp_pcd_g);
@@ -523,8 +571,8 @@
 //        }
 //
 //        for (int i = 0; i < num_z_level; i++) {
-//            for (int j = 0; j < boxel_cam_height_px; j++) {
-//                for (int k = 0; k < boxel_cam_width_px; k++) {
+//            for (int j = 0; j < px_height_img; j++) {
+//                for (int k = 0; k < px_width_img; k++) {
 //                    //cout << i << ", " << j << ", " << k << "; " << "red:" << red[i][j][k] << ", green:" << green[i][j][k] << ", blue:" << blue[i][j][k] << endl;
 //                    if (alpha[i][j][k]) {
 //                        red[i][j][k] = red[i][j][k] / num_pcd[i][j][k];
@@ -539,13 +587,13 @@
 //
 //        const int numThreads = 15;
 //        vector<thread> threads;
-//        int rowsPerThread = element_image_px / numThreads;
+//        int rowsPerThread = each_camera_px / numThreads;
 //
 //        int startRow, endRow;
 //        for (int i = 0; i < numThreads; i++) {
 //            startRow = i * rowsPerThread;
-//            endRow = (i == numThreads - 1) ? element_image_px : (i + 1) * rowsPerThread;
-//            threads.emplace_back(insert_pixels, startRow, endRow, element_image_px, num_pinhole, intv, num_z_level, boxel_cam_width_px, boxel_cam_height_px, std::ref(img_display), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny), std::ref(startu), std::ref(startv));
+//            endRow = (i == numThreads - 1) ? each_camera_px : (i + 1) * rowsPerThread;
+//            threads.emplace_back(insert_pixels, startRow, endRow, each_camera_px, num_pinhole, num_z_level, px_width_img, px_height_img, std::ref(img_camera_array), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny));
 //        }
 //
 //        for (auto& t : threads) {
@@ -560,6 +608,30 @@
 //
 //        //cout << "calc finished" << endl;
 //        finished_threads = 0;
+//
+//        int offsetu, offsetv, offsetx, offsety;
+//        for (int i = 0; i < num_pinhole; ++i) {
+//
+//            offsetv = static_cast<int>(floor(focal_length / observe_z * pinhole_pitch / display_pixel_pitch * i + 0.5));
+//            offsety = static_cast<int>(floor(interval_element_image / display_pixel_pitch * i));
+//
+//            for (int j = 0; j < num_pinhole; ++j) {
+//
+//                offsetu = static_cast<int>(floor(focal_length / observe_z * pinhole_pitch / display_pixel_pitch * j + 0.5));
+//                offsetx = static_cast<int>(floor(interval_element_image / display_pixel_pitch * j));
+//
+//                //std::cout << "offsety:" << offsety << std::endl;
+//
+//                for (int m = 0; m < element_image_px; ++m) {
+//                    for (int n = 0; n < element_image_px; ++n) {
+//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
+//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
+//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                    }
+//                }
+//
+//            }
+//        }
 //
 //        // 測定終了時刻を記録
 //        auto end = std::chrono::high_resolution_clock::now();
@@ -581,13 +653,19 @@
 //
 //    //// 表示画像の保存
 //    //ostringstream stream;
-//    //if (interpolation) stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
-//    //else stream << "./images/lenna/prop-reconstruction/v2-3/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
-//    //cv::String filename = stream.str();
-//    //imwrite(filename, img_display);
+//    //if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
+//    //else stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
+//    //cv::String filename_display = stream.str();
+//    //imwrite(filename_display, img_display);
 //
 //    //stream.str("");
 //    //stream.clear(ostringstream::goodbit);
+//
+//    //// 表示系用カメラアレイ画像の保存
+//    //if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgCameraArray_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
+//    //else stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgCameraArray_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
+//    //cv::String filename_camera_array = stream.str();
+//    //imwrite(filename_camera_array, img_camera_array);
 //
 //    //// 各イメージプレーンの画像を保存（テスト用）
 //    //// ostringstream stream;
@@ -615,9 +693,17 @@
 //
 //    //}
 //
+//    //cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
+//    //result[index++] = sum_time / TIMES;
+//
 //    // 使用したメモリを解放
+//    for (int i = 0; i < rows; ++i) {
+//        free(data[i]);
+//    }
+//    free(data);
+//
 //    for (int i = 0; i < num_z_level; i++) {
-//        for (int j = 0; j < boxel_cam_height_px; j++) {
+//        for (int j = 0; j < px_height_img; j++) {
 //            free(red[i][j]);
 //            free(green[i][j]);
 //            free(blue[i][j]);
@@ -660,15 +746,8 @@
 //        free(ny[i]);
 //    }
 //
+//
+//    //writeCSV1(result);
+//
 //    return EXIT_SUCCESS;
-//}
-//catch (const rs2::error& e)
-//{
-//    std::cerr << "RealSense error calling " << e.get_failed_function() << "(" << e.get_failed_args() << "):\n    " << e.what() << std::endl;
-//    return EXIT_FAILURE;
-//}
-//catch (const std::exception& e)
-//{
-//    std::cerr << e.what() << std::endl;
-//    return EXIT_FAILURE;
 //}
