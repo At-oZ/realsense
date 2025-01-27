@@ -99,7 +99,7 @@
 //                data[i] = (double*)malloc(sizeof(double) * cols);
 //            }
 //
-//            std::string filenamein = "./images/standard/mandrill.bmp";
+//            std::string filenamein = "./images/standard/parrots.bmp";
 //            cv::Mat image_input = cv::imread(filenamein);
 //
 //            if (image_input.empty())
@@ -186,7 +186,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-mandrill_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
+//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-parrots_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //
@@ -251,7 +251,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-DP-mandrill-tileExpand.csv");
+//    std::ofstream file("./numbers/speed/speed-DP-parrots-tileExpand.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {

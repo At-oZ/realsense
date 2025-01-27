@@ -158,7 +158,7 @@
 //                        data[i] = (double*)malloc(sizeof(double) * cols);
 //                    }
 //
-//                    std::string filenamein = "./images/standard/mandrill.bmp";
+//                    std::string filenamein = "./images/standard/parrots.bmp";
 //                    cv::Mat image_input = cv::imread(filenamein);
 //
 //                    if (image_input.empty())
@@ -453,7 +453,7 @@
 //
 //                    // 表示画像の保存
 //                    ostringstream stream;
-//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
+//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-parrots_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
 //                    cv::String filename = stream.str();
 //                    imwrite(filename, img_display);
 //
@@ -606,7 +606,7 @@
 //int writeCSV2(const std::vector<std::vector<double>> array, int nzl) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-prop-improve-v1-mandrill_tileExpand_Nz" + std::to_string(nzl) + ".csv");
+//    std::ofstream file("./numbers/speed/speed-prop-improve-v1-parrots_tileExpand_Nz" + std::to_string(nzl) + ".csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
