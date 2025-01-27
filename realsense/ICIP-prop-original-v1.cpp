@@ -33,7 +33,7 @@
 //
 //    cout << "ICIP-prop-original-v1" << endl;
 //
-//    std::vector<std::vector<double>> array(10, std::vector<double>(6)); // 横：subz, 縦：nzl
+//    std::vector<std::vector<double>> array(46, std::vector<double>(160)); // 横：subz, 縦：nzl
 //
 //    // 被写体の画像
 //    std::string filenamein = "./images/standard/mandrill.bmp";
@@ -77,7 +77,7 @@
 //
 //    double img_pitch = display_pixel_pitch;
 //
-//    int TIMES = 100;
+//    int TIMES = 1;
 //
 //    int index = 0;
 //    for (int nph = 40; nph <= 40; nph *= 2) {
@@ -90,13 +90,13 @@
 //        int px_height_img = static_cast<int>(floor(50 * focal_length / 4.0));
 //        int px_width_img = static_cast<int>(floor(50 * focal_length / 4.0));
 //
-//        for (int nzl = 10; nzl <= 100; nzl += 10) {
+//        for (int nzl = 10; nzl <= 100; nzl += 2) {
 //
 //            int idx_subz = 0;
 //            double coef = (double)nzl * Ddash;
 //            double inv_coef = 1.0 / coef;
 //
-//            for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
+//            for (double subz = 250.0; subz <= 8200.0; subz += 50) {
 //
 //                cout << "NumPinhole:" << nph  << ", NumZLevel:" << nzl << ", subjectZ:" << subz << ", focal_length:" << focal_length << endl;
 //
@@ -253,7 +253,7 @@
 //
 //                        nx = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
 //                        ny = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
-//                        nz = static_cast<int>(floor(coef * zt + 0.5));
+//                        nz = static_cast<int>(floor (coef * zt));
 //
 //                        //cout << "nx:" << nx << ", ny:" << ny << ", nz:" << nz << endl;
 //
@@ -309,13 +309,13 @@
 //                }
 //
 //                // 表示画像の保存
-//                //ostringstream stream;
-//                //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-mandrill_tileExpand_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
-//                //cv::String filename = stream.str();
-//                //imwrite(filename, img_display);
+//                ostringstream stream;
+//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-detail-mandrill_tileExpand_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
+//                cv::String filename = stream.str();
+//                imwrite(filename, img_display);
 //
-//                //stream.str("");
-//                //stream.clear(ostringstream::goodbit);
+//                stream.str("");
+//                stream.clear(ostringstream::goodbit);
 //
 //                cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
 //                array[idx_nzl][idx_subz++] = sum_time / TIMES;
@@ -367,7 +367,7 @@
 //        }
 //    }
 //
-//    writeCSV2(array);
+//    //writeCSV2(array);
 //
 //    return EXIT_SUCCESS;
 //}

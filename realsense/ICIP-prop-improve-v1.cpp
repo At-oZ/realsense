@@ -40,7 +40,7 @@
 //    for (int nph = 40; nph <= 40; nph *= 2) {
 //
 //
-//        for (int nzl = 40; nzl <= 50; nzl += 10) {
+//        for (int nzl = 40; nzl <= 40; nzl += 10) {
 //
 //            int idx_subz = 0;
 //            for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
@@ -93,7 +93,7 @@
 //                    int px_width_img = static_cast<int>(round(100 * ptimes));
 //                    std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 //
-//                    int TIMES = 100;
+//                    int TIMES = 1;
 //
 //                    cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -446,22 +446,16 @@
 //                        //cout << "d‚È‚è‰ñ”:" << pcd_count << endl;
 //                        sum_time += duration.count();
 //
-//                        //// •\Ž¦‰æ‘œ‚Ì•Û‘¶
-//                        //ostringstream stream;
-//                        //stream << "./images/lenna/prop-reconstruction/v2-2/comparison/prop-lenna-v2-2_ImgDisplay_NumPinhole" << num_pinhole << "NumZLevel" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << ".png";
-//                        //cv::String filename = stream.str();
-//                        //imwrite(filename, img_display);
-//
 //                    }
 //
 //                    //cv::imshow("image", img_display);
 //                    //cv::waitKey(0);
 //
 //                    // •\Ž¦‰æ‘œ‚Ì•Û‘¶
-//                    //ostringstream stream;
-//                    //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
-//                    //cv::String filename = stream.str();
-//                    //imwrite(filename, img_display);
+//                    ostringstream stream;
+//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
+//                    cv::String filename = stream.str();
+//                    imwrite(filename, img_display);
 //
 //                    //stream.str("");
 //                    //stream.clear(ostringstream::goodbit);
@@ -549,7 +543,7 @@
 //                idx_subz++;
 //
 //            }
-//            writeCSV2(array, nzl);
+//            //writeCSV2(array, nzl);
 //        }
 //    }
 //
