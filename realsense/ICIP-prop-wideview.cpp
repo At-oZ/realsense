@@ -21,10 +21,8 @@
 //#include <condition_variable>
 //#include <cmath>
 //#include <time.h>
-////#include <X11/Xlib.h>
-////#include <X11/Xutil.h>
-////
-//// #include </opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin22/13/include/omp.h>
+//#include <Windows.h>
+//
 //
 //using namespace std;
 //using namespace cv;
@@ -135,6 +133,12 @@
 //
 //    std::vector<double> result(45);
 //
+//    std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME);
+//    HWND window = FindWindow(NULL, L"image");
+//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//
 //    int index = 0;
 //    bool interpolation = true; // 補間処理を行うかのフラッグ
 //    for (int nph = 40; nph <= 40; nph *= 2) {
@@ -164,7 +168,7 @@
 //                    std::cout << "pinhole pitch:" << pinhole_pitch << "mm" << std::endl;
 //
 //                    // 表示系のパラメータ(mm)
-//                    double focal_length = zo_min / (3 * nph - 1); // ギャップ
+//                    double focal_length = 8.4; // ギャップ
 //                    std::cout << "focal length:" << focal_length << std::endl;
 //
 //                    // 観察者のパラメータ
@@ -172,12 +176,13 @@
 //                    double observe_range = (observe_z + focal_length) / focal_length * pinhole_pitch; // 視域
 //
 //                    // 要素画像のパラメータ
-//                    int element_image_px = static_cast<int>(floor(focal_length / observe_z * observe_range / display_pixel_pitch)); // 要素画像の解像度
-//                    int display_px = element_image_px * num_pinhole; // 各軸方向の表示画像の解像度
 //                    double interval_element_image = focal_length / observe_z * observe_range; // 要素画像の物理的間隔(mm)
+//                    int element_image_px = static_cast<int>(floor(interval_element_image / display_pixel_pitch)); // 要素画像の解像度
+//                    int display_px = static_cast<int>(floor(interval_element_image * num_pinhole / display_pixel_pitch)); // 各軸方向の表示画像の解像度
 //
 //                    std::cout << "element image pixel:" << element_image_px << "px" << std::endl;
 //                    std::cout << "interval element image:" << interval_element_image << "mm" << std::endl;
+//                    std::cout << "display pixel:" << display_px << "px" << std::endl;
 //
 //                    // 表示系用カメラアレイのパラメータ
 //                    double camera_array_range = focal_length / observe_z * (pinhole_array_size + observe_range); // 要素カメラの画角
@@ -261,7 +266,7 @@
 //                            for (int nz = num_z_level - 1; nz >= 0; nz--) {
 //                                ny[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
 //                                zt -= inv_coef;
-//                                xt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                                yt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //                            }
 //                        }
 //                    }
@@ -357,7 +362,7 @@
 //                        }
 //                    }
 //
-//                    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_px, display_px), CV_8UC3);
+//                    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
 //                    cv::Mat img_camera_array = cv::Mat::zeros(cv::Size(each_camera_px * num_pinhole, each_camera_px * num_pinhole), CV_8UC3);
 //
 //                    double sum_time = 0;
@@ -381,7 +386,7 @@
 //                            }
 //                        }
 //
-//                        img_display = cv::Mat::zeros(cv::Size(display_px, display_px), CV_8UC3);
+//                        img_display = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
 //                        img_camera_array = cv::Mat::zeros(cv::Size(each_camera_px * num_pinhole, each_camera_px * num_pinhole), CV_8UC3);
 //
 //                        //for (int i = 0; i < display_px; i++) {
@@ -573,20 +578,24 @@
 //                        //cout << "calc finished" << endl;
 //                        finished_threads = 0;
 //
-//                        int offsetu, offsetv;
+//                        int offsetu, offsetv, offsetx, offsety;
 //                        for (int i = 0; i < num_pinhole; ++i) {
 //
 //                            offsetv = static_cast<int>(floor(focal_length / observe_z * pinhole_pitch / display_pixel_pitch * i + 0.5));
+//                            offsety = static_cast<int>(floor(interval_element_image / display_pixel_pitch * i));
 //
 //                            for (int j = 0; j < num_pinhole; ++j) {
 //
 //                                offsetu = static_cast<int>(floor(focal_length / observe_z * pinhole_pitch / display_pixel_pitch * j + 0.5));
+//                                offsetx = static_cast<int>(floor(interval_element_image / display_pixel_pitch * j));
+//
+//                                //std::cout << "offsety:" << offsety << std::endl;
 //
 //                                for (int m = 0; m < element_image_px; ++m) {
 //                                    for (int n = 0; n < element_image_px; ++n) {
-//                                        img_display.at<cv::Vec3b>(i * element_image_px + m, j * element_image_px + n)[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
-//                                        img_display.at<cv::Vec3b>(i * element_image_px + m, j * element_image_px + n)[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
-//                                        img_display.at<cv::Vec3b>(i * element_image_px + m, j * element_image_px + n)[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
+//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
+//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
 //                                    }
 //                                }
 //
@@ -603,6 +612,9 @@
 //                        sum_time += duration.count();
 //
 //                    }
+//
+//                    cv::imshow(WINNAME, img_display);
+//                    cv::waitKey(0);
 //
 //                    // 表示画像の保存
 //                    ostringstream stream;
