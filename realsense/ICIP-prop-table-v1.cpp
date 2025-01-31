@@ -106,8 +106,8 @@
 //
 //                double img_pitch = display_pixel_pitch;
 //
-//                int px_height_img = static_cast<int>(round(100 * ptimes));
-//                int px_width_img = static_cast<int>(round(100 * ptimes));
+//                int px_height_img = 100;
+//                int px_width_img = 100;
 //
 //                int TIMES = 1;
 //

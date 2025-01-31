@@ -87,8 +87,8 @@
 //        double focal_length = zo_min / (3 * nph - 1); // ƒMƒƒƒbƒv
 //        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // —v‘f‰æ‘œ‚Ì‰ð‘œ“x
 //        double intv = pinhole_pitch / display_pixel_pitch; // —v‘f‰æ‘œ‚ÌŠÔŠu
-//        int px_height_img = static_cast<int>(floor(50 * focal_length / 4.0));
-//        int px_width_img = static_cast<int>(floor(50 * focal_length / 4.0));
+//        int px_height_img = 100;
+//        int px_width_img = 100;
 //
 //        for (int nzl = 10; nzl <= 100; nzl += 2) {
 //
