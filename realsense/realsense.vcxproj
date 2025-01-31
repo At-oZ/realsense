@@ -165,6 +165,7 @@
     <ClCompile Include="ICIP-prop-original-v1.cpp" />
     <ClCompile Include="ICIP-prop-original-v2.cpp" />
     <ClCompile Include="ICIP-prop-table-v1.cpp" />
+    <ClCompile Include="ICIP-prop-table-v2.cpp" />
     <ClCompile Include="ICIP-prop-wideview-trial.cpp" />
     <ClCompile Include="ICIP-prop-wideview.cpp" />
     <ClCompile Include="ideal-v1-1.cpp" />
