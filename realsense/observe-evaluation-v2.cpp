@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
     //std::vector<std::vector<double>> array(20, std::vector<double>(6)); // 横：subz, 縦：nph
     //std::vector<std::vector<double>> array(10, std::vector<double>(6)); // 横：subz, 縦：nzl
-    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
+    std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 
     // ピクセルサイズの計算
     const double coef = 1.0; // 倍率
@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
     //const double tile_px_size = tile_size / tile_px; // タイルに貼る画像のピクセルサイズ（mm）
 
     // 画像を読み込む
-    std::string filename_tile = "./images/standard/parrots.bmp";
+    std::string filename_tile = "./images/standard/mandrill.bmp";
     cv::Mat tile_image = cv::imread(filename_tile);
 
     if (tile_image.empty())
@@ -76,13 +76,13 @@ int main(int argc, char* argv[]) {
         int idx_pt = 0;
         for (int pt = 1; pt <= 5; pt++) {
 
-            std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
+            //std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
 
             int idx_nzl = 0;
-            for (int nzl = 10; nzl <= 100; nzl += 5) {
+            for (int nzl = 40; nzl <= 40; nzl += 5) {
 
                 int idx_subz = 0;
-                for (double subz = 300.0; subz <= 8000.0; subz += 100) {
+                for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
 
 
                     std::cout << "NumPinhole:" << nph << ", NumZLevel:" << nzl << ", subjectZ:" << subz << ", pitchTimes:" << pt << std::endl;
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
                     const double ptimes = pt;
 
                     // 理想表示用の表示画像の読み込み
-                    //std::string filename_display_standard = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_parrots_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png";
+                    //std::string filename_display_standard = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_mandrill_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png";
                     //cv::Mat display_standard_image = cv::imread(filename_display_standard);
 
                     //if (display_standard_image.empty())
@@ -115,12 +115,13 @@ int main(int argc, char* argv[]) {
                     //}
 
                     // 比較対象用の表示画像の読み込み
-                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-parrots_tileExpand_gridSize" +  std::to_string(nph) + "_zi" + std::to_string((int)subz) + ".png"; // 直接投影
-                    //std::string filename_display_compared = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-parrots_tileExpand_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（オリジナル版）
-                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-table-v1-parrots_tileExpand_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（テーブル版v1）
-                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-v2-parrots_tileExpand_pt" + std::to_string(pt) + "_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（テーブル版v2）
-                    std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-detail-parrots_tileExpand_Nz" + std::to_string(nzl) + "_N" + std::to_string((int)ptimes) + "_subjectZ" + std::to_string((int)subz) + ".png"; //  提案手法(完成版)
-                    //std::string filename_display_compared = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_parrots_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png"; // 理想表示
+                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-mandrill_tileExpand_gridSize" +  std::to_string(nph) + "_zi" + std::to_string((int)subz) + ".png"; // 直接投影
+                    //std::string filename_display_compared = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-original-v1/prop-v1-mandrill_tileExpand_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（オリジナル版）
+                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-table-v1-mandrill_tileExpand_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（テーブル版v1）
+                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-v2-mandrill_tileExpand_pt" + std::to_string(pt) + "_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + ".png"; // 提案手法（テーブル版v2）
+                    std::string filename_display_compared = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-mandrill_tileExpand_Nz" + std::to_string(nzl) + "_N" + std::to_string((int)ptimes) + "_subjectZ" + std::to_string((int)subz) + ".png"; //  提案手法(完成版1)
+                    //std::string filename_display_compared = "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-detail-mandrill_tileExpand_Nz" + std::to_string(nzl) + "_N" + std::to_string((int)ptimes) + "_subjectZ" + std::to_string((int)subz) + ".png"; //  提案手法(完成版2)
+                    //std::string filename_display_compared = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_mandrill_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png"; // 理想表示
                     cv::Mat display_compared_image = cv::imread(filename_display_compared);
 
                     if (display_compared_image.empty())
@@ -171,8 +172,8 @@ int main(int argc, char* argv[]) {
                             //std::cout << "出力画像を" << filenameout << "として保存しました。\n";
 
                             // 移植の整合性の確認（点検用）
-                            //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/parrots/lensarray/ideal/gridSize" + std::to_string(nph) + "/ideal-observe-lenna_" + std::to_string(nph) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-                            //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/ICIP/prop-original-v1/prop-v1-observe-parrots_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + "mm_obx" + std::to_string((int)(observer_x[nobs] * 1000)) + "um_oby" + std::to_string((int)(observer_y[nobs] * 1000)) + "um_obz" + std::to_string((int)abs(observer_z)) + "mm.png";
+                            //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/mandrill/lensarray/ideal/gridSize" + std::to_string(nph) + "/ideal-observe-lenna_" + std::to_string(nph) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+                            //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/ICIP/prop-original-v1/prop-v1-observe-mandrill_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + "mm_obx" + std::to_string((int)(observer_x[nobs] * 1000)) + "um_oby" + std::to_string((int)(observer_y[nobs] * 1000)) + "um_obz" + std::to_string((int)abs(observer_z)) + "mm.png";
                             //cv::Mat original_image = cv::imread(filename_original);
 
                             //if (compared_image.empty())
@@ -222,14 +223,14 @@ int main(int argc, char* argv[]) {
 
                     cout << "Average PSNR value is: " << sum_psnr / rand_size << " dB" << endl;
                     //array[idx_nph][idx_subz] = sum_psnr / rand_size; // nph x subzの時
-                    array[idx_nzl][idx_subz++] = sum_psnr / rand_size; // nzl x subzの時
-                    //array[idx_pt++][idx_subz] = sum_psnr / rand_size; // pt x subzの時
+                    //array[idx_nzl][idx_subz++] = sum_psnr / rand_size; // nzl x subzの時
+                    array[idx_pt][idx_subz++] = sum_psnr / rand_size; // pt x subzの時
                 }
                 idx_nzl++;
             }
-            writeCSV2(array, pt);
             idx_pt++;
         }
+        writeCSV2(array, 0);
     }
     return 0;
 }
@@ -290,7 +291,7 @@ int writeCSV1(const std::vector<double> array) {
 int writeCSV2(const std::vector<std::vector<double>> array, int ptimes) {
 
     // 出力ファイルを開く
-    std::ofstream file("./numbers/PSNR/prop-improve/by_real/psnr-real_prop-improve-v1-detail-pt" + std::to_string(ptimes) + "-parrots_nph_tileExpand.csv");
+    std::ofstream file("./numbers/PSNR/prop-improve/by_real/psnr-mandrill_real_prop-improve-v1-pt" + std::to_string(ptimes) + "-nph_tileExpand-2.csv");
 
     // ファイルが正しく開けたか確認
     if (!file.is_open()) {
