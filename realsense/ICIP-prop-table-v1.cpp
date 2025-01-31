@@ -57,12 +57,12 @@
 //
 //    cout << "ICIP-prop-table-v1" << endl;
 //
-//    std::vector<std::vector<double>> array(1, std::vector<double>(6)); // 横：subz, 縦：nzl
+//    std::vector<std::vector<double>> array(10, std::vector<double>(6)); // 横：subz, 縦：nzl
 //
 //    for (int nph = 40; nph <= 40; nph *= 2) {
 //
 //
-//        for (int nzl = 40; nzl <= 40; nzl *= 2) {
+//        for (int nzl = 10; nzl <= 100; nzl += 10) {
 //
 //            int idx_subz = 0;
 //            for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
@@ -394,10 +394,10 @@
 //                }
 //
 //                // 表示画像の保存
-//                //ostringstream stream;
-//                //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-table-v1-mandrill_subjectZ" << (int)subz << ".png";
-//                //cv::String filename = stream.str();
-//                //imwrite(filename, img_display);
+//                ostringstream stream;
+//                stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-table-v1/prop-table-v1-mandrill_tileExpand_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
+//                cv::String filename = stream.str();
+//                imwrite(filename, img_display);
 //
 //
 //                cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;

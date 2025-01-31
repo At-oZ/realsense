@@ -37,12 +37,12 @@
 //
 //    cout << "ICIP-DirectProjection-v1" << endl;
 //
-//    std::vector<double> result(6);
+//    std::vector<double> result(78);
 //
 //    int index = 0;
-//    for (int nph = 40; nph >= 40; nph /= 2) {
+//    for (int nph = 40; nph <= 40; nph *= 2) {
 //
-//        for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
+//        for (double subz = 300.0; subz <= 8000.0; subz += 100) {
 //
 //            cout << "num pinhole:" << nph << ", subject z:" << subz << endl;
 //
@@ -99,7 +99,7 @@
 //                data[i] = (double*)malloc(sizeof(double) * cols);
 //            }
 //
-//            std::string filenamein = "./images/standard/parrots.bmp";
+//            std::string filenamein = "./images/standard/mandrill.bmp";
 //            cv::Mat image_input = cv::imread(filenamein);
 //
 //            if (image_input.empty())
@@ -186,7 +186,7 @@
 //
 //                // 表示画像の保存
 //                ostringstream stream;
-//                stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-parrots_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
+//                stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-mandrill_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
 //                cv::String filename = stream.str();
 //                imwrite(filename, img_display);
 //
@@ -251,7 +251,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-DP-parrots-tileExpand.csv");
+//    std::ofstream file("./numbers/speed/speed-DP-mandrill-tileExpand.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
