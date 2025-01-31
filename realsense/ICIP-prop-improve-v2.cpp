@@ -1,7 +1,8 @@
 ///* 点群データから4次元光線情報の再構成画像を作成するプログラム */
 ///* ICIP-prop-improve-v1からの派生 */
 ///* 完成版（詳細化と平均化まで） */
-//
+///* 変更点：タイルを縦に三分割し、それぞれの奥行を変える */
+/// 
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
 //#include <algorithm>            // min, max

@@ -26,27 +26,30 @@
 //int finished_threads = 0; // 終了したスレッドの数
 //
 //void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv);
-//int writeCSV2(const std::vector<std::vector<double>> array, int nzl);
+//int writeCSV2(const std::vector<std::vector<double>> array, int ptimes);
 //
 //int main(int argc, char* argv[])
 //{
 //
 //    cout << "ICIP-prop-improve-v1" << endl;
 //
-//    std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
+//    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
 //    int index = 0;
 //    bool interpolation = true;
 //    for (int nph = 40; nph <= 40; nph *= 2) {
 //
+//        int idx_pt = 0;
+//        for (int pt = 1; pt <= 5; pt++) {
 //
-//        for (int nzl = 40; nzl <= 40; nzl += 10) {
+//            std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
 //
-//            int idx_subz = 0;
-//            for (double subz = 256.0; subz <= 8192.0; subz *= 2) {
+//            int idx_nzl = 0;
+//            for (int nzl = 10; nzl <= 100; nzl += 5) {
 //
-//                int idx_pt = 0;
-//                for (int pt = 1; pt <= 5; pt++) {
+//                int idx_subz = 0;
+//                for (double subz = 300.0; subz <= 8000.0; subz += 100) {
+//
 //
 //                    // 観察者のパラメータ
 //                    double zo_min = 1000.0;
@@ -158,7 +161,7 @@
 //                        data[i] = (double*)malloc(sizeof(double) * cols);
 //                    }
 //
-//                    std::string filenamein = "./images/standard/parrots.bmp";
+//                    std::string filenamein = "./images/standard/pepper.bmp";
 //                    cv::Mat image_input = cv::imread(filenamein);
 //
 //                    if (image_input.empty())
@@ -453,7 +456,7 @@
 //
 //                    // 表示画像の保存
 //                    ostringstream stream;
-//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-parrots_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
+//                    stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-detail-pepper_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
 //                    cv::String filename = stream.str();
 //                    imwrite(filename, img_display);
 //
@@ -487,7 +490,7 @@
 //                    //}
 //
 //                    cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
-//                    array[idx_pt++][idx_subz] = sum_time / TIMES;
+//                    array[idx_nzl][idx_subz++] = sum_time / TIMES;
 //
 //                    // 使用したメモリを解放
 //                    for (int i = 0; i < rows; ++i) {
@@ -540,10 +543,10 @@
 //                    }
 //
 //                }
-//                idx_subz++;
+//                idx_nzl++;
 //
 //            }
-//            //writeCSV2(array, nzl);
+//            writeCSV2(array, pt);
 //        }
 //    }
 //
@@ -603,10 +606,10 @@
 //    }
 //}
 //
-//int writeCSV2(const std::vector<std::vector<double>> array, int nzl) {
+//int writeCSV2(const std::vector<std::vector<double>> array, int ptimes) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-prop-improve-v1-parrots_tileExpand_Nz" + std::to_string(nzl) + ".csv");
+//    std::ofstream file("./numbers/speed/speed-prop-improve-v1-pepper_tileExpand_pt" + std::to_string(ptimes) + ".csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
