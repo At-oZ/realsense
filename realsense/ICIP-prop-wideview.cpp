@@ -144,10 +144,10 @@
 //    for (int nph = 40; nph <= 40; nph *= 2) {
 //
 //
-//        for (int nzl = 40; nzl <= 40; nzl += 10) {
+//        for (int nzl = 60; nzl <= 60; nzl += 10) {
 //
 //            int idx_subz = 0;
-//            for (double subz = 512.0; subz <= 512.0; subz *= 2) {
+//            for (double subz = 256.0; subz <= 256.0; subz *= 2) {
 //
 //                int idx_pt = 0;
 //                for (int pt = 3; pt <= 3; pt++) {
@@ -190,7 +190,7 @@
 //
 //                    // 被写体のパラメータ(mm)
 //                    int subject_image_resolution = 554; // 被写体の解像度
-//                    double subject_size = pinhole_array_size * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加); // 被写体のサイズ
+//                    double subject_size = pinhole_array_size; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加); // 被写体のサイズ
 //                    double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                    double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                    double subject_z = subz; // 被写体の奥行き方向の位置
@@ -276,7 +276,7 @@
 //                        data[i] = (double*)malloc(sizeof(double) * cols);
 //                    }
 //
-//                    std::string filenamein = "./images/standard/parrots.bmp";
+//                    std::string filenamein = "./images/standard/pepper.bmp";
 //                    cv::Mat image_input = cv::imread(filenamein);
 //
 //                    if (image_input.empty())
@@ -292,20 +292,20 @@
 //                        for (int j = 0; j < subject_image_resolution; j++) {
 //                            data[i * subject_image_resolution + j][0] = subject_position_offset + j * subject_pixel_pitch;
 //                            data[i * subject_image_resolution + j][1] = subject_position_offset + i * subject_pixel_pitch;
-//                            //data[i * subject_image_resolution + j][2] = subject_z;
+//                            data[i * subject_image_resolution + j][2] = subject_z;
 //                            data[i * subject_image_resolution + j][3] = resized_image.at<Vec3b>(i, j)[0];
 //                            data[i * subject_image_resolution + j][4] = resized_image.at<Vec3b>(i, j)[1];
 //                            data[i * subject_image_resolution + j][5] = resized_image.at<Vec3b>(i, j)[2];
 //
-//                            if (j >= 0 && j < (int)(subject_image_resolution / 3)) {
-//                                data[i * subject_image_resolution + j][2] = subz / 2.0;
-//                            }
-//                            else if (j >= (int)(subject_image_resolution / 3) && j < (int)(subject_image_resolution * 2 / 3)) {
-//                                data[i * subject_image_resolution + j][2] = subz;
-//                            }
-//                            else {
-//                                data[i * subject_image_resolution + j][2] = subz * 2.0;
-//                            }
+//                            //if (j >= 0 && j < (int)(subject_image_resolution / 3)) {
+//                            //    data[i * subject_image_resolution + j][2] = subz / 2.0;
+//                            //}
+//                            //else if (j >= (int)(subject_image_resolution / 3) && j < (int)(subject_image_resolution * 2 / 3)) {
+//                            //    data[i * subject_image_resolution + j][2] = subz;
+//                            //}
+//                            //else {
+//                            //    data[i * subject_image_resolution + j][2] = subz * 2.0;
+//                            //}
 //                        }
 //                    }
 //
