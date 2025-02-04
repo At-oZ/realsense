@@ -45,10 +45,10 @@ int main(int argc, char* argv[])
             std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
 
             int idx_nzl = 0;
-            for (int nzl = 60; nzl <= 60; nzl += 5) {
+            for (int nzl = 10; nzl <= 100; nzl += 5) {
 
                 int idx_subz = 0;
-                for (double subz = 500.0; subz <= 500.0; subz += 100) {
+                for (double subz = 300.0; subz <= 8000.0; subz += 100) {
 
 
                     // 観察者のパラメータ
@@ -90,10 +90,10 @@ int main(int argc, char* argv[])
                     double coef = (double)num_z_level * Ddash;
                     double inv_coef = 1.0 / coef;
 
-                    double img_pitch = display_pixel_pitch / ptimes;
+                    double img_pitch = display_pixel_pitch; // 詳細化の場合 /ptimes をかける
 
-                    int px_height_img = static_cast<int>(round(100 * ptimes));
-                    int px_width_img = static_cast<int>(round(100 * ptimes));
+                    int px_height_img = 200; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
+                    int px_width_img = 200; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
                     std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 
                     int TIMES = 1;
@@ -183,7 +183,6 @@ int main(int argc, char* argv[])
                             data[i * subject_image_resolution + j][5] = resized_image.at<Vec3b>(i, j)[2];
                         }
                     }
-
 
                     int*** red;
                     int*** green;
@@ -416,38 +415,36 @@ int main(int argc, char* argv[])
 
                         // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 
-                        //const int numThreads = 15;
-                        //vector<thread> threads;
-                        //int rowsPerThread = element_image_px / numThreads;
+                        const int numThreads = 15;
+                        vector<thread> threads;
+                        int rowsPerThread = element_image_px / numThreads;
 
-                        //int startRow, endRow;
-                        //for (int i = 0; i < numThreads; i++) {
-                        //    startRow = i * rowsPerThread;
-                        //    endRow = (i == numThreads - 1) ? element_image_px : (i + 1) * rowsPerThread;
-                        //    threads.emplace_back(insert_pixels, startRow, endRow, element_image_px, num_pinhole, intv, num_z_level, px_width_img, px_height_img, std::ref(img_display), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny), std::ref(startu), std::ref(startv));
-                        //}
+                        int startRow, endRow;
+                        for (int i = 0; i < numThreads; i++) {
+                            startRow = i * rowsPerThread;
+                            endRow = (i == numThreads - 1) ? element_image_px : (i + 1) * rowsPerThread;
+                            threads.emplace_back(insert_pixels, startRow, endRow, element_image_px, num_pinhole, intv, num_z_level, px_width_img, px_height_img, std::ref(img_display), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny), std::ref(startu), std::ref(startv));
+                        }
 
-                        //for (auto& t : threads) {
-                        //    if (t.joinable()) { t.join(); }
-                        //}
+                        for (auto& t : threads) {
+                            if (t.joinable()) { t.join(); }
+                        }
 
-                        //// 全てのスレッドが終了するのを待つ
-                        //{
-                        //    std::unique_lock<std::mutex> lock(mtx);
-                        //    conv.wait(lock, [] {return finished_threads == numThreads; });
-                        //}
+                        // 全てのスレッドが終了するのを待つ
+                        {
+                            std::unique_lock<std::mutex> lock(mtx);
+                            conv.wait(lock, [] {return finished_threads == numThreads; });
+                        }
 
-                        ////cout << "calc finished" << endl;
-                        //finished_threads = 0;
+                        //cout << "calc finished" << endl;
+                        finished_threads = 0;
 
-                        //// 測定終了時刻を記録
-                        //auto end = std::chrono::high_resolution_clock::now();
+                        // 測定終了時刻を記録
+                        auto end = std::chrono::high_resolution_clock::now();
 
-                        //// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
-                        //auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                        ////cout << "実行時間: " << duration.count() << " ms" << std::endl;
-                        ////cout << "重なり回数:" << pcd_count << endl;
-                        //sum_time += duration.count();
+                        // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
+                        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                        sum_time += duration.count();
 
                     }
 
@@ -455,39 +452,39 @@ int main(int argc, char* argv[])
                     //cv::waitKey(0);
 
                     // 表示画像の保存
-                    //ostringstream stream;
-                    //stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1/prop-improve-v1-detail-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << ".png";
-                    //cv::String filename = stream.str();
-                    //imwrite(filename, img_display);
+                    ostringstream stream;
+                    stream << "E:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-mandrill_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+                    cv::String filename = stream.str();
+                    imwrite(filename, img_display);
 
                     //stream.str("");
                     //stream.clear(ostringstream::goodbit);
 
                     // 各イメージプレーンの画像を保存（テスト用）
-                    ostringstream stream;
-                    cv::String filename;
-                       cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
-                    for (int zi = 24; zi < 25; zi++) {
+                    //ostringstream stream;
+                    //cv::String filename;
+                    //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
+                    //for (int zi = 24; zi < 25; zi++) {
 
-                        stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
-                        cout << "zi:" << zi << endl;
+                    //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
+                    //    cout << "zi:" << zi << endl;
 
-                        for (int i = 0; i < px_height_img; i++) {
-                            for (int j = 0; j < px_width_img; j++) {
-                                if (alpha[zi][i][j] > 0) {
-                                    img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
-                                    img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
-                                    img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
-                                }
-                            }
-                        }
-                        filename = stream.str();
-                        imwrite(filename, img);
-                        stream.str("");
-                        stream.clear(ostringstream::goodbit);
-                        img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
+                    //    for (int i = 0; i < px_height_img; i++) {
+                    //        for (int j = 0; j < px_width_img; j++) {
+                    //            if (alpha[zi][i][j] > 0) {
+                    //                img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
+                    //                img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
+                    //                img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
+                    //            }
+                    //        }
+                    //    }
+                    //    filename = stream.str();
+                    //    imwrite(filename, img);
+                    //    stream.str("");
+                    //    stream.clear(ostringstream::goodbit);
+                    //    img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
 
-                    }
+                    //}
 
                     cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
                     array[idx_nzl][idx_subz++] = sum_time / TIMES;
