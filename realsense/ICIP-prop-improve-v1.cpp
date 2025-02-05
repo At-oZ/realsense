@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
                             data[i] = (double*)malloc(sizeof(double) * cols);
                         }
 
-                        std::string filenamein = "./images/standard/mandrill.bmp";
+                        std::string filenamein = "./images/standard/parrots.bmp";
                         cv::Mat image_input = cv::imread(filenamein);
 
                         if (image_input.empty())
@@ -456,7 +456,7 @@ int main(int argc, char* argv[])
 
                         // 表示画像の保存
                         ostringstream stream;
-                        stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-mandrill_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+                        stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-parrots_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
                         cv::String filename = stream.str();
                         imwrite(filename, img_display);
 
@@ -469,7 +469,7 @@ int main(int argc, char* argv[])
                         //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
                         //for (int zi = 24; zi < 25; zi++) {
 
-                        //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-mandrill_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
+                        //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-parrots_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
                         //    cout << "zi:" << zi << endl;
 
                         //    for (int i = 0; i < px_height_img; i++) {
@@ -611,7 +611,7 @@ void insert_pixels(int start, int end, int element_image_px, int num_pinhole, do
 int writeCSV2(const std::vector<std::vector<double>> array, int ptimes) {
 
     // 出力ファイルを開く
-    std::ofstream file("./numbers/speed/speed-prop-improve-v1-mandrill_tileExpand_pt" + std::to_string(ptimes) + ".csv");
+    std::ofstream file("./numbers/speed/speed-prop-improve-v1-parrots_tileExpand_pt" + std::to_string(ptimes) + ".csv");
 
     // ファイルが正しく開けたか確認
     if (!file.is_open()) {

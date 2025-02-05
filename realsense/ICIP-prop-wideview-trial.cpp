@@ -408,7 +408,7 @@
 //            }
 //        }
 //
-//        img_display = cv::Scalar::all(0);
+//        img_display = cv::Scalar::all(255);
 //        img_camera_array = cv::Scalar::all(0);
 //
 //        //for (int i = 0; i < display_px; i++) {
