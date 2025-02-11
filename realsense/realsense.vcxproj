@@ -156,6 +156,7 @@
     <ClCompile Include="camera-array-sim-v2.cpp" />
     <ClCompile Include="camera-array-sim-v3.cpp" />
     <ClCompile Include="camera-sim.cpp" />
+    <ClCompile Include="capture-imageplane-trial.cpp" />
     <ClCompile Include="DirectProjection-v1.cpp" />
     <ClCompile Include="evaluation-comparison.cpp" />
     <ClCompile Include="ICIP-DirectProjection-v1.cpp" />

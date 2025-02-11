@@ -620,9 +620,12 @@
 //
 //                for (int m = 0; m < element_image_px; ++m) {
 //                    for (int n = 0; n < element_image_px; ++n) {
-//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
-//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
-//                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                        if (offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)) < display_width_px) {
+//                            img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
+//                            img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
+//                            img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//
+//                        }
 //                    }
 //                }
 //
