@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
     cv::namedWindow(WINNAME);
     HWND window = FindWindow(NULL, L"image");
     SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+    SetWindowPos(window, NULL, 3840, 2420, 0, 0, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 
 
     int index = 0;
@@ -622,12 +622,12 @@ int main(int argc, char* argv[])
 
                 for (int m = 0; m < element_image_px; ++m) {
                     for (int n = 0; n < element_image_px; ++n) {
-                        if (offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)) < display_width_px) {
+                        //if (offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)) < display_width_px) {
                             img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
                             img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
                             img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
 
-                        }
+                        //}
                     }
                 }
 
@@ -649,12 +649,11 @@ int main(int argc, char* argv[])
         //    break;
         //}
 
-        //// 表示画像の保存
-        //ostringstream stream;
-        //if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";
-        //else stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=F.png";
-        //cv::String filename_display = stream.str();
-        //imwrite(filename_display, img_display);
+        // 表示画像の保存
+        ostringstream stream;
+        stream << "C:/Users/渡辺　哲生/source/repos/realsense/realsense/images/displayimage/prop-lenna-v2-3_ImgDisplay_NumPinhole" << num_pinhole << "_NxNy" << NxNy << "_Nz" << num_z_level << "_N" << static_cast<int>(ptimes) << ".png";
+        cv::String filename_display = stream.str();
+        imwrite(filename_display, img_camera_array);
 
         //stream.str("");
         //stream.clear(ostringstream::goodbit);
@@ -666,30 +665,30 @@ int main(int argc, char* argv[])
         //imwrite(filename_camera_array, img_camera_array);
 
         // 各イメージプレーンの画像を保存（テスト用）
-        ostringstream stream;
-        cv::String filename;
-        cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
-        for (int zi = 0; zi < num_z_level; zi++) {
+        //ostringstream stream;
+        //cv::String filename;
+        //cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
+        //for (int zi = 0; zi < num_z_level; zi++) {
 
-            stream << "D:/EvacuatedStorage/image-plane/prop-wideview-trial/NxNy" << NxNy << "/prop-trial_NxNy" << px_height_img <<  "_Nz" << nzl << "_N" << ptimes << "_zi" << zi << ".png";
-            cout << "zi:" << zi << endl;
+        //    stream << "D:/EvacuatedStorage/image-plane/prop-wideview-trial/NxNy" << NxNy << "/prop-trial_NxNy" << px_height_img <<  "_Nz" << nzl << "_N" << ptimes << "_zi" << zi << ".png";
+        //    cout << "zi:" << zi << endl;
 
-            for (int i = 0; i < px_height_img; i++) {
-                for (int j = 0; j < px_width_img; j++) {
-                    if (alpha[zi][i][j] > 0) {
-                        img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
-                        img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
-                        img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
-                    }
-                }
-            }
-            filename = stream.str();
-            imwrite(filename, img);
-            stream.str("");
-            stream.clear(ostringstream::goodbit);
-            img = cv::Scalar::all(0);
+        //    for (int i = 0; i < px_height_img; i++) {
+        //        for (int j = 0; j < px_width_img; j++) {
+        //            if (alpha[zi][i][j] > 0) {
+        //                img.at<cv::Vec3b>(i, j)[0] = blue[zi][i][j];
+        //                img.at<cv::Vec3b>(i, j)[1] = green[zi][i][j];
+        //                img.at<cv::Vec3b>(i, j)[2] = red[zi][i][j];
+        //            }
+        //        }
+        //    }
+        //    filename = stream.str();
+        //    imwrite(filename, img);
+        //    stream.str("");
+        //    stream.clear(ostringstream::goodbit);
+        //    img = cv::Scalar::all(0);
 
-        }
+        //}
 
     }
     pipe.stop();
