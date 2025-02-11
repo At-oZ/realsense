@@ -289,7 +289,7 @@ int main(int argc, char* argv[])
     rs2::colorizer color_map;
     rs2::align align(RS2_STREAM_COLOR);
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 10; i++)
     {
         rs2::frameset frames = pipe.wait_for_frames();
         cv::waitKey(10);
