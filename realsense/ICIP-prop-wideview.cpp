@@ -387,6 +387,7 @@
 //                        }
 //
 //                        img_display = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
+//                        img_display = cv::Scalar::all(255);
 //                        img_camera_array = cv::Mat::zeros(cv::Size(each_camera_px * num_pinhole, each_camera_px * num_pinhole), CV_8UC3);
 //
 //                        //for (int i = 0; i < display_px; i++) {
@@ -617,13 +618,13 @@
 //                    cv::waitKey(0);
 //
 //                    // 表示画像の保存
-//                    ostringstream stream;
-//                    stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-wideview/prop-wideview-parrots_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
-//                    cv::String filename_display = stream.str();
-//                    imwrite(filename_display, img_display);
+//                    //ostringstream stream;
+//                    //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-wideview/prop-wideview-parrots_Nz" << nzl << "_subjectZ" << (int)subz << ".png";
+//                    //cv::String filename_display = stream.str();
+//                    //imwrite(filename_display, img_display);
 //
-//                    stream.str("");
-//                    stream.clear(ostringstream::goodbit);
+//                    //stream.str("");
+//                    //stream.clear(ostringstream::goodbit);
 //
 //                    // 表示系用カメラアレイ画像の保存
 //                    //if (interpolation) stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/lensarray/v2-3-wideview/prop-parrots-v2-3_ImgCameraArray_NumPinhole" << num_pinhole << "_NxNy" << boxel_cam_width_px << "_Nz" << num_z_level << "_pitchTimes" << static_cast<int>(ptimes) << "_subjectZ" << (int)subject_z << "interpolation=T.png";

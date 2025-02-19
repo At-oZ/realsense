@@ -162,6 +162,7 @@
     <ClCompile Include="ICIP-ideal-v1.cpp" />
     <ClCompile Include="ICIP-ideal-v2.cpp" />
     <ClCompile Include="ICIP-ideal-wideview-v1.cpp" />
+    <ClCompile Include="ICIP-prop-improve-display.cpp" />
     <ClCompile Include="ICIP-prop-improve-v1.cpp" />
     <ClCompile Include="ICIP-prop-improve-v2.cpp" />
     <ClCompile Include="ICIP-prop-original-v1.cpp" />

@@ -456,7 +456,7 @@ int main(int argc, char* argv[])
 
                         // •\Ž¦‰æ‘œ‚Ì•Û‘¶
                         ostringstream stream;
-                        stream << "E:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-parrots_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+                        stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-parrots_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
                         cv::String filename = stream.str();
                         imwrite(filename, img_display);
 
