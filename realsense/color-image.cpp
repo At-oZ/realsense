@@ -141,7 +141,7 @@
 //        cv::waitKey(10);
 //    }
 //
-//    for (int tt = 0; tt < 1; tt++) {
+//    while(true) {
 //
 //        //std::cout << tt << std::endl;
 //
@@ -167,13 +167,13 @@
 //        cv::imshow("Display window", color_image);
 //
 //        // ”CˆÓ‚ÌƒL[‚ª‰Ÿ‚³‚ê‚é‚Ü‚Å‘Ò‚Â
-//        cv::waitKey(0);
+//        cv::waitKey(10);
 //
 //        //std::ostringstream stream;
 //        //stream << "v3_color_image_g" << g << "_wp" << std::fixed << std::setprecision(1) << wp << "_pd" << std::fixed << std::setprecision(3) << pd << "_D" << D << ".png"; // ¬”“_ˆÈ‰º2Œ…‚ÅØ‚èŽÌ‚Ä
 //        //cv::String filename = stream.str();
 //
-//        imwrite("v_apdt_color_image.png", color_image);
+//        imwrite("new_color_image.png", color_image);
 //
 //    }
 //
