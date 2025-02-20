@@ -38,7 +38,7 @@
 //
 //    int index = 0;
 //    bool interpolation = true;
-//    for (int NxNy = 400; NxNy <= 400; NxNy += 100) {
+//    for (int NxNy = 300; NxNy <= 300; NxNy += 100) {
 //
 //        for (int nph = 40; nph <= 40; nph *= 2) {
 //
@@ -48,10 +48,10 @@
 //                std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
 //
 //                int idx_nzl = 0;
-//                for (int nzl = 10; nzl <= 100; nzl += 5) {
+//                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 300.0; subz <= 8000.0; subz += 100) {
+//                    for (double subz = 300.0; subz <= 300.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -75,7 +75,7 @@
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = pinhole_array_size * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加); // 被写体のサイズ
+//                        double subject_size = pinhole_array_size; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
 //                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
@@ -164,7 +164,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/milkdrop.bmp";
+//                        std::string filenamein = "./images/standard/grid_image.png";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
@@ -455,10 +455,10 @@
 //                        //cv::waitKey(0);
 //
 //                        // 表示画像の保存
-//                        //ostringstream stream;
-//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-milkdrop_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
-//                        //cv::String filename = stream.str();
-//                        //imwrite(filename, img_display);
+//                        ostringstream stream;
+//                        stream << "E:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//                        cv::String filename = stream.str();
+//                        imwrite(filename, img_display);
 //
 //                        //stream.str("");
 //                        //stream.clear(ostringstream::goodbit);
@@ -546,7 +546,7 @@
 //                    idx_nzl++;
 //
 //                }
-//                writeCSV2(array, NxNy, pt);
+//                //writeCSV2(array, NxNy, pt);
 //            }
 //        }
 //
