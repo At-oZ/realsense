@@ -147,7 +147,7 @@
 //        for (int nzl = 60; nzl <= 60; nzl += 10) {
 //
 //            int idx_subz = 0;
-//            for (double subz = 256.0; subz <= 256.0; subz *= 2) {
+//            for (double subz = 451.0; subz <= 451.0; subz *= 2) {
 //
 //                int idx_pt = 0;
 //                for (int pt = 3; pt <= 3; pt++) {
@@ -168,7 +168,7 @@
 //                    std::cout << "pinhole pitch:" << pinhole_pitch << "mm" << std::endl;
 //
 //                    // 表示系のパラメータ(mm)
-//                    double focal_length = 8.4; // ギャップ
+//                    double focal_length = 6.2; // ギャップ
 //                    std::cout << "focal length:" << focal_length << std::endl;
 //
 //                    // 観察者のパラメータ
@@ -190,7 +190,7 @@
 //
 //                    // 被写体のパラメータ(mm)
 //                    int subject_image_resolution = 554; // 被写体の解像度
-//                    double subject_size = pinhole_array_size; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加); // 被写体のサイズ
+//                    double subject_size = 230.0; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加); // 被写体のサイズ
 //                    double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                    double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                    double subject_z = subz; // 被写体の奥行き方向の位置
@@ -276,7 +276,7 @@
 //                        data[i] = (double*)malloc(sizeof(double) * cols);
 //                    }
 //
-//                    std::string filenamein = "./images/standard/pepper.bmp";
+//                    std::string filenamein = "./images/standard/Lenna.bmp";
 //                    cv::Mat image_input = cv::imread(filenamein);
 //
 //                    if (image_input.empty())
@@ -594,9 +594,11 @@
 //
 //                                for (int m = 0; m < element_image_px; ++m) {
 //                                    for (int n = 0; n < element_image_px; ++n) {
-//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
-//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
-//                                        img_display.at<cv::Vec3b>(offsety + m, offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                                        if (offsety + m - static_cast<int>(display_px * 0.35) > 0) {
+//                                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
+//                                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
+//                                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) / 2)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                                        }
 //                                    }
 //                                }
 //
