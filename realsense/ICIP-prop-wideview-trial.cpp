@@ -138,7 +138,7 @@
 //    int index = 0;
 //    bool interpolation = true; // 補間処理を行うかのフラッグ
 //    int nph = 40;
-//    int nzl = 40;
+//    int nzl = 60;
 //    int pt = 3;
 //    int NxNy = 300;
 //
@@ -164,7 +164,7 @@
 //    std::cout << "pinhole pitch:" << pinhole_pitch << "mm" << std::endl;
 //
 //    // 表示系のパラメータ(mm)
-//    double focal_length = 12; // ギャップ
+//    double focal_length = 8.4; // ギャップ
 //    std::cout << "focal length:" << focal_length << std::endl;
 //
 //    // 観察者のパラメータ
@@ -622,10 +622,10 @@
 //                for (int m = 0; m < element_image_px; ++m) {
 //                    for (int n = 0; n < element_image_px; ++n) {
 //                        //if (offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 2)) < display_width_px) {
-//                        if (offsety + m - static_cast<int>(display_px * 0.5) > 0) {
-//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.5), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
-//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.5), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
-//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.5), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
+//                        if (offsety + m - static_cast<int>(display_px * 0.35) > 0) {
+//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[0] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[0];
+//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[1] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[1];
+//                            img_display.at<cv::Vec3b>(offsety + m - static_cast<int>(display_px * 0.35), offsetx + n + static_cast<int>(floor((display_width_px - display_px) * 0.5)))[2] = img_camera_array.at<cv::Vec3b>(i * each_camera_px + m + offsetv, j * each_camera_px + n + offsetu)[2];
 //
 //                        }
 //                    }
