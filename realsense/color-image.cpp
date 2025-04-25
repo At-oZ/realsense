@@ -12,6 +12,8 @@
 //#include <thread>
 //#include <cmath>
 //
+//int writeCSV2(const std::vector<std::vector<double>> array);
+//
 //void insert_pixels(int Hpin, int Wpin, int N, int D, double g, double wp, double inv_wp, int starty, int endy, std::vector<std::vector<double>>& uo, std::vector<std::vector<double>>& vo, std::vector<std::vector<cv::Mat>>& elem_img, std::vector<std::vector<double>>& pointclouddata) {
 //
 //    double inv_d;
@@ -97,6 +99,10 @@
 //    int WIDTH = 640;
 //    int HEIGHT = 480;
 //    int FPS = 30;
+//
+//    int rows = WIDTH * HEIGHT;
+//    std::vector<std::vector<double>> data(rows, std::vector<double>(6)); // 横：subz, 縦：ptimes
+//
 //    rs2::config config;
 //    config.enable_stream(RS2_STREAM_COLOR, WIDTH, HEIGHT, RS2_FORMAT_BGR8, FPS);
 //    config.enable_stream(RS2_STREAM_DEPTH, WIDTH, HEIGHT, RS2_FORMAT_Z16, FPS);
@@ -162,20 +168,42 @@
 //        cv::Mat color_image;
 //        cv::cvtColor(color_image_rgb, color_image, cv::COLOR_RGB2BGR);
 //
+//        // Generate the pointcloud and texture mappings
+//        points = pc.calculate(depth_frame);
+//
+//        // Tell pointcloud object to map to this color frame
+//        pc.map_to(color_frame);
+//
+//        auto verts = points.get_vertices();
+//
 //        // 画像を表示
 //        cv::namedWindow("Display window", cv::WINDOW_AUTOSIZE);
 //        cv::imshow("Display window", color_image);
 //
 //        // 任意のキーが押されるまで待つ
-//        cv::waitKey(10);
+//        if (cv::waitKey(10) == 27)  // ESCキーで終了
+//        {
 //
-//        //std::ostringstream stream;
-//        //stream << "v3_color_image_g" << g << "_wp" << std::fixed << std::setprecision(1) << wp << "_pd" << std::fixed << std::setprecision(3) << pd << "_D" << D << ".png"; // 小数点以下2桁で切り捨て
-//        //cv::String filename = stream.str();
+//            for (int k = 0; k < rows; k++) {
 //
-//        imwrite("new_color_image.png", color_image);
+//                data[k][0] = verts[k].x * 1000.0;
+//                data[k][1] = verts[k].y * 1000.0;
+//                data[k][2] = verts[k].z * 1000.0 + D;
+//                data[k][3] = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[2];
+//                data[k][4] = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[1];
+//                data[k][5] = color_image.at<cv::Vec3b>(static_cast<int>(k * inv_WIDTH), (k % WIDTH))[0];
+//            }
 //
+//            writeCSV2(data);
+//            imwrite("new_color_image.png", color_image);
+//            cv::destroyAllWindows;
+//            pipe.stop();
+//
+//            break;
+//
+//        }
 //    }
+//
 //
 //    return EXIT_SUCCESS;
 //}
@@ -188,4 +216,34 @@
 //{
 //    std::cerr << e.what() << std::endl;
 //    return EXIT_FAILURE;
+//}
+//
+//int writeCSV2(const std::vector<std::vector<double>> array) {
+//
+//    // 出力ファイルを開く
+//    std::ofstream file("./numbers/pointcloud.csv");
+//
+//    // ファイルが正しく開けたか確認
+//    if (!file.is_open()) {
+//        std::cerr << "ファイルが開けませんでした" << std::endl;
+//        return 1;
+//    }
+//
+//    // 2次元配列の内容をCSV形式でファイルに書き込む
+//    for (const auto& row : array) {
+//        for (size_t i = 0; i < row.size(); ++i) {
+//            file << row[i];
+//            if (i < row.size() - 1) {
+//                file << ","; // 各要素の間にカンマを挿入
+//            }
+//        }
+//        file << "\n"; // 行の終わりに改行を挿入
+//    }
+//
+//    // ファイルを閉じる
+//    file.close();
+//
+//    std::cout << "書き込みが完了しました。" << std::endl;
+//
+//    return 0;
 //}

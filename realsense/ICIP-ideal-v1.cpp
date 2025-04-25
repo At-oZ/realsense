@@ -6,12 +6,25 @@
 //#include <opencv2/opencv.hpp>
 //#include <iostream>
 //#include <vector>
+//#include <Windows.h>
 //
 //int main() {
 //
+//
+//    std::cout << "ICIP-ideal-v1" << std::endl;
+//
 //    int nphs[20] = { 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 100, 120, 125, 150, 200 };
 //
-//    for (int idx_nph = 0; idx_nph < 20; idx_nph++) {
+//    std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME);
+//    HWND window = FindWindow(NULL, L"image");
+//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//
+//    cv::Mat img_window = cv::Mat::zeros(cv::Size(3840, 2400), CV_8UC3);
+//    img_window = cv::Scalar::all(255);
+//
+//    for (int idx_nph = 11; idx_nph < 12; idx_nph++) {
 //
 //        int nph = nphs[idx_nph];
 //
@@ -40,7 +53,7 @@
 //        const double gridOriginOffset = -((gridSize - 1) * gridSpacing) / 2.0; // グリッドの中心を原点に合わせるためのオフセット
 //
 //        // カメラの設定
-//        const double focalLength = zo_min / (3 * nph - 1); // レンズアレイの焦点距離
+//        const double focalLength = 8.2; // レンズアレイの焦点距離 zo_min / (3 * nph - 1)
 //        const double sensorSize = gridSpacing; // センサーサイズ（mm）
 //        const int imageResolution = static_cast<int>(floor(displayImageSize / gridSize)); // 要素画像の解像度（ピクセル）
 //
@@ -49,18 +62,18 @@
 //        const double intv = sensorSize / pixelSize;
 //
 //        // タイル画像の読み込み
-//        cv::Mat tileImage = cv::imread("./images/standard/aerial.bmp");
+//        cv::Mat tileImage = cv::imread("./images/standard/Lenna.bmp");
 //        if (tileImage.empty()) {
 //            std::cerr << "タイル画像が見つかりません。" << std::endl;
 //            return -1;
 //        }
 //        cv::resize(tileImage, tileImage, cv::Size(tileResolution, tileResolution));
 //
-//        for (double tileZ = 256; tileZ <= 8192; tileZ *= 2) {
+//        for (double tileZ = 451.0; tileZ <= 451.0; tileZ *= 2) {
 //
 //            std::cout << "tileZ:" << tileZ << std::endl;
 //
-//            double tileSize = displayAreaSize * (tileZ + zo_min) / zo_min; // 拡大の場合 * (tileZ + zo_min) / zo_minを付ける
+//            double tileSize = 230.0; // 拡大の場合 * (tileZ + zo_min) / zo_minを付ける
 //            double tilePixelSize = tileSize / tileResolution;
 //
 //            // カメラ位置の計算
@@ -134,10 +147,10 @@
 //                            double visibleAreaMaxY = viewY + viewPixelHalf;
 //
 //                            // タイルの範囲内に制限
-//                            visibleAreaMinX = std::max(-tileSize / 2.0, visibleAreaMinX);
-//                            visibleAreaMaxX = std::min(tileSize / 2.0, visibleAreaMaxX);
-//                            visibleAreaMinY = std::max(-tileSize / 2.0, visibleAreaMinY);
-//                            visibleAreaMaxY = std::min(tileSize / 2.0, visibleAreaMaxY);
+//                            visibleAreaMinX = (std::max)(-tileSize / 2.0, visibleAreaMinX);
+//                            visibleAreaMaxX = (std::min)(tileSize / 2.0, visibleAreaMaxX);
+//                            visibleAreaMinY = (std::max)(-tileSize / 2.0, visibleAreaMinY);
+//                            visibleAreaMaxY = (std::min)(tileSize / 2.0, visibleAreaMaxY);
 //                            //std::cout << "visible are min X:" << visibleAreaMinX << ", visible are max X:" << visibleAreaMaxX << ", visible are min Y:" << visibleAreaMinY << ", visible are max Y:" << visibleAreaMaxY << std::endl;
 //                            //std::cout << "diff X:" << visibleAreaMaxX - visibleAreaMinX << ", diff Y:" << visibleAreaMaxY - visibleAreaMinY << std::endl;
 //
@@ -150,10 +163,10 @@
 //                            }
 //
 //                            // ピクセルインデックスの範囲を計算
-//                            int xMinIdx = std::max(0, static_cast<int>(std::floor((visibleAreaMinX + tileSize / 2) / tilePixelSize)));
-//                            int xMaxIdx = std::min(tileResolution - 1, static_cast<int>(std::floor((visibleAreaMaxX + tileSize / 2) / tilePixelSize)));
-//                            int yMinIdx = std::max(0, static_cast<int>(std::floor((visibleAreaMinY + tileSize / 2) / tilePixelSize)));
-//                            int yMaxIdx = std::min(tileResolution - 1, static_cast<int>(std::floor((visibleAreaMaxY + tileSize / 2) / tilePixelSize)));
+//                            int xMinIdx = (std::max)(0, static_cast<int>(std::floor((visibleAreaMinX + tileSize / 2) / tilePixelSize)));
+//                            int xMaxIdx = (std::min)(tileResolution - 1, static_cast<int>(std::floor((visibleAreaMaxX + tileSize / 2) / tilePixelSize)));
+//                            int yMinIdx = (std::max)(0, static_cast<int>(std::floor((visibleAreaMinY + tileSize / 2) / tilePixelSize)));
+//                            int yMaxIdx = (std::min)(tileResolution - 1, static_cast<int>(std::floor((visibleAreaMaxY + tileSize / 2) / tilePixelSize)));
 //                            //std::cout << "X min index:" << xMinIdx << ", X max index:" << xMaxIdx << ", Y min index:" << yMinIdx << ", Y max index:" << yMaxIdx << std::endl;
 //
 //                            // 観察される色の加重平均を計算
@@ -166,7 +179,7 @@
 //                                double xPixelMin = xIdx * tilePixelSize - tileSize / 2;
 //                                double xPixelMax = (xIdx + 1) * tilePixelSize - tileSize / 2;
 //
-//                                double xOverlap = std::max(0.0, std::min(visibleAreaMaxX, xPixelMax) - std::max(visibleAreaMinX, xPixelMin));
+//                                double xOverlap = (std::max)(0.0, (std::min)(visibleAreaMaxX, xPixelMax) - (std::max)(visibleAreaMinX, xPixelMin));
 //                                //std::cout << "visible are max X:" << visibleAreaMaxX << ", x pixel max:" << xPixelMax << ", visible are min X:" << visibleAreaMinX << ", x pixel min:" << xPixelMin << std::endl;
 //                                //std::cout << "x overlap:" << xOverlap << std::endl;
 //
@@ -178,7 +191,7 @@
 //                                    double yPixelMin = yIdx * tilePixelSize - tileSize / 2;
 //                                    double yPixelMax = (yIdx + 1) * tilePixelSize - tileSize / 2;
 //
-//                                    double yOverlap = std::max(0.0, std::min(visibleAreaMaxY, yPixelMax) - std::max(visibleAreaMinY, yPixelMin));
+//                                    double yOverlap = (std::max)(0.0, (std::min)(visibleAreaMaxY, yPixelMax) - (std::max)(visibleAreaMinY, yPixelMin));
 //                                    //std::cout << "visible are max Y:" << visibleAreaMaxY << ", y pixel max:" << yPixelMax << ", visible are min Y:" << visibleAreaMinY << ", y pixel min:" << yPixelMin << std::endl;
 //                                    //std::cout << "y overlap:" << yOverlap << std::endl;
 //
@@ -223,10 +236,23 @@
 //                }
 //            }
 //
-//            // 画像の保存
-//            std::string filename = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_aerial_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
 //
-//            cv::imwrite(filename, displayImage);
+//            int shift_y = 895;
+//            for (int i = shift_y; i < 2400; ++i) {
+//                for (int j = 720; j < 3120; ++j) {
+//                    img_window.at<cv::Vec3b>(i - shift_y, j)[0] = displayImage.at<cv::Vec3b>(i, j - 720)[0];
+//                    img_window.at<cv::Vec3b>(i - shift_y, j)[1] = displayImage.at<cv::Vec3b>(i, j - 720)[1];
+//                    img_window.at<cv::Vec3b>(i - shift_y, j)[2] = displayImage.at<cv::Vec3b>(i, j - 720)[2];
+//                }
+//            }
+//
+//            cv::imshow(WINNAME, img_window);
+//            cv::waitKey(0);
+//
+//            //// 画像の保存
+//            //std::string filename = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_aerial_gridSize" + std::to_string(static_cast<int>(gridSize)) + "_zi" + std::to_string(static_cast<int>(tileZ)) + ".png";
+//
+//            //cv::imwrite(filename, displayImage);
 //
 //        }
 //
