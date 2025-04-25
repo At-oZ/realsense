@@ -514,13 +514,13 @@
 //
 //        int shift_y = 10;
 //        for (int i = shift_y; i < display_px; ++i) {
-//            if (i - static_cast<int>(display_px * 0.5) > 0) {
+//            //if (i - static_cast<int>(display_px * 0.5) > 0) {
 //                for (int j = static_cast<int>(floor((display_width_px - display_px) / 2)); j < display_width_px - static_cast<int>(floor((display_width_px - display_px) / 2)); ++j) {
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0.5), j)[0] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0.5), j)[1] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0.5), j)[2] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
+//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[0] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
+//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[1] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
+//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[2] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
 //                }
-//            }
+//            //}
 //        }
 //
 //        // ë™íËèIóπéûçèÇãLò^
