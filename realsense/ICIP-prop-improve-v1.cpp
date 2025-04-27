@@ -51,7 +51,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 1000.0; subz <= 1000.0; subz += 100) {
+//                    for (double subz = 300.0; subz <= 300.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -68,14 +68,14 @@
 //                        double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                        // 表示系のパラメータ(mm)
-//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ
+//                        double focal_length = 8.4; // ギャップ(zo_min / (3 * nph - 1))
 //                        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                        int display_px = 2400; // 各軸方向の表示画像の解像度
 //                        double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = pinhole_array_size; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+//                        double subject_size = pinhole_array_size / 2; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
 //                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
@@ -456,7 +456,8 @@
 //
 //                        // 表示画像の保存
 //                        ostringstream stream;
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //

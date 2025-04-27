@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
                         // 被写体のパラメータ(mm)
                         int subject_image_resolution = 554; // 被写体の解像度
-                        double subject_size = pinhole_array_size; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+                        double subject_size = pinhole_array_size / 2; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
                         double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
                         double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
                         double subject_z = subz; // 被写体の奥行き方向の位置
@@ -469,7 +469,7 @@ int main(int argc, char* argv[])
 
                         // 表示画像の保存
                         ostringstream stream;
-                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
                         cv::String filename = stream.str();
                         imwrite(filename, img_display);
 
