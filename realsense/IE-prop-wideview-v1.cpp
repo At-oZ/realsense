@@ -1,6 +1,6 @@
 ///* 点群データから4次元光線情報の再構成画像を作成するプログラム */
-///* prop-lenna-v2-2からの派生 */
-///* 完成版（詳細化と平均化まで） */
+///* ICIP-prop-improve-v1からの派生 */
+///* wideview版(ICIP-prop-wideviewの改善) */
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -32,7 +32,7 @@
 //int main(int argc, char* argv[])
 //{
 //
-//    cout << "ICIP-prop-improve-v1" << endl;
+//    cout << "IE-prop-wideview-v1" << endl;
 //
 //    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
@@ -63,15 +63,18 @@
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
 //                        // ピンホールアレイのパラメータ(mm)
-//                        double pinhole_array_size = display_pixel_pitch * display_height_px;   // 各軸方向のピンホールアレイのサイズ
+//                        double pinhole_pitch = 4.51;    // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
-//                        double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
+//                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
 //
 //                        // 表示系のパラメータ(mm)
-//                        double focal_length = 8.4; // ギャップ(zo_min / (3 * nph - 1))
-//                        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
-//                        int display_px = 2400; // 各軸方向の表示画像の解像度
-//                        double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
+//                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_array_size; //表示画像の解像度
+//                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//                        int display_px = static_cast<int>(floor((focal_length + zo_min) / zo_min * pinhole_array_size / display_pixel_pitch)); // 各軸方向の表示画像の解像度
+//
+//                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(3) << endl;
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
@@ -127,33 +130,35 @@
 //                            }
 //                        }
 //
-//                        double u, xt, yt, zt, nz;
+//                        double s, t, u, v, xt, yt, zt, nz;
 //                        for (int i = 0; i < element_image_px; i++) {
-//
-//                            u = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch;
 //
 //                            for (int j = 0; j < num_pinhole; j++) {
 //
+//                                s = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch;
+//                                u = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * s;
 //                                zt = (double)(num_z_level - 1) * inv_coef;
-//                                xt = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + u / focal_length;
+//                                xt = s * zt + u / focal_length;
 //
 //                                for (int nz = num_z_level - 1; nz >= 0; nz--) {
 //                                    nx[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
 //                                    zt -= inv_coef;
-//                                    xt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                                    xt -= s * inv_coef;
 //                                }
 //
 //                            }
 //
 //                            for (int j = 0; j < num_pinhole; j++) {
 //
+//                                t = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch;
+//                                v = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * t;
 //                                zt = (double)(num_z_level - 1) * inv_coef;
-//                                yt = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + u / focal_length;
+//                                yt = t * zt + v / focal_length;
 //
 //                                for (int nz = num_z_level - 1; nz >= 0; nz--) {
 //                                    ny[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
 //                                    zt -= inv_coef;
-//                                    yt -= (j - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                                    yt -= t * inv_coef;
 //                                }
 //
 //                            }
@@ -457,7 +462,7 @@
 //                        // 表示画像の保存
 //                        ostringstream stream;
 //                        //stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //
