@@ -173,7 +173,7 @@
     <ClCompile Include="ideal-v1-1.cpp" />
     <ClCompile Include="ideal-v1.cpp" />
     <ClCompile Include="ideal-v2.cpp" />
-    <ClCompile Include="IE-prop-improve-v1.cpp" />
+    <ClCompile Include="SMC-prop-improve-v1.cpp" />
     <ClCompile Include="observe-evaluation-v2.cpp" />
     <ClCompile Include="observe-evaluation.cpp" />
     <ClCompile Include="observe-image-v1.cpp" />
