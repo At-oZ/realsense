@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
                         double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 
                         // 表示系のパラメータ(mm)
-                        double focal_length = zo_min / (3 * nph - 1); // ギャップ
+                        double focal_length = 7.9667; // ギャップ
                         int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
                         int display_px = 2400; // 各軸方向の表示画像の解像度
                         double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
