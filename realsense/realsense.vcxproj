@@ -215,6 +215,9 @@
     <ClCompile Include="prop-v3.cpp" />
     <ClCompile Include="propv1-4-2.cpp" />
     <ClCompile Include="sample-display-image-v1.cpp" />
+    <ClCompile Include="SMC-prop-improve-v2.cpp" />
+    <ClCompile Include="SMC-prop-wideview-v1.cpp" />
+    <ClCompile Include="SMC-prop-wideview-v2.cpp" />
     <ClCompile Include="vt-v1-3-checkerboard.cpp" />
     <ClCompile Include="vt-v11-6-checkerboard.cpp" />
     <ClCompile Include="color-image.cpp" />

@@ -1,7 +1,6 @@
 ///* 点群データから4次元光線情報の再構成画像を作成するプログラム */
-///* SMC-prop-improve-v1からの派生 */
-///* レンズ歪み補正の導入　*/
-///* st-ST対応表の導入　*/ --> 廃止
+///* IE-prop-improve-v1からの派生 */
+///* wideview版にレンズ歪み補正を導入 */
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -19,7 +18,6 @@
 //#include <cmath>
 //#include <time.h>
 //#include <Windows.h>
-//#include <filesystem>
 //
 //using namespace std;
 //using namespace cv;
@@ -30,12 +28,11 @@
 //
 //void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
-//double** readCSVToDynamicArray(const std::string& filename);
 //
 //int main(int argc, char* argv[])
 //{
 //
-//    cout << "IE-prop-improve-v1" << endl;
+//    cout << "SMC-prop-wideview-v1" << endl;
 //
 //    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
@@ -66,15 +63,18 @@
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
 //                        // ピンホールアレイのパラメータ(mm)
-//                        double pinhole_array_size = display_pixel_pitch * display_height_px;   // 各軸方向のピンホールアレイのサイズ
+//                        double pinhole_pitch = 4.51;    // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
-//                        double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
+//                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
 //
 //                        // 表示系のパラメータ(mm)
-//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
-//                        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
-//                        int display_px = 2400; // 各軸方向の表示画像の解像度
-//                        double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
+//                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_array_size; //表示画像の解像度
+//                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//                        int display_px = static_cast<int>(floor((focal_length + zo_min) / zo_min * pinhole_array_size / display_pixel_pitch)); // 各軸方向の表示画像の解像度
+//
+//                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(3) << endl;
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
@@ -102,7 +102,7 @@
 //                        int px_width_img = NxNy; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
 //                        std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 //
-//                        int TIMES = 1;
+//                        int TIMES = 10;
 //
 //                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -130,52 +130,43 @@
 //                            }
 //                        }
 //
-//                        std::string stable = "./numbers/s-table.csv";
-//                        double** S_table = readCSVToDynamicArray(stable);
-//
-//                        std::string ttable = "./numbers/t-table.csv";
-//                        double** T_table = readCSVToDynamicArray(ttable);
-//
-//                        std::string utable = "./numbers/u-table.csv";
-//                        double** U_table = readCSVToDynamicArray(utable);
-//
-//                        std::string vtable = "./numbers/v-table.csv";
-//                        double** V_table = readCSVToDynamicArray(vtable);
-//
-//                        double S, T, U, V, xt, yt, zt, nz;
+//                        double s, t, u, v, r, mag, du, dv, xt, yt, zt, nz;
+//                        double appr_coef[4] = { -0.00294165634810498, 0.00106133918907954, 0.0104433635159957, 0.000148003007096005};
 //                        for (int i = 0; i < element_image_px; i++) {
 //                            for (int j = 0; j < element_image_px; j++) {
 //
-//                                S = S_table[i][j];
-//                                T = T_table[i][j];
-//                                U = U_table[i][j];
-//                                V = V_table[i][j];
-//                                //cout << "U:" << U << ", V:" << V << endl;
-//
 //                                for (int k = 0; k < num_pinhole; k++) {
+//                                    for (int l = 0; l < num_pinhole; l++) {
 //
-//                                    zt = (double)(num_z_level - 1) * inv_coef;
-//                                    xt = (k - (num_pinhole - 1) * 0.5 + S) * pinhole_pitch * zt + U / focal_length;
+//                                        s = (l - (num_pinhole - 1) * 0.5) * pinhole_pitch;
+//                                        t = (k - (num_pinhole - 1) * 0.5) * pinhole_pitch;
 //
-//                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        nx[j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
-//                                        zt -= inv_coef;
-//                                        xt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
+//                                        u = ((double)j - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * s;
+//                                        v = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * t;
+//
+//                                        r = sqrt(u * u + v * v);
+//                                        mag = appr_coef[0] * pow(r, 3.0) + appr_coef[1] * pow(r, 2.0) + appr_coef[2] * r + appr_coef[3];
+//
+//                                        du = mag * cos(atan2(v, u));
+//                                        dv = mag * sin(atan2(v, u));
+//
+//                                        u += du;
+//                                        v += dv;
+//
+//                                        zt = (double)(num_z_level - 1) * inv_coef;
+//                                        xt = s * zt + u / focal_length;
+//                                        yt = t * zt + v / focal_length;
+//
+//                                        for (int nz = num_z_level - 1; nz >= 0; nz--) {
+//
+//                                            nx[j][l][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
+//                                            ny[i][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
+//
+//                                            zt -= inv_coef;
+//                                            xt -= s * inv_coef;
+//                                            yt -= t * inv_coef;
+//                                        }
 //                                    }
-//
-//                                }
-//
-//                                for (int k = 0; k < num_pinhole; k++) {
-//
-//                                    zt = (double)(num_z_level - 1) * inv_coef;
-//                                    yt = (k - (num_pinhole - 1) * 0.5 + T) * pinhole_pitch * zt + V / focal_length;
-//
-//                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        ny[i][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
-//                                        zt -= inv_coef;
-//                                        yt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
-//                                    }
-//
 //                                }
 //                            }
 //                        }
@@ -477,7 +468,8 @@
 //
 //                        // 表示画像の保存
 //                        ostringstream stream;
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-wideview-v1/prop-wideview-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //
@@ -657,53 +649,4 @@
 //    std::cout << "書き込みが完了しました。" << std::endl;
 //
 //    return 0;
-//}
-//
-//double** readCSVToDynamicArray(const std::string& filename) {
-//    // ファイルを開く
-//    std::ifstream file(filename);
-//    if (!file.is_open()) {
-//        std::cerr << "CSVファイルを開けませんでした: " << filename << std::endl;
-//        return nullptr;
-//    }
-//
-//    // 一時的にデータを格納するためのvector
-//    std::vector<std::vector<double>> tempData;
-//    std::string line;
-//
-//    // CSVファイルを1行ずつ読み込む
-//    while (std::getline(file, line)) {
-//        std::stringstream lineStream(line);
-//        std::string cell;
-//        std::vector<double> row;
-//
-//        // 行をカンマで分割
-//        while (std::getline(lineStream, cell, ',')) {
-//            row.push_back(std::stod(cell)); // 文字列をdoubleに変換
-//        }
-//
-//        tempData.push_back(row);
-//    }
-//
-//    file.close();
-//
-//    // 行数と列数を取得
-//    size_t rows = tempData.size();
-//    size_t cols = tempData.empty() ? 0 : tempData[0].size();
-//
-//    // 動的に二次元配列を確保
-//    double** array = (double**)malloc(rows * sizeof(double*));
-//    for (size_t i = 0; i < rows; ++i) {
-//        array[i] = (double*)malloc(cols * sizeof(double));
-//    }
-//
-//    // vectorのデータを二次元配列にコピー
-//    for (size_t i = 0; i < rows; ++i) {
-//        for (size_t j = 0; j < cols; ++j) {
-//            array[i][j] = tempData[i][j];
-//        }
-//    }
-//
-//    std::cout << "CSVファイルの読み込みが完了しました。" << std::endl;
-//    return array;
 //}

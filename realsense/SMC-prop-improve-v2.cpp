@@ -1,7 +1,7 @@
 ///* 点群データから4次元光線情報の再構成画像を作成するプログラム */
-///* SMC-prop-improve-v1からの派生 */
+///* SMC-prop-improve-v1-reverseからの派生 */
 ///* レンズ歪み補正の導入　*/
-///* st-ST対応表の導入　*/ --> 廃止
+///* 先鋭化フィルタの導入 */
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -28,14 +28,14 @@
 //std::condition_variable conv;
 //int finished_threads = 0; // 終了したスレッドの数
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv);
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int**** nx, int**** ny, int* startu, int* startv);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
 //double** readCSVToDynamicArray(const std::string& filename);
 //
 //int main(int argc, char* argv[])
 //{
 //
-//    cout << "IE-prop-improve-v1" << endl;
+//    cout << "SMC-prop-improve-v1" << endl;
 //
 //    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
@@ -71,7 +71,7 @@
 //                        double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                        // 表示系のパラメータ(mm)
-//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
+//                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
 //                        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                        int display_px = 2400; // 各軸方向の表示画像の解像度
 //                        double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -102,6 +102,9 @@
 //                        int px_width_img = NxNy; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
 //                        std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 //
+//                        // 先鋭化フィルタの度合い
+//                        double sharpness = 0.5;
+//
 //                        int TIMES = 1;
 //
 //                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
@@ -115,26 +118,24 @@
 //                        }
 //
 //                        // 3次元配列のインデックス
-//                        int*** nx = (int***)malloc(sizeof(int**) * element_image_px);
-//                        int*** ny = (int***)malloc(sizeof(int**) * element_image_px);
+//                        int**** nx = (int****)malloc(sizeof(int***) * element_image_px);
+//                        int**** ny = (int****)malloc(sizeof(int***) * element_image_px);
 //                        for (int i = 0; i < element_image_px; i++) {
 //
-//                            nx[i] = (int**)malloc(sizeof(int*) * num_pinhole);
-//                            ny[i] = (int**)malloc(sizeof(int*) * num_pinhole);
+//                            nx[i] = (int***)malloc(sizeof(int**) * element_image_px);
+//                            ny[i] = (int***)malloc(sizeof(int**) * element_image_px);
 //
-//                            for (int j = 0; j < num_pinhole; j++) {
-//                                nx[i][j] = (int*)malloc(sizeof(int) * num_z_level);
-//                            }
-//                            for (int j = 0; j < num_pinhole; j++) {
-//                                ny[i][j] = (int*)malloc(sizeof(int) * num_z_level);
+//                            for (int j = 0; j < element_image_px; j++) {
+//
+//                                nx[i][j] = (int**)malloc(sizeof(int*) * num_pinhole);
+//                                ny[i][j] = (int**)malloc(sizeof(int*) * num_pinhole);
+//
+//                                for (int k = 0; k < num_pinhole; k++) {
+//                                    nx[i][j][k] = (int*)malloc(sizeof(int) * num_z_level);
+//                                    ny[i][j][k] = (int*)malloc(sizeof(int) * num_z_level);
+//                                }
 //                            }
 //                        }
-//
-//                        std::string stable = "./numbers/s-table.csv";
-//                        double** S_table = readCSVToDynamicArray(stable);
-//
-//                        std::string ttable = "./numbers/t-table.csv";
-//                        double** T_table = readCSVToDynamicArray(ttable);
 //
 //                        std::string utable = "./numbers/u-table.csv";
 //                        double** U_table = readCSVToDynamicArray(utable);
@@ -142,12 +143,10 @@
 //                        std::string vtable = "./numbers/v-table.csv";
 //                        double** V_table = readCSVToDynamicArray(vtable);
 //
-//                        double S, T, U, V, xt, yt, zt, nz;
+//                        double U, V, xt, yt, zt, nz;
 //                        for (int i = 0; i < element_image_px; i++) {
 //                            for (int j = 0; j < element_image_px; j++) {
 //
-//                                S = S_table[i][j];
-//                                T = T_table[i][j];
 //                                U = U_table[i][j];
 //                                V = V_table[i][j];
 //                                //cout << "U:" << U << ", V:" << V << endl;
@@ -155,10 +154,10 @@
 //                                for (int k = 0; k < num_pinhole; k++) {
 //
 //                                    zt = (double)(num_z_level - 1) * inv_coef;
-//                                    xt = (k - (num_pinhole - 1) * 0.5 + S) * pinhole_pitch * zt + U / focal_length;
+//                                    xt = (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + U / focal_length;
 //
 //                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        nx[j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
+//                                        nx[i][j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
 //                                        zt -= inv_coef;
 //                                        xt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //                                    }
@@ -168,10 +167,10 @@
 //                                for (int k = 0; k < num_pinhole; k++) {
 //
 //                                    zt = (double)(num_z_level - 1) * inv_coef;
-//                                    yt = (k - (num_pinhole - 1) * 0.5 + T) * pinhole_pitch * zt + V / focal_length;
+//                                    yt = (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + V / focal_length;
 //
 //                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        ny[i][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
+//                                        ny[i][j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
 //                                        zt -= inv_coef;
 //                                        yt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //                                    }
@@ -463,6 +462,127 @@
 //                            //cout << "calc finished" << endl;
 //                            finished_threads = 0;
 //
+//                            //// ガウシアンフィルタを適用
+//                            //int tmp_startv, tmp_startu;
+//                            //for (int i = 0; i < num_pinhole; i++) {
+//
+//                            //    //tmp_startv = startv[i];
+//                            //    tmp_startv = static_cast<int>(round(i * intv));
+//
+//                            //    for (int j = 0; j < num_pinhole; j++) {
+//
+//                            //        //tmp_startu = startv[j];
+//                            //        tmp_startu = static_cast<int>(round(j * intv));
+//
+//                            //        // 各要素画像に対して個別に先鋭化フィルタを適用
+//                            //        // 要素画像を切り出す
+//                            //        cv::Rect roi(tmp_startu, tmp_startv, element_image_px, element_image_px); // 範囲を指定
+//                            //        cv::Mat element_image = img_display(roi);
+//
+//                            //        // 先鋭化フィルタ適用（アンシャープマスク法）
+//                            //        cv::Mat blurred, sharpen;
+//                            //        cv::GaussianBlur(element_image, blurred, cv::Size(5, 5), 0); // ぼかし画像
+//                            //        cv::addWeighted(element_image, 1.0 + sharpness, blurred, -sharpness, 0, element_image); // シャープネス適用: 1.5*元画像 - 0.5*ぼかし画像
+//                            //    }
+//                            //}
+//
+//                            //// 先鋭化フィルタをウィーナーフィルタに置き換え
+//                            //int tmp_startv, tmp_startu;
+//                            //for (int i = 0; i < num_pinhole; i++) {
+//
+//                            //    tmp_startv = static_cast<int>(round(i * intv));
+//
+//                            //    for (int j = 0; j < num_pinhole; j++) {
+//
+//                            //        tmp_startu = static_cast<int>(round(j * intv));
+//
+//                            //        // 各要素画像に対して個別にウィーナーフィルタを適用
+//                            //        // 要素画像を切り出す
+//                            //        cv::Rect roi(tmp_startu, tmp_startv, element_image_px, element_image_px); // 範囲を指定
+//                            //        cv::Mat element_image = img_display(roi);
+//
+//                            //        // 画像をチャンネルに分割
+//                            //        std::vector<cv::Mat> channels;
+//                            //        cv::split(element_image, channels);
+//
+//                            //        // 各チャンネルに対してウィーナーフィルタを適用
+//                            //        for (int ch = 0; ch < 3; ch++) {
+//                            //            // 画像をfloat型に変換
+//                            //            cv::Mat floatImg;
+//                            //            channels[ch].convertTo(floatImg, CV_32F);
+//
+//                            //            // 画像サイズを調整（DFT用に最適なサイズに）
+//                            //            cv::Mat padded;
+//                            //            int m = cv::getOptimalDFTSize(floatImg.rows);
+//                            //            int n = cv::getOptimalDFTSize(floatImg.cols);
+//                            //            cv::copyMakeBorder(floatImg, padded, 0, m - floatImg.rows, 0, n - floatImg.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+//
+//                            //            // DFT計算用の複素数配列
+//                            //            cv::Mat planes[] = { padded, cv::Mat::zeros(padded.size(), CV_32F) };
+//                            //            cv::Mat complexImg;
+//                            //            cv::merge(planes, 2, complexImg);
+//
+//                            //            // DFT実行
+//                            //            cv::dft(complexImg, complexImg);
+//
+//                            //            // ぼかし効果を与える点広がり関数（PSF）を生成
+//                            //            cv::Mat psf = cv::Mat::zeros(padded.size(), CV_32F);
+//                            //            // ガウシアンぼかしのPSFを設定（簡易的な実装）
+//                            //            double sigma = 1.0; // ぼかしの強度
+//                            //            int center_x = psf.cols / 2;
+//                            //            int center_y = psf.rows / 2;
+//                            //            for (int y = 0; y < psf.rows; y++) {
+//                            //                for (int x = 0; x < psf.cols; x++) {
+//                            //                    double dx = x - center_x;
+//                            //                    double dy = y - center_y;
+//                            //                    double distance = std::sqrt(dx * dx + dy * dy);
+//                            //                    psf.at<float>(y, x) = std::exp(-(distance * distance) / (2.0 * sigma * sigma));
+//                            //                }
+//                            //            }
+//                            //            // PSFの正規化
+//                            //            cv::normalize(psf, psf, 0, 1, cv::NORM_MINMAX);
+//
+//                            //            // PSFのDFTを計算
+//                            //            cv::Mat psfPlanes[] = { psf, cv::Mat::zeros(psf.size(), CV_32F) };
+//                            //            cv::Mat psfComplex;
+//                            //            cv::merge(psfPlanes, 2, psfComplex);
+//                            //            cv::dft(psfComplex, psfComplex);
+//
+//                            //            // Wienerフィルタの適用（周波数領域）
+//                            //            double K = 1; // ノイズ対信号比（NSR）- この値を調整可能
+//                            //            for (int y = 0; y < complexImg.rows; y++) {
+//                            //                for (int x = 0; x < complexImg.cols; x++) {
+//                            //                    cv::Vec2f H = psfComplex.at<cv::Vec2f>(y, x);
+//                            //                    double H2 = H[0] * H[0] + H[1] * H[1]; // |H|^2
+//
+//                            //                    // ウィーナーフィルタ: H* / (|H|^2 + K)
+//                            //                    double denom = H2 + K;
+//                            //                    if (denom != 0) { // 除算のオーバーフローを防ぐ
+//                            //                        cv::Vec2f& pixel = complexImg.at<cv::Vec2f>(y, x);
+//                            //                        double real = pixel[0], imag = pixel[1];
+//
+//                            //                        // ウィーナーフィルタの適用
+//                            //                        pixel[0] = (real * H[0] + imag * H[1]) / denom;
+//                            //                        pixel[1] = (imag * H[0] - real * H[1]) / denom;
+//                            //                    }
+//                            //                }
+//                            //            }
+//
+//                            //            // 逆DFT実行
+//                            //            cv::idft(complexImg, complexImg);
+//
+//                            //            // 実部を抽出して正規化
+//                            //            cv::split(complexImg, planes);
+//                            //            cv::normalize(planes[0], planes[0], 0, 255, cv::NORM_MINMAX);
+//                            //            planes[0].convertTo(channels[ch], CV_8U);
+//                            //        }
+//
+//                            //        // チャンネルを結合して元の画像を再構成
+//                            //        cv::merge(channels, element_image);
+//                            //    }
+//                            //}
+//
+//
 //                            // 測定終了時刻を記録
 //                            auto end = std::chrono::high_resolution_clock::now();
 //
@@ -477,7 +597,9 @@
 //
 //                        // 表示画像の保存
 //                        ostringstream stream;
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        /*stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v2/prop-improve-v2-grid1_tileNotExpand_sharpness" << std::fixed << std::setprecision(2) << sharpness << "_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";*/
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v2/prop-improve-v2-grid1_tileNotExpand_Wiener_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //
@@ -553,10 +675,12 @@
 //                        //free(yt);
 //
 //                        for (int i = 0; i < element_image_px; i++) {
-//                            for (int j = 0; j < num_pinhole; j++) {
+//                            for (int j = 0; j < element_image_px; j++) {
+//                                for (int k = 0; k < num_pinhole; k++) {
+//                                    free(nx[i][j][k]);
+//                                    free(ny[i][j][k]);
+//                                }
 //                                free(nx[i][j]);
-//                            }
-//                            for (int j = 0; j < num_pinhole; j++) {
 //                                free(ny[i][j]);
 //                            }
 //                            free(nx[i]);
@@ -577,7 +701,7 @@
 //    return EXIT_SUCCESS;
 //}
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int**** nx, int**** ny, int* startu, int* startv) {
 //
 //    int tmp_nx, tmp_ny;
 //    int tmp_startu, tmp_startv;
@@ -601,8 +725,8 @@
 //                    // 各奥行きレベルごとに(手前から)
 //                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
 //
-//                        tmp_nx = nx[n][j][nz];
-//                        tmp_ny = ny[m][i][nz];
+//                        tmp_nx = nx[m][n][j][nz];
+//                        tmp_ny = ny[m][n][i][nz];
 //
 //                        //cout << "nx:" << nx << ", ny:" << ny << endl;
 //                        if (0 <= tmp_nx && tmp_nx < px_width_img && 0 <= tmp_ny && tmp_ny < px_height_img) {

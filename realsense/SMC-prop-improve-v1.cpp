@@ -28,16 +28,22 @@
 //std::condition_variable conv;
 //int finished_threads = 0; // 終了したスレッドの数
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv);
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int**** nx, int**** ny, int* startu, int* startv);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
 //double** readCSVToDynamicArray(const std::string& filename);
 //
 //int main(int argc, char* argv[])
 //{
 //
-//    cout << "IE-prop-improve-v1" << endl;
+//    cout << "SMC-prop-improve-v1" << endl;
 //
 //    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
+//
+//    std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME);
+//    HWND window = FindWindow(NULL, L"image");
+//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    SetWindowPos(window, NULL, 3280, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //    int index = 0;
 //    bool interpolation = true;
@@ -115,18 +121,22 @@
 //                        }
 //
 //                        // 3次元配列のインデックス
-//                        int*** nx = (int***)malloc(sizeof(int**) * element_image_px);
-//                        int*** ny = (int***)malloc(sizeof(int**) * element_image_px);
+//                        int**** nx = (int****)malloc(sizeof(int***) * element_image_px);
+//                        int**** ny = (int****)malloc(sizeof(int***) * element_image_px);
 //                        for (int i = 0; i < element_image_px; i++) {
 //
-//                            nx[i] = (int**)malloc(sizeof(int*) * num_pinhole);
-//                            ny[i] = (int**)malloc(sizeof(int*) * num_pinhole);
+//                            nx[i] = (int***)malloc(sizeof(int**) * element_image_px);
+//                            ny[i] = (int***)malloc(sizeof(int**) * element_image_px);
 //
-//                            for (int j = 0; j < num_pinhole; j++) {
-//                                nx[i][j] = (int*)malloc(sizeof(int) * num_z_level);
-//                            }
-//                            for (int j = 0; j < num_pinhole; j++) {
-//                                ny[i][j] = (int*)malloc(sizeof(int) * num_z_level);
+//                            for (int j = 0; j < element_image_px; j++) {
+//
+//                                nx[i][j] = (int**)malloc(sizeof(int*) * num_pinhole);
+//                                ny[i][j] = (int**)malloc(sizeof(int*) * num_pinhole);
+//
+//                                for (int k = 0; k < num_pinhole; k++) {
+//                                    nx[i][j][k] = (int*)malloc(sizeof(int) * num_z_level);
+//                                    ny[i][j][k] = (int*)malloc(sizeof(int) * num_z_level);
+//                                }
 //                            }
 //                        }
 //
@@ -150,7 +160,7 @@
 //                                    xt = (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + U / focal_length;
 //
 //                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        nx[j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
+//                                        nx[i][j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
 //                                        zt -= inv_coef;
 //                                        xt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //                                    }
@@ -163,7 +173,7 @@
 //                                    yt = (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * zt + V / focal_length;
 //
 //                                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                                        ny[i][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
+//                                        ny[i][j][k][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
 //                                        zt -= inv_coef;
 //                                        yt -= (k - (num_pinhole - 1) * 0.5) * pinhole_pitch * inv_coef;
 //                                    }
@@ -464,14 +474,15 @@
 //
 //                        }
 //
-//                        //cv::imshow("image", img_display);
-//                        //cv::waitKey(0);
+//                        cv::imshow(WINNAME, img_display);
+//                        cv::waitKey(0);
 //
-//                        // 表示画像の保存
-//                        ostringstream stream;
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//                        cv::String filename = stream.str();
-//                        imwrite(filename, img_display);
+//                        //// 表示画像の保存
+//                        //ostringstream stream;
+//                        ////stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1-reverse/prop-improve-v1-reverse-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        //cv::String filename = stream.str();
+//                        //imwrite(filename, img_display);
 //
 //                        //stream.str("");
 //                        //stream.clear(ostringstream::goodbit);
@@ -545,10 +556,12 @@
 //                        //free(yt);
 //
 //                        for (int i = 0; i < element_image_px; i++) {
-//                            for (int j = 0; j < num_pinhole; j++) {
+//                            for (int j = 0; j < element_image_px; j++) {
+//                                for (int k = 0; k < num_pinhole; k++) {
+//                                    free(nx[i][j][k]);
+//                                    free(ny[i][j][k]);
+//                                }
 //                                free(nx[i][j]);
-//                            }
-//                            for (int j = 0; j < num_pinhole; j++) {
 //                                free(ny[i][j]);
 //                            }
 //                            free(nx[i]);
@@ -569,7 +582,7 @@
 //    return EXIT_SUCCESS;
 //}
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int**** nx, int**** ny, int* startu, int* startv) {
 //
 //    int tmp_nx, tmp_ny;
 //    int tmp_startu, tmp_startv;
@@ -593,8 +606,8 @@
 //                    // 各奥行きレベルごとに(手前から)
 //                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
 //
-//                        tmp_nx = nx[n][j][nz];
-//                        tmp_ny = ny[m][i][nz];
+//                        tmp_nx = nx[m][n][j][nz];
+//                        tmp_ny = ny[m][n][i][nz];
 //
 //                        //cout << "nx:" << nx << ", ny:" << ny << endl;
 //                        if (0 <= tmp_nx && tmp_nx < px_width_img && 0 <= tmp_ny && tmp_ny < px_height_img) {
