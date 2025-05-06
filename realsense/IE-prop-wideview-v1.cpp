@@ -27,7 +27,7 @@
 //int finished_threads = 0; // 終了したスレッドの数
 //
 //void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int** u_px, int** v_px);
-//int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
+//int writeCSV2(const std::vector<std::vector<double>> array);
 //
 //int main(int argc, char* argv[])
 //{
@@ -45,7 +45,7 @@
 //            int idx_pt = 0;
 //            for (int pt = 3; pt <= 3; pt++) {
 //
-//                std::vector<std::vector<double>> array(19, std::vector<double>(78)); // 横：subz, 縦：nzl
+//                std::vector<std::vector<double>> array(8, std::vector<double>(1)); // 横：subz, 縦：nzl
 //
 //                int idx_nzl = 0;
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
@@ -103,7 +103,7 @@
 //                        int px_width_img = NxNy; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
 //                        std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 //
-//                        int TIMES = 10;
+//                        int TIMES = 100;
 //
 //                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -462,11 +462,11 @@
 //                        //cv::imshow("image", img_display);
 //                        //cv::waitKey(0);
 //
-//                        // 表示画像の保存
-//                        ostringstream stream;
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-parrots_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//                        cv::String filename = stream.str();
-//                        imwrite(filename, img_display);
+//                        //// 表示画像の保存
+//                        //ostringstream stream;
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-parrots_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        //cv::String filename = stream.str();
+//                        //imwrite(filename, img_display);
 //
 //                        //stream.str("");
 //                        //stream.clear(ostringstream::goodbit);
@@ -477,7 +477,7 @@
 //                        //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
 //                        //for (int zi = 24; zi < 25; zi++) {
 //
-//                        //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-milkdrop_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
+//                        //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-pepper_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
 //                        //    cout << "zi:" << zi << endl;
 //
 //                        //    for (int i = 0; i < px_height_img; i++) {
@@ -498,7 +498,7 @@
 //                        //}
 //
 //                        cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
-//                        array[idx_nzl][idx_subz++] = sum_time / TIMES;
+//                        array[idx_subz++][0] = sum_time / TIMES;
 //
 //                        // 使用したメモリを解放
 //                        for (int i = 0; i < rows; ++i) {
@@ -557,7 +557,7 @@
 //                    idx_nzl++;
 //
 //                }
-//                //writeCSV2(array, NxNy, pt);
+//                writeCSV2(array);
 //            }
 //        }
 //
@@ -612,10 +612,10 @@
 //    }
 //}
 //
-//int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes) {
+//int writeCSV2(const std::vector<std::vector<double>> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-prop-improve-v1-milkdrop_tileExpand_NxNy" + std::to_string(NxNy) + "_pt" + std::to_string(ptimes) + ".csv");
+//    std::ofstream file("./numbers/speed/speed-IE-prop-wideview-v1-pepper.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
