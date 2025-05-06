@@ -474,15 +474,15 @@
 //
 //                        }
 //
-//                        cv::imshow(WINNAME, img_display);
-//                        cv::waitKey(0);
+//                        //cv::imshow(WINNAME, img_display);
+//                        //cv::waitKey(0);
 //
-//                        //// •\Ž¦‰æ‘œ‚Ì•Û‘¶
-//                        //ostringstream stream;
-//                        ////stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1-reverse/prop-improve-v1-reverse-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//                        //cv::String filename = stream.str();
-//                        //imwrite(filename, img_display);
+//                        // •\Ž¦‰æ‘œ‚Ì•Û‘¶
+//                        ostringstream stream;
+//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/SMC-prop-improve-v1-n1.6-reverse/prop-improve-v1-n1.6-reverse-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        cv::String filename = stream.str();
+//                        imwrite(filename, img_display);
 //
 //                        //stream.str("");
 //                        //stream.clear(ostringstream::goodbit);

@@ -26,7 +26,7 @@
 //std::condition_variable conv;
 //int finished_threads = 0; // 終了したスレッドの数
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv);
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int** u_px, int** v_px);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
 //
 //int main(int argc, char* argv[])
@@ -51,7 +51,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 300.0; subz <= 300.0; subz += 100) {
+//                    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -61,24 +61,25 @@
 //                        double display_size = 13.4 * 25.4; // ディスプレイサイズ
 //                        int display_width_px = 3840, display_height_px = 2400; // ディスプレイの縦横の解像度
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
+//                        int element_image_px = 60; // 要素画像の解像度
+//                        double intv = (double)element_image_px; // 要素画像の間隔
 //
-//                        // ピンホールアレイのパラメータ(mm)
-//                        double pinhole_pitch = 4.51;    // ピンホールピッチ
+//                        // ピンホールアレイと表示系のパラメータ(mm)
+//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
+//                        double pinhole_pitch = zo_min / (focal_length + zo_min) * element_image_px * display_pixel_pitch;    // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
 //                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
+//                        double display_area_size = element_image_px * nph * display_pixel_pitch; //表示画像の大きさ
+//                        //double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        //int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//                        int display_px = element_image_px * nph; // 表示画像の解像度
 //
-//                        // 表示系のパラメータ(mm)
-//                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
-//                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_array_size; //表示画像の解像度
-//                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
-//                        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
-//                        int display_px = static_cast<int>(floor((focal_length + zo_min) / zo_min * pinhole_array_size / display_pixel_pitch)); // 各軸方向の表示画像の解像度
 //
-//                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(3) << endl;
+//                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_pixel_pitch << fixed << setprecision(5) << endl;
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = pinhole_array_size / 2; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+//                        double subject_size = display_area_size * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
 //                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
@@ -107,11 +108,11 @@
 //                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
 //                        // 各要素画像の原点画素位置(左上)
-//                        int* startu = (int*)malloc(sizeof(int) * num_pinhole);
-//                        int* startv = (int*)malloc(sizeof(int) * num_pinhole);
-//                        for (int i = 0; i < num_pinhole; i++) {
-//                            startu[i] = static_cast<int>(std::round(((i - (num_pinhole - 1) * 0.5) * pinhole_pitch + pinhole_array_size * 0.5 - pinhole_pitch) / display_pixel_pitch));
-//                            startv[i] = static_cast<int>(std::round(((i - (num_pinhole - 1) * 0.5) * pinhole_pitch + pinhole_array_size * 0.5 - pinhole_pitch) / display_pixel_pitch));
+//                        int** u_px = (int**)malloc(sizeof(int*) * element_image_px);
+//                        int** v_px = (int**)malloc(sizeof(int*) * element_image_px);
+//                        for (int i = 0; i < element_image_px; i++) {
+//                            u_px[i] = (int*)malloc(sizeof(int) * num_pinhole);
+//                            v_px[i] = (int*)malloc(sizeof(int) * num_pinhole);
 //                        }
 //
 //                        // 3次元配列のインデックス
@@ -131,12 +132,15 @@
 //                        }
 //
 //                        double s, t, u, v, xt, yt, zt, nz;
+//                        double offset_st = -((num_pinhole - 1) * pinhole_pitch) * 0.5;
+//                        double offset_uv = -((element_image_px - 1) * display_pixel_pitch) * 0.5;
 //                        for (int i = 0; i < element_image_px; i++) {
 //
 //                            for (int j = 0; j < num_pinhole; j++) {
 //
-//                                s = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch;
-//                                u = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * s;
+//                                s = offset_st + j * pinhole_pitch;
+//                                u = offset_uv + i * display_pixel_pitch + focal_length / zo_min * s;
+//                                u_px[i][j] = static_cast<int>(floor((s + u + display_area_size * 0.5) / display_pixel_pitch));
 //                                zt = (double)(num_z_level - 1) * inv_coef;
 //                                xt = s * zt + u / focal_length;
 //
@@ -145,13 +149,13 @@
 //                                    zt -= inv_coef;
 //                                    xt -= s * inv_coef;
 //                                }
-//
 //                            }
 //
 //                            for (int j = 0; j < num_pinhole; j++) {
 //
-//                                t = (j - (num_pinhole - 1) * 0.5) * pinhole_pitch;
-//                                v = ((double)i - (double)(element_image_px - 1) * 0.5) * display_pixel_pitch + focal_length / zo_min * t;
+//                                t = offset_st + j * pinhole_pitch;
+//                                v = offset_uv + i * display_pixel_pitch + focal_length / zo_min * t;
+//                                v_px[i][j] = static_cast<int>(floor((t + v + display_area_size * 0.5) / display_pixel_pitch));
 //                                zt = (double)(num_z_level - 1) * inv_coef;
 //                                yt = t * zt + v / focal_length;
 //
@@ -160,7 +164,6 @@
 //                                    zt -= inv_coef;
 //                                    yt -= t * inv_coef;
 //                                }
-//
 //                            }
 //                        }
 //
@@ -169,7 +172,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/grid_image.png";
+//                        std::string filenamein = "./images/standard/parrots.bmp";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
@@ -431,7 +434,7 @@
 //                            for (int i = 0; i < numThreads; i++) {
 //                                startRow = i * rowsPerThread;
 //                                endRow = (i == numThreads - 1) ? element_image_px : (i + 1) * rowsPerThread;
-//                                threads.emplace_back(insert_pixels, startRow, endRow, element_image_px, num_pinhole, intv, num_z_level, px_width_img, px_height_img, std::ref(img_display), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny), std::ref(startu), std::ref(startv));
+//                                threads.emplace_back(insert_pixels, startRow, endRow, element_image_px, num_pinhole, intv, num_z_level, px_width_img, px_height_img, std::ref(img_display), std::ref(red), std::ref(green), std::ref(blue), std::ref(alpha), std::ref(nx), std::ref(ny), std::ref(u_px), std::ref(v_px));
 //                            }
 //
 //                            for (auto& t : threads) {
@@ -461,8 +464,7 @@
 //
 //                        // 表示画像の保存
 //                        ostringstream stream;
-//                        //stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
-//                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-grid1_tileNotExpand_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-parrots_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //
@@ -527,9 +529,6 @@
 //                        //free(sp);
 //                        //free(tp);
 //
-//                        free(startu);
-//                        free(startv);
-//
 //                        //for (int i = 0; i < element_image_px; i++) {
 //                        //    free(xt[i]);
 //                        //    free(yt[i]);
@@ -546,7 +545,13 @@
 //                            }
 //                            free(nx[i]);
 //                            free(ny[i]);
+//                            free(u_px[i]);
+//                            free(v_px[i]);
 //                        }
+//                        free(nx);
+//                        free(ny);
+//                        free(u_px);
+//                        free(v_px);
 //
 //                    }
 //                    idx_nzl++;
@@ -562,10 +567,9 @@
 //    return EXIT_SUCCESS;
 //}
 //
-//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int* startu, int* startv) {
+//void insert_pixels(int start, int end, int element_image_px, int num_pinhole, double intv, int num_z_level, int px_width_img, int px_height_img, cv::Mat img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int** u_px, int** v_px) {
 //
 //    int tmp_nx, tmp_ny;
-//    int tmp_startu, tmp_startv;
 //
 //    // 各要素画像の各画素ごとに
 //    for (int m = start; m < end; m++) {
@@ -575,13 +579,7 @@
 //            // 各要素カメラごとに
 //            for (int i = 0; i < num_pinhole; i++) {
 //
-//                //tmp_startv = startv[i];
-//                tmp_startv = static_cast<int>(round(i * intv));
-//
 //                for (int j = 0; j < num_pinhole; j++) {
-//
-//                    //tmp_startu = startv[j];
-//                    tmp_startu = static_cast<int>(round(j * intv));
 //
 //                    // 各奥行きレベルごとに(手前から)
 //                    for (int nz = num_z_level - 1; nz >= 0; nz--) {
@@ -593,9 +591,9 @@
 //                        if (0 <= tmp_nx && tmp_nx < px_width_img && 0 <= tmp_ny && tmp_ny < px_height_img) {
 //                            if (alpha[nz][tmp_ny][tmp_nx]) {
 //
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
-//                                img_display.at<cv::Vec3b>(tmp_startv + m, tmp_startu + n)[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(v_px[m][i], u_px[n][j])[2] = static_cast<int>(red[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(v_px[m][i], u_px[n][j])[1] = static_cast<int>(green[nz][tmp_ny][tmp_nx]);
+//                                img_display.at<cv::Vec3b>(v_px[m][i], u_px[n][j])[0] = static_cast<int>(blue[nz][tmp_ny][tmp_nx]);
 //                                // cout << "v, u:" << startv + m << ", " << startu + n << endl;
 //                                break;
 //                            }
