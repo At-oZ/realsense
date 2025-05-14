@@ -57,7 +57,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
+//                    for (double subz = 300.0; subz <= 300.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -67,18 +67,16 @@
 //                        double display_size = 13.4 * 25.4; // ディスプレイサイズ
 //                        int display_width_px = 3840, display_height_px = 2400; // ディスプレイの縦横の解像度
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
-//                        int element_image_px = 60; // 要素画像の解像度
-//                        double intv = (double)element_image_px; // 要素画像の間隔
 //
 //                        // ピンホールアレイと表示系のパラメータ(mm)
 //                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
-//                        double pinhole_pitch = zo_min / (focal_length + zo_min) * element_image_px * display_pixel_pitch;    // ピンホールピッチ
+//                        double pinhole_pitch = 60 * display_pixel_pitch;    // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
 //                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
-//                        double display_area_size = element_image_px * nph * display_pixel_pitch; //表示画像の大きさ
-//                        //double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
-//                        //int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
-//                        int display_px = element_image_px * nph; // 表示画像の解像度
+//                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//                        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_pitch * nph; //表示画像の大きさ
+//                        int display_px = static_cast<int>(floor(intv * nph)); // 表示画像の解像度
 //
 //
 //                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_pixel_pitch << fixed << setprecision(5) << endl;

@@ -175,7 +175,10 @@
     <ClCompile Include="ideal-v2.cpp" />
     <ClCompile Include="IE-observe-evaluation.cpp" />
     <ClCompile Include="IE-prop-normal-v1.cpp" />
+    <ClCompile Include="IE-prop-wideview-v1-2-trial.cpp" />
+    <ClCompile Include="IE-prop-wideview-v1-2.cpp" />
     <ClCompile Include="IE-prop-wideview-v1.cpp" />
+    <ClCompile Include="lensarray_distortion_check_v1.cpp" />
     <ClCompile Include="observe-image_direct.cpp" />
     <ClCompile Include="observe-image_through-pinhole.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />
