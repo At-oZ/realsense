@@ -499,6 +499,8 @@ int main() {
             }
         }
 
+        cv::imwrite("./SMC-distortion-check.png", displayImage);
+
         // ƒIƒŠƒWƒiƒ‹‚Ì‰æ‘œ‚ð•Û‘¶
         original_img_window = img_window.clone();
 
