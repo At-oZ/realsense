@@ -57,7 +57,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 451.0; subz <= 451.0; subz += 100) {
+//                    for (double subz = 200.5; subz <= 200.5; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -74,7 +74,7 @@
 //                        double pinhole_pitch = pinhole_array_size / num_pinhole;    // ピンホールピッチ
 //
 //                        // 表示系のパラメータ(mm)
-//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ
+//                        double focal_length = 13.0; // ギャップ
 //                        int element_image_px = static_cast<int>(floor(pinhole_pitch / display_pixel_pitch)); // 要素画像の解像度
 //                        int display_px = 2400; // 各軸方向の表示画像の解像度
 //                        double intv = pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -95,7 +95,7 @@
 //                        double ptimes = pt; // イメージプレーンの画素ピッチの係数(1でディスプレイの画素ピッチと同じ)
 //                        int half_box_size = static_cast<int>(floor(ptimes / 2.0)); // 探索範囲
 //
-//                        double Ddash = 200.0;
+//                        double Ddash = 100.0;
 //                        double coef = (double)num_z_level * Ddash;
 //                        double inv_coef = 1.0 / coef;
 //
