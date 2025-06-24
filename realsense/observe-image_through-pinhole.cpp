@@ -47,7 +47,8 @@
 //
 //    // •\¦‰æ‘œ‚Ìİ’è
 //    stream.str("");
-//    stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-normal-v1/prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)tile_pos << ".png";
+//    //stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-normal-v1/prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)tile_pos << ".png";
+//    stream << "C:/Users/“n•Ó@“N¶/Downloads/scene_display_60.png";
 //    std::string filename_display_image = stream.str();
 //    cv::Mat display_image = cv::imread(filename_display_image);
 //    const int display_image_px = display_image.cols; // ‰æ‘œ‚©‚ç‰¡•ûŒü‚Ì‰ğ‘œ“x‚ğæ“¾
@@ -63,7 +64,8 @@
 //
 //    // ŠÏ@‰æ‘œ‚Ì•Û‘¶
 //    stream.str("");
-//    stream << "D:/EvacuatedStorage/observe-images/IE-prop-normal-v1/observe_IE-prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)tile_pos << "_xo" << std::fixed << std::setprecision(2) << observer_x << "_yo" << std::fixed << std::setprecision(2) << observer_y << "_zo" << std::fixed << std::setprecision(2) << observer_z << ".png";
+//    //stream << "D:/EvacuatedStorage/observe-images/IE-prop-normal-v1/observe_IE-prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)tile_pos << "_xo" << std::fixed << std::setprecision(2) << observer_x << "_yo" << std::fixed << std::setprecision(2) << observer_y << "_zo" << std::fixed << std::setprecision(2) << observer_z << ".png";
+//    stream << "C:/Users/“n•Ó@“N¶/Downloads/scene_observe.png";
 //    std::string filenameout = stream.str();
 //    cv::imwrite(filenameout, resized_obsv_img);
 //

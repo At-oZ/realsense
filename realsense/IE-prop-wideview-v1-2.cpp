@@ -57,7 +57,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 300.0; subz <= 300.0; subz += 100) {
+//                    for (double subz = 500.0; subz <= 500.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -69,8 +69,9 @@
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
 //                        // ピンホールアレイと表示系のパラメータ(mm)
+//                        double pinhole_array_width = 181.6;
 //                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
-//                        double pinhole_pitch = 60 * display_pixel_pitch;    // ピンホールピッチ
+//                        double pinhole_pitch = pinhole_array_width / nph;   // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
 //                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
 //                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
@@ -176,7 +177,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/pepper.bmp";
+//                        std::string filenamein = "./images/standard/Lenna.bmp";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
