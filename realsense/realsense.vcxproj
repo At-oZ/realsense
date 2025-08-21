@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Calibration_v1.cpp" />
     <ClCompile Include="camera-array-sim-v1.cpp" />
     <ClCompile Include="camera-array-sim-v2.cpp" />
     <ClCompile Include="camera-array-sim-v3.cpp" />

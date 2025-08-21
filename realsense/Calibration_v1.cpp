@@ -1,6 +1,6 @@
-//// ピンホールカメラアレイを用いて表示画像を作成するプログラム
+//// 表示画像の位置調整を行うプログラム
 ///*
-//    ideal_v2からの派生
+//    SMC-distortion-check_v1から派生
 //*/
 //
 //#include <opencv2/opencv.hpp>
@@ -15,7 +15,7 @@
 //// コントローラー入力のチェック関数
 //bool ProcessXInput(int& x_shift, int& y_shift, int shift_amount,
 //    bool& focal_length_mode, double& focalLength, double focal_length_step,
-//    bool& tile_size_mode, double& tileSize, double tile_size_step,
+//    bool& grid_spacing_mode, double& displayAreaSize, double grid_spacing_step,
 //    bool& tile_z_mode, double& tileZ, double tile_z_step,
 //    bool& continue_key_loop, bool& running) {
 //    // コントローラーの状態を取得
@@ -43,10 +43,10 @@
 //            continue_key_loop = false;
 //            changed = true;
 //        }
-//        else if (tile_size_mode) {
-//            // タイルサイズ調整モードの場合はタイルサイズを増加
-//            tileSize += tile_size_step;
-//            std::cout << "タイルサイズを増加: " << tileSize << std::endl;
+//        else if (grid_spacing_mode) {
+//            // グリッド間隔調整モードの場合はグリッド間隔を増加
+//            displayAreaSize += grid_spacing_step;
+//            std::cout << "グリッド間隔を増加: " << displayAreaSize << " mm" << std::endl;
 //            continue_key_loop = false;
 //            changed = true;
 //        }
@@ -79,14 +79,14 @@
 //            continue_key_loop = false;
 //            changed = true;
 //        }
-//        else if (tile_size_mode) {
-//            // タイルサイズ調整モードの場合はタイルサイズを減少
-//            if (tileSize > tile_size_step) {
-//                tileSize -= tile_size_step;
-//                std::cout << "タイルサイズを減少: " << tileSize << std::endl;
+//        else if (grid_spacing_mode) {
+//            // グリッド間隔調整モードの場合はグリッド間隔を減少
+//            if (displayAreaSize > grid_spacing_step) {
+//                displayAreaSize -= grid_spacing_step;
+//                std::cout << "グリッド間隔を減少: " << displayAreaSize << " mm" << std::endl;
 //            }
 //            else {
-//                std::cout << "タイルサイズが最小値に達しています" << std::endl;
+//                std::cout << "グリッド間隔が最小値に達しています" << std::endl;
 //            }
 //            continue_key_loop = false;
 //            changed = true;
@@ -113,7 +113,7 @@
 //
 //    if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
 //        // 左キー - 左移動（調整モード中は無効）
-//        if (!focal_length_mode && !tile_size_mode && !tile_z_mode) {
+//        if (!focal_length_mode && !grid_spacing_mode && !tile_z_mode) {
 //            x_shift -= shift_amount;
 //            std::cout << "左に " << shift_amount << " px 移動しました。現在の位置: x=" << x_shift << ", y=" << y_shift << std::endl;
 //            changed = true;
@@ -122,7 +122,7 @@
 //
 //    if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
 //        // 右キー - 右移動（調整モード中は無効）
-//        if (!focal_length_mode && !tile_size_mode && !tile_z_mode) {
+//        if (!focal_length_mode && !grid_spacing_mode && !tile_z_mode) {
 //            x_shift += shift_amount;
 //            std::cout << "右に " << shift_amount << " px 移動しました。現在の位置: x=" << x_shift << ", y=" << y_shift << std::endl;
 //            changed = true;
@@ -138,8 +138,8 @@
 //        if (currentTime - lastAButtonPressTime > 300) {
 //            focal_length_mode = !focal_length_mode;
 //            if (focal_length_mode) {
-//                tile_size_mode = false; // タイルサイズモードを終了
-//                tile_z_mode = false;    // タイル位置モードを終了
+//                grid_spacing_mode = false; // グリッド間隔モードを終了
+//                tile_z_mode = false;       // タイル位置モードを終了
 //                std::cout << "ギャップ調整モードに切り替えました。十字キー上下でギャップを調整します。現在値: " << focalLength << " mm (ステップ: " << focal_length_step << " mm)" << std::endl;
 //            }
 //            else {
@@ -150,21 +150,21 @@
 //        }
 //    }
 //
-//    // Xボタン - タイルサイズ調整モードの切り替え（Tキーと同じ）
+//    // Xボタン - グリッド間隔調整モードの切り替え（Tキーと同じ）
 //    if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
 //        static ULONGLONG lastXButtonPressTime = 0;
 //        ULONGLONG currentTime = GetTickCount64();
 //
 //        // ボタン連打防止 (300ミリ秒以内の連続押下を無視)
 //        if (currentTime - lastXButtonPressTime > 300) {
-//            tile_size_mode = !tile_size_mode;
-//            if (tile_size_mode) {
+//            grid_spacing_mode = !grid_spacing_mode;
+//            if (grid_spacing_mode) {
 //                focal_length_mode = false; // ギャップ調整モードを終了
 //                tile_z_mode = false;       // タイル位置モードを終了
-//                std::cout << "タイルサイズ調整モードに切り替えました。十字キー上下でタイルサイズを調整します。現在値: " << tileSize << " (ステップ: " << tile_size_step << ")" << std::endl;
+//                std::cout << "グリッド間隔調整モードに切り替えました。十字キー上下でグリッド間隔を調整します。現在値: " << displayAreaSize << " mm (ステップ: " << grid_spacing_step << " mm)" << std::endl;
 //            }
 //            else {
-//                std::cout << "タイルサイズ調整モードを終了します。" << std::endl;
+//                std::cout << "グリッド間隔調整モードを終了します。" << std::endl;
 //            }
 //            lastXButtonPressTime = currentTime;
 //            changed = true;
@@ -180,8 +180,8 @@
 //        if (currentTime - lastYButtonPressTime > 300) {
 //            tile_z_mode = !tile_z_mode;
 //            if (tile_z_mode) {
-//                focal_length_mode = false; // ギャップ調整モードを終了
-//                tile_size_mode = false;    // タイルサイズモードを終了
+//                focal_length_mode = false;  // ギャップ調整モードを終了
+//                grid_spacing_mode = false;  // グリッド間隔モードを終了
 //                std::cout << "タイル位置調整モードに切り替えました。十字キー上下でタイル位置を調整します。現在値: " << tileZ << " mm (ステップ: " << tile_z_step << " mm)" << std::endl;
 //            }
 //            else {
@@ -215,7 +215,7 @@
 //        // ボタン連打防止 (300ミリ秒以内の連続押下を無視)
 //        if (currentTime - lastBackButtonPressTime > 300) {
 //            focal_length_mode = false;
-//            tile_size_mode = false;
+//            grid_spacing_mode = false;
 //            tile_z_mode = false;
 //            continue_key_loop = false;
 //            running = false;
@@ -251,7 +251,7 @@
 //}
 //
 //int main() {
-//    std::cout << "ICIP-ideal-v1" << std::endl;
+//    std::cout << "Calibration_v1" << std::endl;
 //
 //    int nphs[20] = { 4, 5, 6, 8, 10, 12, 15, 20, 24, 25, 30, 40, 50, 60, 75, 100, 120, 125, 150, 200 };
 //
@@ -279,11 +279,11 @@
 //    double focal_length_step = 0.1; // 増減ステップの初期値
 //    bool focal_length_input_mode = false; // ギャップ増減量入力モード
 //
-//    // タイルサイズ調整モード用の変数
-//    bool tile_size_mode = false;
-//    double tileSize = 203.0; // 初期値
-//    double tile_size_step = 1.0; // 増減ステップの初期値
-//    bool tile_size_input_mode = false; // タイルサイズ増減量入力モード
+//    // グリッド間隔調整モード用の変数
+//    bool grid_spacing_mode = false;
+//    double displayAreaSize = 181.8; // 初期値（これを変更することでgridSpacingが変わる）
+//    double grid_spacing_step = 0.1; // 増減ステップの初期値（0.1mm単位）
+//    bool grid_spacing_input_mode = false; // グリッド間隔増減量入力モード
 //
 //    // タイル位置調整モード用の変数
 //    bool tile_z_mode = false;
@@ -309,13 +309,13 @@
 //        const double pixelSize = 13.4 / std::sqrt(3840 * 3840 + 2400 * 2400) * 25.4 / coef;
 //        std::cout << "camera pixel size:" << pixelSize << std::endl;
 //
-//        // ディスプレイの設定
-//        const double displayAreaSize = 181.8;
+//        // ディスプレイの設定（displayAreaSizeは調整可能な変数）
 //        const int displayImageSize = displayAreaSize / pixelSize;
 //        cv::Mat displayImage = cv::Mat::zeros(cv::Size(displayImageSize, displayImageSize), CV_8UC3);
 //
 //        // タイルの設定
 //        const int tileResolution = 256; // タイルの解像度（ピクセル）
+//        const double tileSize = 203.0; // 固定値
 //
 //        // カメラのグリッド設定
 //        const int gridSize = nph; // グリッドサイズ
@@ -325,7 +325,8 @@
 //        // カメラの設定
 //        // ギャップ調整用にfocalLengthを変数化
 //        std::cout << "Focal length (gap): " << focalLength << " mm (調整ステップ: " << focal_length_step << " mm)" << std::endl;
-//        std::cout << "Tile size: " << tileSize << " (調整ステップ: " << tile_size_step << ")" << std::endl;
+//        std::cout << "Display area size: " << displayAreaSize << " mm (調整ステップ: " << grid_spacing_step << " mm)" << std::endl;
+//        std::cout << "Grid spacing: " << gridSpacing << " mm" << std::endl;
 //        std::cout << "Tile Z: " << tileZ << " mm (調整ステップ: " << tile_z_step << " mm)" << std::endl;
 //
 //        const double sensorSize = gridSpacing; // センサーサイズ（mm）
@@ -518,7 +519,7 @@
 //        // キー入力ループ
 //        bool continue_key_loop = true;
 //        double prev_focal_length = focalLength;
-//        double prev_tile_size = tileSize;
+//        double prev_display_area_size = displayAreaSize;
 //        double prev_tile_z = tileZ;
 //        bool display_updated = false;
 //
@@ -532,7 +533,7 @@
 //            cv::Mat display_img = img_window.clone();
 //
 //            // モード切替時または入力バッファ変更時に画面を更新
-//            if ((input_mode || focal_length_input_mode || tile_size_input_mode || tile_z_input_mode) && last_input_buffer != input_buffer) {
+//            if ((input_mode || focal_length_input_mode || grid_spacing_input_mode || tile_z_input_mode) && last_input_buffer != input_buffer) {
 //                cv::Mat display_img = img_window.clone();
 //
 //                if (input_mode) {
@@ -549,10 +550,10 @@
 //                    cv::putText(display_img, display_text, cv::Point(50, 50),
 //                        cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
 //                }
-//                else if (tile_size_input_mode) {
-//                    // タイルサイズ増減量入力モードの表示
-//                    std::cout << "タイルサイズ増減量入力モード: " << input_buffer << "_" << std::endl;
-//                    std::string display_text = "タイルサイズ増減量: " + input_buffer + "_";
+//                else if (grid_spacing_input_mode) {
+//                    // グリッド間隔増減量入力モードの表示
+//                    std::cout << "グリッド間隔増減量入力モード: " << input_buffer << "_" << std::endl;
+//                    std::string display_text = "グリッド間隔増減量: " + input_buffer + "_";
 //                    cv::putText(display_img, display_text, cv::Point(50, 50),
 //                        cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 0, 0), 2);
 //                }
@@ -580,10 +581,10 @@
 //                display_updated = true;
 //                initial_mode_display = false;
 //            }
-//            else if (tile_size_mode && initial_mode_display) {
-//                // タイルサイズ調整モードの初期表示
+//            else if (grid_spacing_mode && initial_mode_display) {
+//                // グリッド間隔調整モードの初期表示
 //                cv::Mat display_img = img_window.clone();
-//                std::string display_text = "タイルサイズ調整モード: " + std::to_string(tileSize) + " (ステップ: " + std::to_string(tile_size_step) + ")";
+//                std::string display_text = "グリッド間隔調整モード: " + std::to_string(displayAreaSize) + " mm (ステップ: " + std::to_string(grid_spacing_step) + " mm)";
 //                cv::putText(display_img, display_text, cv::Point(50, 50),
 //                    cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 0, 0), 2);
 //
@@ -604,14 +605,14 @@
 //            }
 //
 //            // モード切替検出
-//            if (!input_mode && !focal_length_input_mode && !tile_size_input_mode && !tile_z_input_mode
-//                && !focal_length_mode && !tile_size_mode && !tile_z_mode) {
+//            if (!input_mode && !focal_length_input_mode && !grid_spacing_input_mode && !tile_z_input_mode
+//                && !focal_length_mode && !grid_spacing_mode && !tile_z_mode) {
 //                // 全モード終了時にフラグをリセット
 //                initial_mode_display = true;
 //            }
 //
 //            // 入力モード中はコントローラー入力を無視
-//            if (!input_mode && !focal_length_input_mode && !tile_size_input_mode && !tile_z_input_mode) {
+//            if (!input_mode && !focal_length_input_mode && !grid_spacing_input_mode && !tile_z_input_mode) {
 //                // 現在の時間を取得
 //                ULONGLONG currentTime = GetTickCount64();
 //
@@ -620,7 +621,7 @@
 //                    // コントローラー入力の処理
 //                    bool controller_changed = ProcessXInput(x_shift, y_shift, shift_amount,
 //                        focal_length_mode, focalLength, focal_length_step,
-//                        tile_size_mode, tileSize, tile_size_step,
+//                        grid_spacing_mode, displayAreaSize, grid_spacing_step,
 //                        tile_z_mode, tileZ, tile_z_step,
 //                        continue_key_loop, running);
 //
@@ -707,8 +708,8 @@
 //                continue;
 //            }
 //
-//            // タイルサイズ増減量入力モード中の処理
-//            if (tile_size_input_mode) {
+//            // グリッド間隔増減量入力モード中の処理
+//            if (grid_spacing_input_mode) {
 //                if (key >= '0' && key <= '9' || key == '.') {
 //                    // 数字キーまたはドットが押されたら入力バッファに追加
 //                    input_buffer += (char)key;
@@ -720,17 +721,17 @@
 //                    }
 //                }
 //                else if (key == 13) { // Enter
-//                    // 入力確定、タイルサイズ増減量を設定
+//                    // 入力確定、グリッド間隔増減量を設定
 //                    if (!input_buffer.empty()) {
-//                        tile_size_step = std::stod(input_buffer);
-//                        std::cout << "タイルサイズ増減量を " << tile_size_step << " に設定しました。" << std::endl;
+//                        grid_spacing_step = std::stod(input_buffer);
+//                        std::cout << "グリッド間隔増減量を " << grid_spacing_step << " mm に設定しました。" << std::endl;
 //                    }
-//                    tile_size_input_mode = false;
+//                    grid_spacing_input_mode = false;
 //                    input_buffer = "";
 //                }
 //                else if (key == 27) { // ESC
 //                    // 入力モードをキャンセル
-//                    tile_size_input_mode = false;
+//                    grid_spacing_input_mode = false;
 //                    input_buffer = "";
 //                }
 //                continue;
@@ -809,8 +810,8 @@
 //                case 'l': // モード切替
 //                case 'L':
 //                    focal_length_mode = false;
-//                    tile_size_mode = true;
-//                    std::cout << "タイルサイズ調整モードに切り替えました。W/Sキーでタイルサイズを調整します。現在値: " << tileSize << " (ステップ: " << tile_size_step << ")" << std::endl;
+//                    grid_spacing_mode = true;
+//                    std::cout << "グリッド間隔調整モードに切り替えました。W/Sキーでグリッド間隔を調整します。現在値: " << displayAreaSize << " mm (ステップ: " << grid_spacing_step << " mm)" << std::endl;
 //                    initial_mode_display = true; // 表示を更新するためのフラグを設定
 //                    break;
 //
@@ -834,50 +835,50 @@
 //                continue;
 //            }
 //
-//            // タイルサイズ調整モード中の処理
-//            if (tile_size_mode) {
+//            // グリッド間隔調整モード中の処理
+//            if (grid_spacing_mode) {
 //                switch (key) {
-//                case 'w': // タイルサイズを増加
+//                case 'w': // グリッド間隔を増加
 //                case 'W':
-//                    tileSize += tile_size_step;
-//                    std::cout << "タイルサイズを増加: " << tileSize << std::endl;
+//                    displayAreaSize += grid_spacing_step;
+//                    std::cout << "グリッド間隔を増加: " << displayAreaSize << " mm" << std::endl;
 //                    // 再処理のため、ループを抜ける
 //                    continue_key_loop = false;
 //                    break;
 //
-//                case 's': // タイルサイズを減少
+//                case 's': // グリッド間隔を減少
 //                case 'S':
-//                    if (tileSize > tile_size_step) { // 0より小さくならないように
-//                        tileSize -= tile_size_step;
-//                        std::cout << "タイルサイズを減少: " << tileSize << std::endl;
+//                    if (displayAreaSize > grid_spacing_step) { // 0より小さくならないように
+//                        displayAreaSize -= grid_spacing_step;
+//                        std::cout << "グリッド間隔を減少: " << displayAreaSize << " mm" << std::endl;
 //                    }
 //                    else {
-//                        std::cout << "タイルサイズが最小値に達しています" << std::endl;
+//                        std::cout << "グリッド間隔が最小値に達しています" << std::endl;
 //                    }
 //                    // 再処理のため、ループを抜ける
 //                    continue_key_loop = false;
 //                    break;
 //
-//                case 'i': // タイルサイズ増減量設定モード
+//                case 'i': // グリッド間隔増減量設定モード
 //                case 'I':
-//                    tile_size_input_mode = true;
+//                    grid_spacing_input_mode = true;
 //                    input_buffer = "";
-//                    std::cout << "タイルサイズ増減量入力モードに切り替えました。数字キーで入力し、Enterで確定します。" << std::endl;
+//                    std::cout << "グリッド間隔増減量入力モードに切り替えました。数字キーで入力し、Enterで確定します。" << std::endl;
 //                    break;
 //
-//                case 't': // タイルサイズ調整モードを終了
+//                case 't': // グリッド間隔調整モードを終了
 //                case 'T':
-//                    tile_size_mode = false;
-//                    std::cout << "タイルサイズ調整モードを終了します。" << std::endl;
+//                    grid_spacing_mode = false;
+//                    std::cout << "グリッド間隔調整モードを終了します。" << std::endl;
 //                    // 値が変わっていたら再処理
-//                    if (prev_tile_size != tileSize) {
+//                    if (prev_display_area_size != displayAreaSize) {
 //                        continue_key_loop = false;
 //                    }
 //                    break;
 //
 //                case 'l': // モード切替
 //                case 'L':
-//                    tile_size_mode = false;
+//                    grid_spacing_mode = false;
 //                    tile_z_mode = true;
 //                    std::cout << "タイル位置調整モードに切り替えました。W/Sキーでタイル位置を調整します。現在値: " << tileZ << " mm (ステップ: " << tile_z_step << " mm)" << std::endl;
 //                    initial_mode_display = true; // 表示を更新するためのフラグを設定
@@ -885,14 +886,14 @@
 //
 //                case 'z': // タイル位置調整モードに切り替え
 //                case 'Z':
-//                    tile_size_mode = false;
+//                    grid_spacing_mode = false;
 //                    tile_z_mode = true;
 //                    std::cout << "タイル位置調整モードに切り替えました。W/Sキーでタイル位置を調整します。現在値: " << tileZ << " mm (ステップ: " << tile_z_step << " mm)" << std::endl;
 //                    initial_mode_display = true; // 表示を更新するためのフラグを設定
 //                    break;
 //
 //                case 27: // ESC: 終了
-//                    tile_size_mode = false;
+//                    grid_spacing_mode = false;
 //                    continue_key_loop = false;
 //                    running = false;
 //                    break;
@@ -1021,8 +1022,8 @@
 //            case 'f': // ギャップ調整モード
 //            case 'F':
 //                focal_length_mode = true;
-//                tile_size_mode = false; // タイルサイズモードを終了
-//                tile_z_mode = false;    // タイル位置モードを終了
+//                grid_spacing_mode = false; // グリッド間隔モードを終了
+//                tile_z_mode = false;       // タイル位置モードを終了
 //                std::cout << "ギャップ調整モードに切り替えました。W/Sキーでギャップを調整します。現在値: " << focalLength << " mm (ステップ: " << focal_length_step << " mm)" << std::endl;
 //                // モード表示の更新
 //                display_img = img_window.clone();
@@ -1031,15 +1032,15 @@
 //                cv::imshow(WINNAME, display_img);
 //                break;
 //
-//            case 't': // タイルサイズ調整モード
+//            case 't': // グリッド間隔調整モード
 //            case 'T':
-//                tile_size_mode = true;
+//                grid_spacing_mode = true;
 //                focal_length_mode = false; // ギャップ調整モードを終了
 //                tile_z_mode = false;       // タイル位置モードを終了
-//                std::cout << "タイルサイズ調整モードに切り替えました。W/Sキーでタイルサイズを調整します。現在値: " << tileSize << " (ステップ: " << tile_size_step << ")" << std::endl;
+//                std::cout << "グリッド間隔調整モードに切り替えました。W/Sキーでグリッド間隔を調整します。現在値: " << displayAreaSize << " mm (ステップ: " << grid_spacing_step << " mm)" << std::endl;
 //                // モード表示の更新
 //                display_img = img_window.clone();
-//                cv::putText(display_img, "タイルサイズ調整モード: " + std::to_string(tileSize) + " (ステップ: " + std::to_string(tile_size_step) + ")",
+//                cv::putText(display_img, "グリッド間隔調整モード: " + std::to_string(displayAreaSize) + " mm (ステップ: " + std::to_string(grid_spacing_step) + " mm)",
 //                    cv::Point(50, 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 0, 0), 2);
 //                cv::imshow(WINNAME, display_img);
 //                break;
@@ -1047,8 +1048,8 @@
 //            case 'z': // タイル位置調整モード
 //            case 'Z':
 //                tile_z_mode = true;
-//                focal_length_mode = false; // ギャップ調整モードを終了
-//                tile_size_mode = false;    // タイルサイズモードを終了
+//                focal_length_mode = false;  // ギャップ調整モードを終了
+//                grid_spacing_mode = false;  // グリッド間隔モードを終了
 //                std::cout << "タイル位置調整モードに切り替えました。W/Sキーでタイル位置を調整します。現在値: " << tileZ << " mm (ステップ: " << tile_z_step << " mm)" << std::endl;
 //                // モード表示の更新
 //                display_img = img_window.clone();
@@ -1068,7 +1069,7 @@
 //        }
 //
 //        // 値が変更された場合のみループを継続（ESCキーのときは除く）
-//        if (!running && (prev_focal_length != focalLength || prev_tile_size != tileSize || prev_tile_z != tileZ)) {
+//        if (!running && (prev_focal_length != focalLength || prev_display_area_size != displayAreaSize || prev_tile_z != tileZ)) {
 //            running = true;
 //        }
 //
