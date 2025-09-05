@@ -34,11 +34,11 @@
 //
 //    cout << "IE-prop-wideview-v1-2-trial" << endl;
 //
-//    std::string WINNAME = "image";
-//    cv::namedWindow(WINNAME);
-//    HWND window = FindWindow(NULL, L"image");
-//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    SetWindowPos(window, NULL, 2576, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    //std::string WINNAME = "image";
+//    //cv::namedWindow(WINNAME);
+//    //HWND window = FindWindow(NULL, L"image");
+//    //SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    //SetWindowPos(window, NULL, 2576, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //    int index = 0;
 //    bool interpolation = true; // 補間処理を行うかのフラッグ
@@ -51,7 +51,7 @@
 //    int HEIGHT = 480;
 //    int FPS = 30;
 //    double inv_WIDTH = 1.0 / (double)WIDTH;
-//    double D = 300.0;
+//    double D = 195.0;
 //
 //    // 観察者のパラメータ
 //    double zo_min = 1000.0;
@@ -62,7 +62,7 @@
 //    double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
 //    // ピンホールアレイと表示系のパラメータ(mm)
-//    double pinhole_array_width = 181.7;
+//    double pinhole_array_width = 181.6;
 //    double focal_length = 7.6; // ギャップ(zo_min / (3 * nph - 1))
 //    double pinhole_pitch = pinhole_array_width / nph;    // ピンホールピッチ
 //    int num_pinhole = nph;  // 各軸方向のピンホール数
@@ -465,8 +465,8 @@
 //        //cout << "calc finished" << endl;
 //        finished_threads = 0;
 //
-//        int shift_y = -3;
-//        int shift_x = 20;
+//        int shift_y = 0;
+//        int shift_x = 11;
 //        for (int i = shift_y; i < display_px + shift_y; ++i) {
 //            if (i >= 0 && i < display_px) {
 //                for (int j = static_cast<int>(floor((display_width_px - display_px) / 2)); j < display_width_px - static_cast<int>(floor((display_width_px - display_px) / 2)); ++j) {
@@ -485,7 +485,7 @@
 //
 //        cout << "実行時間: " << duration.count() << " ms" << std::endl;
 //
-//        cv::imshow(WINNAME, img_window);
+//        //cv::imshow(WINNAME, img_window);
 //
 //        if (cv::waitKey(10) == 27)  // ESCキーで終了
 //        {

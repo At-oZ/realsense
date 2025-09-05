@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -120,9 +120,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;
-cudart_static.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\lib\x64;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
@@ -134,7 +133,7 @@ cudart_static.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(Additi
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -144,13 +143,13 @@ cudart_static.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(Additi
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;
-cudart_static.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.9\lib\x64;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Calibration_v1.cpp" />
     <ClCompile Include="camera-array-sim-v1.cpp" />
     <ClCompile Include="camera-array-sim-v2.cpp" />
     <ClCompile Include="camera-array-sim-v3.cpp" />
@@ -186,7 +185,9 @@ cudart_static.lib;%(AdditionalDependencies);%(AdditionalDependencies)</Additiona
     <ClCompile Include="lensarray_distortion_check_v2.cpp" />
     <ClCompile Include="observe-image_direct.cpp" />
     <ClCompile Include="observe-image_through-pinhole.cpp" />
-    <ClCompile Include="prop-cuda-v1.cpp" />
+    <ClCompile Include="OpenGL-v1.cpp" />
+    <ClCompile Include="OpenGL-v2.cpp" />
+    <ClCompile Include="OpenGL-v3.cpp" />
     <ClCompile Include="SMC-distortion-check_v1.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />
     <ClCompile Include="SMC-prop-improve-v1.cpp" />
@@ -334,16 +335,16 @@ cudart_static.lib;%(AdditionalDependencies);%(AdditionalDependencies)</Additiona
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\glm.1.0.1\build\native\glm.targets" Condition="Exists('..\packages\glm.1.0.1\build\native\glm.targets')" />
     <Import Project="..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets" Condition="Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" />
     <Import Project="..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets" Condition="Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" />
-    <Import Project="..\packages\glm.1.0.1\build\native\glm.targets" Condition="Exists('..\packages\glm.1.0.1\build\native\glm.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\glm.1.0.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.1.0.1\build\native\glm.targets'))" />
     <Error Condition="!Exists('..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.redist.0.1.0.1\build\native\nupengl.core.redist.targets'))" />
     <Error Condition="!Exists('..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nupengl.core.0.1.0.1\build\native\nupengl.core.targets'))" />
-    <Error Condition="!Exists('..\packages\glm.1.0.1\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.1.0.1\build\native\glm.targets'))" />
   </Target>
 </Project>

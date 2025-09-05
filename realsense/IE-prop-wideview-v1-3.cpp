@@ -80,7 +80,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 500.0; subz <= 500.0; subz += 100) {
+//                    for (double subz = 550.0; subz <= 550.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -92,8 +92,8 @@
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
 //                        // ピンホールアレイと表示系のパラメータ(mm)
-//                        double pinhole_array_width = 181.6;
-//                        double focal_length = 7.9667; // ギャップ(zo_min / (3 * nph - 1))
+//                        double pinhole_array_width = 180.4;
+//                        double focal_length = 13; // ギャップ(zo_min / (3 * nph - 1))
 //                        double pinhole_pitch = pinhole_array_width / nph;   // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
 //                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
@@ -107,7 +107,7 @@
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = 203.0; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+//                        double subject_size = 204.0; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
 //                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
@@ -200,7 +200,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/Lenna.bmp";
+//                        std::string filenamein = "./images/standard/grid_image.png";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
