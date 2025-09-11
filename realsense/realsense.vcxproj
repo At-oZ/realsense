@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\opencv\build\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib\x64;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -120,8 +120,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;glad.lib;realsense2.lib;opengl32.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;C:\Users\taw11\vcpkg\packages\glad_x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -143,8 +143,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4100.lib;opencv_world4100d.lib;realsense2.lib;opengl32.lib;glfw3.lib;glad.lib;%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\opencv\build\x64\vc16\lib;C:\Program Files (x86)\Intel RealSense SDK 2.0\lib;C:\glfw-3.4.bin.WIN64\lib-vc2022;C:\Users\taw11\vcpkg\packages\glad_x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
@@ -188,6 +188,9 @@
     <ClCompile Include="OpenGL-v1.cpp" />
     <ClCompile Include="OpenGL-v2.cpp" />
     <ClCompile Include="OpenGL-v3.cpp" />
+    <ClCompile Include="OpenGL-v4.cpp" />
+    <ClCompile Include="OpenGL-vt-v1.cpp" />
+    <ClCompile Include="SIMD-v1.cpp" />
     <ClCompile Include="SMC-distortion-check_v1.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />
     <ClCompile Include="SMC-prop-improve-v1.cpp" />
