@@ -35,15 +35,15 @@
 //
 //    std::vector<double> result(45);
 //
-//    std::string WINNAME = "image";
-//    cv::namedWindow(WINNAME);
-//    HWND window = FindWindow(NULL, L"image");
-//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    //std::string WINNAME = "image";
+//    //cv::namedWindow(WINNAME);
+//    //HWND window = FindWindow(NULL, L"image");
+//    //SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    //SetWindowPos(window, NULL, 2560, 0, 3840, 2420, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //
 //    int index = 0;
-//    bool interpolation = true; // 補間処理を行うかのフラッグ
+//    bool interpolation = false; // 補間処理を行うかのフラッグ
 //    int nph = 40;
 //    int nzl = 60;
 //    int pt = 3;
@@ -275,7 +275,8 @@
 //    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_px, display_px), CV_8UC3);
 //    cv::Mat img_window = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
 //
-//    double sum_time = 0;
+//	int frame_count = 0;
+//    long long sum_time = 0;
 //    // フレーム処理
 //    while (true) {
 //
@@ -315,7 +316,7 @@
 //            }
 //        }
 //
-//        img_window = cv::Scalar::all(255);
+//        //img_window = cv::Scalar::all(255);
 //        img_display = cv::Scalar::all(0);
 //
 //        //for (int i = 0; i < display_px; i++) {
@@ -512,16 +513,16 @@
 //        //cout << "calc finished" << endl;
 //        finished_threads = 0;
 //
-//        int shift_y = 10;
-//        for (int i = shift_y; i < display_px; ++i) {
-//            //if (i - static_cast<int>(display_px * 0.5) > 0) {
-//                for (int j = static_cast<int>(floor((display_width_px - display_px) / 2)); j < display_width_px - static_cast<int>(floor((display_width_px - display_px) / 2)); ++j) {
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[0] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[1] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
-//                    img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[2] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
-//                }
-//            //}
-//        }
+//        //int shift_y = 10;
+//        //for (int i = shift_y; i < display_px; ++i) {
+//        //    //if (i - static_cast<int>(display_px * 0.5) > 0) {
+//        //        for (int j = static_cast<int>(floor((display_width_px - display_px) / 2)); j < display_width_px - static_cast<int>(floor((display_width_px - display_px) / 2)); ++j) {
+//        //            img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[0] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
+//        //            img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[1] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
+//        //            img_window.at<cv::Vec3b>(i - static_cast<int>(display_px * 0), j)[2] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
+//        //        }
+//        //    //}
+//        //}
 //
 //        // 測定終了時刻を記録
 //        auto end = std::chrono::high_resolution_clock::now();
@@ -529,8 +530,11 @@
 //        // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 //        cout << "実行時間: " << duration.count() << " ms" << std::endl;
+//		sum_time += duration.count();
+//		frame_count++;
 //
-//        cv::imshow(WINNAME, img_window);
+//        //cv::imshow(WINNAME, img_window);
+//		cv::imshow("image", img_display);
 //
 //        if (cv::waitKey(10) == 27)  // ESCキーで終了
 //        {
@@ -541,6 +545,9 @@
 //    }
 //    pipe.stop();
 //
+//	auto average_time = sum_time / frame_count;
+//	cout << "平均実行時間: " << average_time << " ms" << std::endl;
+//	cout << "フレーム数: " << frame_count << std::endl;
 //    // 表示画像の保存
 //    //ostringstream stream;
 //    //stream << "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ICIP-prop-improve-v1-2/prop-improve-v1-2-pepper_tileExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";

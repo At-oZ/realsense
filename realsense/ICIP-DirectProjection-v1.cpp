@@ -37,12 +37,12 @@
 //
 //    cout << "ICIP-DirectProjection-v1" << endl;
 //
-//    std::vector<double> result(78);
+//    std::vector<double> result(8);
 //
 //    int index = 0;
 //    for (int nph = 40; nph <= 40; nph *= 2) {
 //
-//        for (double subz = 300.0; subz <= 8000.0; subz += 100) {
+//        for (double subz = 300.0; subz <= 1000.0; subz += 100) {
 //
 //            cout << "num pinhole:" << nph << ", subject z:" << subz << endl;
 //
@@ -76,7 +76,7 @@
 //            int rows = subject_image_resolution * subject_image_resolution;
 //            int cols = 6;
 //
-//            int TIMES = 1;
+//            int TIMES = 10;
 //
 //            // 視点パラメータ(mm)
 //            double* sp;
@@ -99,7 +99,7 @@
 //                data[i] = (double*)malloc(sizeof(double) * cols);
 //            }
 //
-//            std::string filenamein = "./images/standard/pepper.bmp";
+//            std::string filenamein = "./images/standard/Mandrill.bmp";
 //            cv::Mat image_input = cv::imread(filenamein);
 //
 //            if (image_input.empty())
@@ -151,7 +151,7 @@
 //
 //                // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //
-//                const int numThreads = 15;
+//                const int numThreads = 20;
 //                vector<thread> threads;
 //                int rowsPerThread = num_pinhole / numThreads;
 //
@@ -184,11 +184,11 @@
 //                //cout << "重なり回数:" << pcd_count << endl;
 //                sum_time += duration.count();
 //
-//                // 表示画像の保存
-//                ostringstream stream;
-//                stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-pepper_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
-//                cv::String filename = stream.str();
-//                imwrite(filename, img_display);
+//                //// 表示画像の保存
+//                //ostringstream stream;
+//                //stream << "D:/EvacuatedStorage/prop-reconstruction/ICIP-DP/DP-pepper_tileExpand_gridSize" << num_pinhole << "_zi" << (int)subject_z << ".png";
+//                //cv::String filename = stream.str();
+//                //imwrite(filename, img_display);
 //
 //                //stream.str("");
 //                //stream.clear(ostringstream::goodbit);
@@ -243,7 +243,7 @@
 //        }
 //    }
 //
-//    //writeCSV1(result);
+//    writeCSV1(result);
 //
 //    return EXIT_SUCCESS;
 //}
@@ -251,7 +251,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-DP-pepper-tileExpand.csv");
+//    std::ofstream file("./numbers/speed/speed-DP-Mandrill-tileExpand.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {

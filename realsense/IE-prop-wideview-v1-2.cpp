@@ -9,7 +9,6 @@
 //#include <sstream>
 //#include <iostream>
 //#include <fstream>
-//#include <sstream>
 //#include <string>
 //#include <chrono>
 //#include <thread>
@@ -34,11 +33,11 @@
 //
 //    cout << "IE-prop-wideview-v1" << endl;
 //
-//    std::string WINNAME = "image";
-//    cv::namedWindow(WINNAME);
-//    HWND window = FindWindow(NULL, L"image");
-//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    SetWindowPos(window, NULL, 3280, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    //std::string WINNAME = "image";
+//    //cv::namedWindow(WINNAME);
+//    //HWND window = FindWindow(NULL, L"image");
+//    //SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    //SetWindowPos(window, NULL, 3280, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //    //std::vector<std::vector<double>> array(5, std::vector<double>(6)); // 横：subz, 縦：ptimes
 //
@@ -57,7 +56,7 @@
 //                for (int nzl = 60; nzl <= 60; nzl += 5) {
 //
 //                    int idx_subz = 0;
-//                    for (double subz = 500.0; subz <= 500.0; subz += 100) {
+//                    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
 //
 //
 //                        // 観察者のパラメータ
@@ -70,7 +69,7 @@
 //
 //                        // ピンホールアレイと表示系のパラメータ(mm)
 //                        double pinhole_array_width = 180.4;
-//                        double focal_length = 7.0; // ギャップ(zo_min / (3 * nph - 1))
+//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
 //                        double pinhole_pitch = pinhole_array_width / nph;   // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
 //                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
@@ -79,12 +78,11 @@
 //                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_pitch * nph; //表示画像の大きさ
 //                        int display_px = static_cast<int>(floor(intv * nph)); // 表示画像の解像度
 //
-//
 //                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_pixel_pitch << fixed << setprecision(5) << endl;
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = pinhole_array_width; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+//                        double subject_size = pinhole_array_width * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
 //                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
 //                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
@@ -108,7 +106,7 @@
 //                        int px_width_img = NxNy; // 詳細化の場合 static_cast<int>(100 * ptimes) に変更
 //                        std::cout << "Nx:" << px_width_img << ", Ny:" << px_height_img << std::endl;
 //
-//                        int TIMES = 1;
+//                        int TIMES = 10;
 //
 //                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
 //
@@ -177,7 +175,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/grid_image.png";
+//                        std::string filenamein = "./images/standard/Mandrill.bmp";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
@@ -431,7 +429,7 @@
 //
 //                            // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //
-//                            const int numThreads = 15;
+//                            const int numThreads = 30;
 //                            vector<thread> threads;
 //                            int rowsPerThread = element_image_px / numThreads;
 //
@@ -467,14 +465,14 @@
 //                        //cv::imshow("image", img_display);
 //                        //cv::waitKey(0);
 //
-//                        //// 表示画像の保存
-//                        //ostringstream stream;
-//                        //stream << "./images/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//                        //cv::String filename = stream.str();
-//                        //imwrite(filename, img_display);
+//                        // 表示画像の保存
+//                        ostringstream stream;
+//                        stream << "./images/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-Mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        cv::String filename = stream.str();
+//                        imwrite(filename, img_display);
 //
-//                        //stream.str("");
-//                        //stream.clear(ostringstream::goodbit);
+//                        stream.str("");
+//                        stream.clear(ostringstream::goodbit);
 //
 //                        // 各イメージプレーンの画像を保存（テスト用）
 //                        //ostringstream stream;
@@ -562,7 +560,7 @@
 //                    idx_nzl++;
 //
 //                }
-//                //writeCSV2(array);
+//                writeCSV2(array);
 //            }
 //        }
 //
@@ -620,7 +618,7 @@
 //int writeCSV2(const std::vector<std::vector<double>> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-IE-prop-wideview-v1-pepper.csv");
+//    std::ofstream file("./numbers/speed/speed-IE-prop-wideview-v1-2-mandrill.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {

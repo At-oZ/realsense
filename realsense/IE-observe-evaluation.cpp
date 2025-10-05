@@ -40,8 +40,8 @@
 //    // ディスプレイの設定
 //    const int display_image_px = 2400 * coef;
 //    const double display_image_size = display_image_px * display_px_size;
-//    int element_image_px = 60; // 要素画像の解像度
-//    double intv = (double)element_image_px; // 要素画像の間隔
+//    //int element_image_px = 60; // 要素画像の解像度
+//    //double intv = (double)element_image_px; // 要素画像の間隔
 //
 //    // 観察者とタイルの設定
 //    const double observer_z = -1000.0; // 観察者の位置
@@ -52,17 +52,24 @@
 //
 //    // ピンホールアレイと表示系のパラメータ(mm)
 //    const int num_pinhole = 40;
+//	//const int element_image_px = 60; // 要素画像の解像度
+//	//double intv = (double)element_image_px; // 要素画像の間隔
+//    //const double pinhole_pitch = element_image_px * display_px_size;    // ピンホール間の間隔（mm）(normalview:element_image_px * display_px_size)
+//    //double display_area_size = display_image_size; //表示画像の大きさ
 //    const double focal_length = observer_z_min / (3 * num_pinhole - 1); // レンズアレイの焦点距離
-//    const double pinhole_pitch = observer_z_min / (focal_length + observer_z_min) * element_image_px * display_px_size;    // ピンホール間の間隔（mm）(wideview:observer_z_min / (focal_length + observer_z_min) * )
+//    const double pinhole_pitch = 180.4 / num_pinhole; // observer_z_min / (focal_length + observer_z_min) * element_image_px * display_px_size;    // ピンホール間の間隔（mm）(wideview:observer_z_min / (focal_length + observer_z_min) * )
+//    double intv = pinhole_pitch / display_px_size; // 要素画像の間隔 (wideview:(focal_length + observer_z_min) / observer_z_min * )
+//    int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
 //    double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
-//    double display_area_size = element_image_px * num_pinhole * display_px_size; //表示画像の大きさ
-//    //double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
-//    //int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//    double display_area_size = element_image_px * num_pinhole * display_px_size; //表示画像の大きさ (wideview:(focal_length + observer_z_min) / observer_z_min * )
 //    int display_px = element_image_px * num_pinhole; // 表示画像の解像度
 //    const double pinhole_size = display_px_size;        // ピンホールの一辺の長さ（mm）
 //
+//	cout << "focal length:" << focal_length << fixed << setprecision(3) << ", pinhole pitch:" << pinhole_pitch << fixed << setprecision(3) << ", pinhole size:" << pinhole_size << fixed << setprecision(5) << endl;
+//	cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_px_size << fixed << setprecision(5) << endl;
+//
 //    // 画像を読み込む
-//    std::string filename_tile = "./images/standard/parrots.bmp";
+//    std::string filename_tile = "./images/standard/grid_image.png";
 //    cv::Mat tile_image = cv::imread(filename_tile);
 //
 //    if (tile_image.empty())
@@ -77,45 +84,45 @@
 //    std::mt19937 enginex(seedx);
 //    std::mt19937 enginey(seedy);
 //
-//    // 領域2, 3用
-//    std::uniform_real_distribution<double> dist(-(focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5, (focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5);
-//
-//    int rand_size = 100;
-//    double* observer_x = (double*)malloc(sizeof(double) * rand_size);
-//    double* observer_y = (double*)malloc(sizeof(double) * rand_size);
-//
-//    // 除外する範囲の設定
-//    const double exclude_min = -pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
-//    const double exclude_max = pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
-//
-//    for (int i = 0; i < rand_size; i++) {
-//        // 除外範囲外の値が得られるまで乱数を生成
-//        double x, y;
-//        do {
-//            x = dist(enginex);
-//            y = dist(enginey);
-//        } while (x >= exclude_min && x <= exclude_max && y >= exclude_min && y <= exclude_max);
-//
-//        observer_x[i] = x;
-//        observer_y[i] = y;
-//    }
-//    // 最後の要素は元のコードと同様に(0,0)にします
-//    //observer_x[99] = 0;
-//    //observer_y[99] = 0;
-//
-//    //// 領域1用
-//    //std::uniform_real_distribution<double> dist(-pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5, pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5);
+//    //// 領域2, 3用
+//    //std::uniform_real_distribution<double> dist(-(focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5, (focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5);
 //
 //    //int rand_size = 100;
 //    //double* observer_x = (double*)malloc(sizeof(double) * rand_size);
 //    //double* observer_y = (double*)malloc(sizeof(double) * rand_size);
 //
+//    //// 除外する範囲の設定
+//    //const double exclude_min = -pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
+//    //const double exclude_max = pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
+//
 //    //for (int i = 0; i < rand_size; i++) {
-//    //    observer_x[i] = dist(enginex);
-//    //    observer_y[i] = dist(enginey);
+//    //    // 除外範囲外の値が得られるまで乱数を生成
+//    //    double x, y;
+//    //    do {
+//    //        x = dist(enginex);
+//    //        y = dist(enginey);
+//    //    } while (x >= exclude_min && x <= exclude_max && y >= exclude_min && y <= exclude_max);
+//
+//    //    observer_x[i] = x;
+//    //    observer_y[i] = y;
 //    //}
-//    ////observer_x[99] = 0;
-//    ////observer_y[99] = 0;
+//    // 最後の要素は元のコードと同様に(0,0)にします
+//    //observer_x[99] = 0;
+//    //observer_y[99] = 0;
+//
+//    // 領域1用
+//    std::uniform_real_distribution<double> dist(-pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5, pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5);
+//
+//    int rand_size = 100;
+//    double* observer_x = (double*)malloc(sizeof(double) * rand_size);
+//    double* observer_y = (double*)malloc(sizeof(double) * rand_size);
+//
+//    for (int i = 0; i < rand_size - 1; i++) {
+//        observer_x[i] = dist(enginex);
+//        observer_y[i] = dist(enginey);
+//    }
+//    observer_x[0] = 0;
+//    observer_y[0] = 0;
 //
 //    int idx = 0;
 //    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
@@ -137,7 +144,10 @@
 //
 //        // 比較対象用の表示画像の読み込み
 //        stream.str("");
-//        stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-wideview-v1/prop-wideview-v1-parrots_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        //stream << "./images/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//		//stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//		cout << "filename compared image:" << stream.str() << endl;
 //        std::string filename_display_compared = stream.str();
 //        cv::Mat display_compared_image = cv::imread(filename_display_compared);
 //
@@ -169,29 +179,38 @@
 //                //cv::Mat resized_cmpd_img;
 //                //cv::resize(compared_image, resized_cmpd_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
 //
-//                // 観察画像のウィンドウ表示
-//                //cv::imshow("images", resized_cmpd_img);
+//    //            // 観察画像のウィンドウ表示
+//    //            cv::imshow("images", standard_image);
+//    //            cv::waitKey(0);
 //
-//                //if (cv::waitKey(10) == 27)  // ESCキーで終了
-//                //{
-//                //    cv::destroyAllWindows;
-//                //    break;
-//                //}
+//    //            // 観察画像のウィンドウ表示
+//    //            cv::imshow("images", compared_image);
+//				//cv::waitKey(0);
 //
-//                // 観察画像の出力
+//                /* 観察画像の保存 */
+//
 //                // 解像度2400 x 2400の場合
 //                //std::string std_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/real-direct_2400_tileExpand/real-direct-observe_" + std::to_string(static_cast<int>(display_image_px)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                //std::string cmpd_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/prop-improve-v1_2400_tileExpand/prop-improve-v1-observe_" + std::to_string(static_cast<int>(display_image_px)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                // 解像度nph x nphの場合
-//                //std::string filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/ICIP/real-direct_nph/real-direct-observe_" + std::to_string(static_cast<int>(nph)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
-//                //cv::Mat resized_std_img;
-//                //cv::resize(standard_image, resized_std_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
+//				
+//    //            // 解像度nph x nphの場合->400x400にリサイズして保存
+//				//std::ostringstream filenameout_stream;
+//				////filenameout_stream << "D:/ForStudy/observe-images/real-direct/real-direct-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//				////std::string std_filenameout = filenameout_stream.str();
+//    //            //cv::Mat resized_std_img;
+//    //            //cv::resize(standard_image, resized_std_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
 //
+//				//filenameout_stream.str("");
+//    //            //filenameout_stream << "D:/ForStudy/observe-images/IE-prop-normal-v1/IE-prop-normal-v1-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//    //            filenameout_stream << "D:/ForStudy/observe-images/OpenGL-normal-v1/OpenGL-normal-v1-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//    //            std::string cmpd_filenameout = filenameout_stream.str();
+//    //            cv::Mat resized_cmpd_img;
+//    //            cv::resize(compared_image, resized_cmpd_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
 //
-//                //cv::imwrite(std_filenameout, resized_std_img);
-//                //std::cout << "基準画像を" << std_filenameout << "として保存しました。\n";
-//                //cv::imwrite(cmpd_filenameout, resized_cmpd_img);
-//                //std::cout << "基準画像を" << cmpd_filenameout << "として保存しました。\n";
+//    //            //cv::imwrite(std_filenameout, resized_std_img);
+//    //            //std::cout << "基準画像を" << std_filenameout << "として保存しました。\n";
+//    //            cv::imwrite(cmpd_filenameout, resized_cmpd_img);
+//    //            std::cout << "基準画像を" << cmpd_filenameout << "として保存しました。\n";
 //
 //                //cv::Mat observe_img = cv::Mat::zeros(cv::Size(2400, 2400), CV_8UC3);
 //                //for (int i = 0; i < 2400; ++i) {
@@ -319,7 +338,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/IE-direct-wideview-parrots-area2.csv");
+//    std::ofstream file("./numbers/OpenGL-direct-normal-grid-area1.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {

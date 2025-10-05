@@ -9,7 +9,6 @@
 //#include <sstream>
 //#include <iostream>
 //#include <fstream>
-//#include <sstream>
 //#include <string>
 //#include <chrono>
 //#include <thread>
@@ -34,11 +33,11 @@
 //
 //    cout << "IE-prop-wideview-v1-2-trial" << endl;
 //
-//    //std::string WINNAME = "image";
-//    //cv::namedWindow(WINNAME);
-//    //HWND window = FindWindow(NULL, L"image");
-//    //SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    //SetWindowPos(window, NULL, 2576, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME);
+//    HWND window = FindWindow(NULL, L"image");
+//    SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
+//    SetWindowPos(window, NULL, 2560, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 //
 //    int index = 0;
 //    bool interpolation = true; // 補間処理を行うかのフラッグ
@@ -51,7 +50,7 @@
 //    int HEIGHT = 480;
 //    int FPS = 30;
 //    double inv_WIDTH = 1.0 / (double)WIDTH;
-//    double D = 195.0;
+//    double D = 140.0;
 //
 //    // 観察者のパラメータ
 //    double zo_min = 1000.0;
@@ -254,6 +253,8 @@
 //    cv::Mat img_display = cv::Mat::zeros(cv::Size(display_px, display_px), CV_8UC3);
 //    cv::Mat img_window = cv::Mat::zeros(cv::Size(display_width_px, display_px), CV_8UC3);
 //
+//	int frame_count = 0;
+//	long long sum_time = 0;
 //    // フレーム処理
 //    while (true) {
 //
@@ -276,8 +277,23 @@
 //
 //        // Tell pointcloud object to map to this color frame
 //        pc.map_to(color_frame);
-//
 //        auto verts = points.get_vertices();
+//
+//        //// 測定終了時刻を記録
+//        //auto end = std::chrono::high_resolution_clock::now();
+//
+//        //// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
+//        ////auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+//        //auto duration = end - start;
+//
+//        //cout << duration.count() / 1e6 << " ms" << std::endl;
+//
+//        //sum_time += duration.count() / 1e6;
+//        //frame_count++;
+//
+//        //if (frame_count == 1000) {
+//        //    break;
+//        //}
 //
 //        // 箱とzバッファをオフセット
 //        for (int i = 0; i < num_z_level; i++) {
@@ -441,7 +457,7 @@
 //
 //        // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //
-//        const int numThreads = 15;
+//        const int numThreads = 30;
 //        vector<thread> threads;
 //        int rowsPerThread = element_image_px / numThreads;
 //
@@ -465,14 +481,14 @@
 //        //cout << "calc finished" << endl;
 //        finished_threads = 0;
 //
-//        int shift_y = 0;
-//        int shift_x = 11;
-//        for (int i = shift_y; i < display_px + shift_y; ++i) {
+//        int shift_y = 1220;
+//        int shift_x = -11;
+//        for (int i = shift_y; i < 2420; ++i) {
 //            if (i >= 0 && i < display_px) {
 //                for (int j = static_cast<int>(floor((display_width_px - display_px) / 2)); j < display_width_px - static_cast<int>(floor((display_width_px - display_px) / 2)); ++j) {
-//                    img_window.at<cv::Vec3b>(i, j - shift_x)[0] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
-//                    img_window.at<cv::Vec3b>(i, j - shift_x)[1] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
-//                    img_window.at<cv::Vec3b>(i, j - shift_x)[2] = img_display.at<cv::Vec3b>(i - shift_y, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
+//                    img_window.at<cv::Vec3b>(i - shift_y, j - shift_x)[0] = img_display.at<cv::Vec3b>(i, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[0];
+//                    img_window.at<cv::Vec3b>(i - shift_y, j - shift_x)[1] = img_display.at<cv::Vec3b>(i, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[1];
+//                    img_window.at<cv::Vec3b>(i - shift_y, j - shift_x)[2] = img_display.at<cv::Vec3b>(i, j - static_cast<int>(floor((display_width_px - display_px) / 2)))[2];
 //                }
 //            }
 //        }
@@ -481,11 +497,16 @@
 //        auto end = std::chrono::high_resolution_clock::now();
 //
 //        // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
-//        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+//        //auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+//		auto duration = end - start;
 //
-//        cout << "実行時間: " << duration.count() << " ms" << std::endl;
+//        cout << duration.count() / 1e6 << " ms" << std::endl;
 //
-//        //cv::imshow(WINNAME, img_window);
+//		sum_time += duration.count() / 1e6;
+//		frame_count++;
+//
+//        cv::imshow(WINNAME, img_window);
+//        //cv::imshow("image", img_display);
 //
 //        if (cv::waitKey(10) == 27)  // ESCキーで終了
 //        {
@@ -495,6 +516,8 @@
 //
 //    }
 //    pipe.stop();
+//
+//	cout << "frame count:" << frame_count << ", average time:" << (double)sum_time / (double)frame_count << " ms" << endl;
 //
 //    // 使用したメモリを解放
 //    for (int i = 0; i < rows; ++i) {

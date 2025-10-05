@@ -9,7 +9,6 @@
 //#include <sstream>
 //#include <iostream>
 //#include <fstream>
-//#include <sstream>
 //#include <string>
 //#include <chrono>
 //#include <thread>
@@ -51,7 +50,7 @@
 //    //double subz = 500.0;
 //
 //    int idx_subz = 0;
-//    for (double subz = 300.0; subz <= 300.0; subz += 100.0) {
+//    for (double subz = 300.0; subz <= 1000.0; subz += 100.0) {
 //
 //        // 観察者のパラメータ
 //        double zo_min = 1000.0;
@@ -60,17 +59,17 @@
 //        double display_size = 13.4 * 25.4; // ディスプレイサイズ
 //        int display_width_px = 3840, display_height_px = 2400; // ディスプレイの縦横の解像度
 //        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
-//        int element_image_px = 60; // 要素画像の解像度
-//        double intv = (double)element_image_px; // 要素画像の間隔
+//        //int element_image_px = 60; // 要素画像の解像度
+//        //double intv = (double)element_image_px; // 要素画像の間隔
 //
 //        // ピンホールアレイと表示系のパラメータ(mm)
-//        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
-//        double pinhole_pitch = element_image_px * display_pixel_pitch;    // ピンホールピッチ
 //        int num_pinhole = nph;  // 各軸方向のピンホール数
-//        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
+//        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
+//        double pinhole_array_size = 180.4;   // 各軸方向のピンホールアレイのサイズ
+//        double pinhole_pitch = 180.4 / num_pinhole; // ピンホール間の間隔（mm）
+//        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
 //        double display_area_size = element_image_px * nph * display_pixel_pitch; //表示画像の大きさ
-//        //double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
-//        //int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
 //        int display_px = element_image_px * nph; // 表示画像の解像度
 //
 //        // 被写体のパラメータ(mm)
@@ -169,7 +168,7 @@
 //            data[i] = (double*)malloc(sizeof(double) * cols);
 //        }
 //
-//        std::string filenamein = "./images/standard/pepper.bmp";
+//        std::string filenamein = "./images/standard/mandrill.bmp";
 //        cv::Mat image_input = cv::imread(filenamein);
 //
 //        if (image_input.empty())
@@ -423,7 +422,7 @@
 //
 //            // insert_pixels(0, element_image_px, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //
-//            const int numThreads = 15;
+//            const int numThreads = 30;
 //            vector<thread> threads;
 //            int rowsPerThread = element_image_px / numThreads;
 //
@@ -456,18 +455,18 @@
 //
 //        }
 //
-//        cv::imshow(WINNAME, img_display);
-//        cv::waitKey(0);
+//        //cv::imshow(WINNAME, img_display);
+//        //cv::waitKey(0);
 //
-//        //// 表示画像の保存
-//        //ostringstream stream;
-//        ////stream << "D:/EvacuatedStorage/prop-reconstruction/prop-improve-v1/prop-improve-v1-grid1_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
-//        //stream << "D:/EvacuatedStorage/prop-reconstruction/IE-prop-normal-v1/prop-normal-v1-pepper_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
-//        //cv::String filename = stream.str();
-//        //imwrite(filename, img_display);
+//        // 表示画像の保存
+//        ostringstream stream;
+//        //stream << "D:/ForStudy/reconstruction/prop-improve-v1/prop-improve-v1-mandrill_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//        stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//        cv::String filename = stream.str();
+//        imwrite(filename, img_display);
 //
-//        //stream.str("");
-//        //stream.clear(ostringstream::goodbit);
+//        stream.str("");
+//        stream.clear(ostringstream::goodbit);
 //
 //        // 各イメージプレーンの画像を保存（テスト用）
 //        //ostringstream stream;
@@ -475,7 +474,7 @@
 //        //   cv::Mat img = cv::Mat::zeros(cv::Size(px_width_img, px_height_img), CV_8UC3);
 //        //for (int zi = 24; zi < 25; zi++) {
 //
-//        //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-pepper_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
+//        //    stream << "E:/ForStudy/image-plane/prop-improve/prop-improve-v1-detail-pepper_tileExpand_Nz" << nzl << "_N" << ptimes << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
 //        //    cout << "zi:" << zi << endl;
 //
 //        //    for (int i = 0; i < px_height_img; i++) {
