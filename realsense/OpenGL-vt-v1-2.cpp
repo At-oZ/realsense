@@ -1,7 +1,5 @@
-ï»¿//// OpenGL-vt-v1.cpp
-//// Stage1: 40Ã—40 ä¸¦è¡Œã‚«ãƒ¡ãƒ© (z=0, +Z æ–¹å‘) ã‚¿ã‚¤ãƒ«æç”»
-//// Stage2: æ¦‚è¦³ã‚«ãƒ¡ãƒ© (ä½ç½®å›ºå®š 0,0,-1 + å‹•çš„FOV)
-//// è¿½åŠ : Stage1 ã®ã‚¿ã‚¤ãƒ«å…¨ä½“ (WIN_WÃ—WIN_H) ã‚’ 1 æšã® PNG ã¨ã—ã¦åˆå›ãƒ•ãƒ¬ãƒ¼ãƒ ã®ã¿ä¿å­˜ (stage1_full.png)
+//// OpenGL-vt-v1‚©‚ç‚Ì”h¶
+//// CPU•À—ñˆ—‚É‚æ‚éÀ‘•
 //
 //#include <glad/glad.h>
 //#include <GLFW/glfw3.h>
@@ -13,17 +11,18 @@
 //#include <chrono>
 //#include <filesystem>
 //#include <iostream>
+//#include <thread>
 //
 //#ifndef GLFW_TRUE
 //#define GLFW_TRUE 1
 //#define GLFW_FALSE 0
 //#endif
 //
-//// dGPU è¦æ±‚ (Optimus / PowerXpress)
-//extern "C" {
-//    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-//    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-//}
+////// dGPU —v‹ (Optimus / PowerXpress)
+////extern "C" {
+////    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+////    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+////}
 //
 //struct Vec3 { float x, y, z; };
 //struct Mat4 { float m[16]; };
@@ -129,12 +128,12 @@
 //
 //static const char* kVS = R"(#version 330 core
 //layout(location=0) in vec3 inPos;
-//layout(location=1) in vec3 inCol;   // ç¾åœ¨: B,G,R ã®é †ã§å…¥ã£ã¦ãã‚‹
-//uniform mat4 uMVP;
+//layout(location=1) in vec3 inCol;   // B,G,R
+//layout(location=2) in mat4 iMVP;    // ƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÌMVPiƒ^ƒCƒ‹NDC•ÏŠ·‚İj
 //out vec3 vCol;
 //void main(){
-//    gl_Position = uMVP * vec4(inPos,1.0);
-//    vCol = inCol.bgr / 255.0;       // RGB é †ã«ä¸¦ã¹æ›¿ãˆã¤ã¤ 0..1 ã«æ­£è¦åŒ–
+//    gl_Position = iMVP * vec4(inPos,1.0);
+//    vCol = inCol.bgr / 255.0;
 //    gl_PointSize = 1.0;
 //}
 //)";
@@ -167,8 +166,26 @@
 //    return mons[index];
 //}
 //
+//static Mat4 tileNDCTransform(int vx, int vy, int viewW, int viewH, int winW, int winH) {
+//    // NDC“à‚ÌƒXƒP[ƒ‹: ƒ^ƒCƒ‹‚Ìè—L—¦A•½sˆÚ“®: ƒ^ƒCƒ‹‚Ì’†SˆÊ’u‚Ö
+//    const float sx = (float)viewW / (float)winW;
+//    const float sy = (float)viewH / (float)winH;
+//    const float tx = (2.0f * vx + viewW) / (float)winW - 1.0f;
+//    const float ty = (2.0f * vy + viewH) / (float)winH - 1.0f;
+//
+//    Mat4 t = identity();
+//    t.m[0]  = sx;  // xƒXƒP[ƒ‹
+//    t.m[5]  = sy;  // yƒXƒP[ƒ‹
+//    t.m[10] = 1.0f;
+//    t.m[15] = 1.0f;
+//    // clip‹óŠÔ‚Å x' = sx*x + tx*w, y' = sy*y + ty*w ‚ğÀŒ»iw‚ÍˆÛj
+//    t.m[12] = tx;  // x‚Ì•½sˆÚ“®iw€j
+//    t.m[13] = ty;  // y‚Ì•½sˆÚ“®iw€j
+//    return t;
+//}
+//
 //int main() {
-//    // ---- å®šæ•° ----
+//    // ---- ’è” ----
 //    const int CAM_COLS = 40, CAM_ROWS = 40;
 //    const int VIEW_W = 60, VIEW_H = 60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
@@ -184,14 +201,14 @@
 //    const float tanHalf = display_pixel_pitch * (VIEW_H - 1) * 0.5f / focal_length;
 //    const float baseFovY = std::atan(tanHalf) * 2.f;
 //
-//    double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // è¦ç´ ç”»åƒã®é–“éš”
-//    int element_image_px = static_cast<int>(floor(intv)); // è¦ç´ ç”»åƒã®è§£åƒåº¦
-//    double display_area_size = element_image_px * num_pinhole * display_pixel_pitch; //è¡¨ç¤ºç”»åƒã®å¤§ãã•
-//    int display_px = element_image_px * num_pinhole; // è¡¨ç¤ºç”»åƒã®è§£åƒåº¦
+//    double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // —v‘f‰æ‘œ‚ÌŠÔŠu
+//    int element_image_px = static_cast<int>(floor(intv)); // —v‘f‰æ‘œ‚Ì‰ğ‘œ“x
+//    double display_area_size = element_image_px * num_pinhole * display_pixel_pitch; //•\¦‰æ‘œ‚Ì‘å‚«‚³
+//    int display_px = element_image_px * num_pinhole; // •\¦‰æ‘œ‚Ì‰ğ‘œ“x
 //
 //    const float subject_z = 1.0f;
 //    const int   subject_image_resolution = 554;
-//    const float subject_size = display_area_size * (subject_z + zo_min) / zo_min; // è¢«å†™ä½“ã®ã‚µã‚¤ã‚º(æ‹¡å¤§ã™ã‚‹å ´åˆ * (subz + zo_min) / zo_minã‚’è¿½åŠ );
+//    const float subject_size = display_area_size * (subject_z + zo_min) / zo_min; // ”íÊ‘Ì‚ÌƒTƒCƒY(Šg‘å‚·‚éê‡ * (subz + zo_min) / zo_min‚ğ’Ç‰Á);
 //    const float subject_pixel_pitch = subject_size / subject_image_resolution;
 //    const float subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0f);
 //
@@ -200,7 +217,7 @@
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 //    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 //
-//    // Stage1 ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ (ãƒœãƒ¼ãƒ€ãƒ¬ã‚¹ + ã‚ªãƒ•ã‚»ãƒƒãƒˆé…ç½®)
+//    // Stage1 ƒEƒBƒ“ƒhƒE (ƒ{[ƒ_ƒŒƒX + ƒIƒtƒZƒbƒg”z’u)
 //    int targetMonitor = 0;
 //    GLFWmonitor* mon = getMonitorByIndex(targetMonitor);
 //    if (!mon) mon = glfwGetPrimaryMonitor();
@@ -212,8 +229,8 @@
 //#endif
 //    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 //
-//    int offsetX = 0;
-//    int offsetY = 0;
+//    int offsetX = 120;
+//    int offsetY = 60;
 //    int winW = std::max(WIN_W, mode->width - offsetX);
 //    int winH = std::max(WIN_H, mode->height - offsetY);
 //
@@ -235,26 +252,26 @@
 //    }
 //    printGLInfo("Stage1");
 //
-//    // ç”»åƒèª­ã¿è¾¼ã¿
+//    // ‰æ‘œ“Ç‚İ‚İ
 //    cv::Mat image_input = cv::imread("./images/standard/grid_image.png");
 //    if (image_input.empty()) {
-//        std::cout << "ç”»åƒã‚’é–‹ãã“ã¨ãŒã§ãã¾ã›ã‚“ã§ã—ãŸã€‚\n";
+//        std::cout << "‰æ‘œ‚ğŠJ‚­‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B\n";
 //        return -1;
 //    }
 //    cv::Mat resized_image;
 //    cv::resize(image_input, resized_image, cv::Size(subject_image_resolution, subject_image_resolution), 0, 0, cv::INTER_NEAREST);
 //
-//    // ç‚¹ç¾¤
+//    // “_ŒQ
 //    auto points = generatePointCloud(subject_image_resolution, subject_image_resolution,
 //        resized_image, subject_position_offset, subject_pixel_pitch, subject_z);
 //    std::printf("[Stage1] Point count = %zu\n", points.size());
 //
-//    // ã‚·ã‚§ãƒ¼ãƒ€
+//    // ƒVƒF[ƒ_
 //    GLuint prog = createProgram(kVS, kFS);
 //    if (!prog) return -1;
 //    GLint locMVP = glGetUniformLocation(prog, "uMVP");
 //
-//    // VAO / VBO
+//    // VAO / VBOi’¸“_‚ÍŠù‘¶‚Ì‚Ü‚Üj
 //    GLuint vao = 0, vbo = 0;
 //    glGenVertexArrays(1, &vao);
 //    glGenBuffers(1, &vbo);
@@ -269,7 +286,7 @@
 //    glEnable(GL_DEPTH_TEST);
 //    glEnable(GL_PROGRAM_POINT_SIZE);
 //
-//    // ã‚«ãƒ¡ãƒ©é…ç½®
+//    // ƒJƒƒ‰”z’u
 //    struct Cam { Vec3 eye; };
 //    std::vector<Cam> cams;
 //    cams.reserve(CAM_COLS * CAM_ROWS);
@@ -283,49 +300,86 @@
 //    const Vec3 forwardDir{ 0.f,0.f,1.f };
 //    const float aspectTile = (float)VIEW_W / (float)VIEW_H;
 //
+//    // ’Ç‰Á: ƒ^ƒCƒ‹‚²‚Æ‚Ì•`‰æƒWƒ‡ƒu (ƒrƒ…[ƒ|[ƒg‚ÆMVP) ‚ğ•À—ñ‚É\’z
+//    struct TileJob {
+//        int vx, vy;
+//        Mat4 mvp;
+//    };
+//    // ’Ç‰Á: ƒCƒ“ƒXƒ^ƒ“ƒX•`‰æ—p‚Ìs—ñ”z—ñiƒ^ƒCƒ‹”•ªj
+//    const Mat4 proj = perspective(baseFovY, aspectTile, 0.05f, 100.f);
+//    std::vector<Mat4> instanceMats(CAM_ROWS * CAM_COLS);
+//
+//    auto buildInstanceMatsParallel = [&]() {
+//        const unsigned int nt = std::max(1u, std::thread::hardware_concurrency());
+//        const int rowsPerThread = (CAM_ROWS + (int)nt - 1) / (int)nt;
+//
+//        std::vector<std::thread> threads;
+//        threads.reserve(nt);
+//        for (unsigned int t = 0; t < nt; ++t) {
+//            const int r0 = (int)t * rowsPerThread;
+//            const int r1 = std::min(CAM_ROWS, r0 + rowsPerThread);
+//            if (r0 >= r1) break;
+//
+//            threads.emplace_back([&, r0, r1]() {
+//                for (int r = r0; r < r1; ++r) {
+//                    for (int c = 0; c < CAM_COLS; ++c) {
+//                        const int idx = r * CAM_COLS + c;
+//                        const Vec3 eye = cams[idx].eye;
+//                        const Vec3 center{ eye.x + forwardDir.x, eye.y + forwardDir.y, eye.z + forwardDir.z };
+//                        const Mat4 view = lookAt(eye, center, { 0.f,-1.f,0.f });
+//
+//                        const int vx = c * VIEW_W;
+//                        const int vy = (CAM_ROWS - 1 - r) * VIEW_H; // ã‚©‚ç‰º‚Ö
+//                        const Mat4 tile = tileNDCTransform(vx, vy, VIEW_W, VIEW_H, WIN_W, WIN_H);
+//
+//                        // iMVP = tile * (proj * view)
+//                        instanceMats[idx] = multiply(tile, multiply(proj, view));
+//                    }
+//                }
+//            });
+//        }
+//        for (auto& th : threads) th.join();
+//    };
+//    buildInstanceMatsParallel();
+//
+//    // ƒCƒ“ƒXƒ^ƒ“ƒX—ps—ñƒoƒbƒtƒ@‚ğƒAƒbƒvƒ[ƒh‚µ‚Ä‘®«İ’èimat4 ‚Í4ƒXƒƒbƒg‚ğg—p: location=2..5j
+//    GLuint instanceVbo = 0;
+//    glBindVertexArray(vao);
+//    glGenBuffers(1, &instanceVbo);
+//    glBindBuffer(GL_ARRAY_BUFFER, instanceVbo);
+//    glBufferData(GL_ARRAY_BUFFER, instanceMats.size() * sizeof(Mat4), instanceMats.data(), GL_STATIC_DRAW);
+//    for (int i = 0; i < 4; ++i) {
+//        glEnableVertexAttribArray(2 + i);
+//        glVertexAttribPointer(2 + i, 4, GL_FLOAT, GL_FALSE, sizeof(Mat4), (void*)(sizeof(float) * 4 * i));
+//        glVertexAttribDivisor(2 + i, 1);
+//    }
+//    glBindVertexArray(0);
+//
 //    auto t_start = std::chrono::high_resolution_clock::now();
 //    bool measured = false;
 //
-//    // å…¨ä½“ã‚­ãƒ£ãƒ—ãƒãƒ£ (åˆå›ã®ã¿)
+//    // ‘S‘ÌƒLƒƒƒvƒ`ƒƒ (‰‰ñ‚Ì‚İ)
 //    bool savedFull = false;
 //
 //    while (!glfwWindowShouldClose(gridWin)) {
 //        if (glfwGetKey(gridWin, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 //            glfwSetWindowShouldClose(gridWin, GLFW_TRUE);
 //
-//        // ã‚¿ã‚¤ãƒ«è«–ç†å…¨åŸŸã‚¯ãƒªã‚¢
+//        // ‰æ–Ê‘S‘Ì‚ğˆê“x‚¾‚¯ƒNƒŠƒA
 //        glViewport(0, 0, WIN_W, WIN_H);
 //        glClearColor(0.f, 0.f, 0.f, 1.f);
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //
 //        glUseProgram(prog);
 //        glBindVertexArray(vao);
-//        Mat4 proj = perspective(baseFovY, aspectTile, 0.05f, 100.f);
 //
-//        glEnable(GL_SCISSOR_TEST);
-//        for (int r = 0; r < CAM_ROWS; ++r) {
-//            for (int c = 0; c < CAM_COLS; ++c) {
-//                int idx = r * CAM_COLS + c;
-//                Vec3 eye = cams[idx].eye;
-//                Vec3 center{ eye.x + forwardDir.x, eye.y + forwardDir.y, eye.z + forwardDir.z };
+//        // ƒCƒ“ƒXƒ^ƒ“ƒX•`‰æiƒ^ƒCƒ‹”‚¾‚¯ƒCƒ“ƒXƒ^ƒ“ƒXj
+//        glDrawArraysInstanced(GL_POINTS, 0, (GLsizei)points.size(), (GLsizei)instanceMats.size());
 //
-//                int vx = c * VIEW_W;
-//                int vy = (CAM_ROWS - 1 - r) * VIEW_H; // ä¸Šã‹ã‚‰ä¸‹ã¸
-//
-//                glViewport(vx, vy, VIEW_W, VIEW_H);
-//                glScissor(vx, vy, VIEW_W, VIEW_H);
-//                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//                Mat4 view = lookAt(eye, center, { 0.f,-1.f,0.f });
-//                Mat4 mvp = multiply(proj, view);
-//                glUniformMatrix4fv(locMVP, 1, GL_FALSE, mvp.m);
-//                glDrawArrays(GL_POINTS, 0, (GLsizei)points.size());
-//            }
-//        }
-//        glDisable(GL_SCISSOR_TEST);
 //        glBindVertexArray(0);
 //        glUseProgram(0);
 //
+//        // Œv‘ª/•Û‘¶‚ÍŠù‘¶‚Ì‚Ü‚ÜiglReadPixels ‚ÍƒNƒŠƒA‚Æ•`‰æ‚ÌŒãj
 //        if (!measured) {
 //            auto t_end = std::chrono::high_resolution_clock::now();
 //            std::printf("[Stage1 InitElapsed] %.3f ms\n",
@@ -333,9 +387,9 @@
 //            measured = true;
 //        }
 //
-//        // åˆå›ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã‚¿ã‚¤ãƒ«å…¨ä½“ã‚’ä¸€æšã«ä¿å­˜
+//        // ‰‰ñƒtƒŒ[ƒ€‚Åƒ^ƒCƒ‹‘S‘Ì‚ğˆê–‡‚É•Û‘¶
 //        if (!savedFull) {
-//            // WIN_WÃ—WIN_H é ˜åŸŸã®ã¿å–å¾— (é«˜ DPI ã®å ´åˆã¯å¿…è¦ã«å¿œã˜ã¦èª¿æ•´)
+//            // WIN_W~WIN_H —Ìˆæ‚Ì‚İæ“¾ (‚ DPI ‚Ìê‡‚Í•K—v‚É‰‚¶‚Ä’²®)
 //            std::vector<unsigned char> buf(WIN_W * WIN_H * 3);
 //            glReadPixels(0, 0, WIN_W, WIN_H, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
 //
@@ -351,7 +405,7 @@
 //            }
 //
 //            std::ostringstream stream;
-//            stream << "C:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << (focal_length * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (subject_size * 1000.f) << "_zi" << (int)(subject_z * 1000.f) << "_2.png";
+//            stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << (focal_length * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (subject_size * 1000.f) << "_zi" << (int)(subject_z * 1000.f) << "_2.png";
 //            std::string outPath = stream.str();
 //            if (cv::imwrite(outPath, img)) {
 //                std::printf("[Stage1] Saved full image: %s (%dx%d)\n", outPath.c_str(), WIN_W, WIN_H);

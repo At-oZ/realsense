@@ -21,11 +21,18 @@
 //#include <chrono>
 //#include <cmath>
 //#include <cstdio>
+//#include <thread> // 追加: 並列化
 //
 //#ifndef GLFW_TRUE
 //#define GLFW_TRUE 1
 //#define GLFW_FALSE 0
 //#endif
+//
+//// dGPU 要求 (Optimus / PowerXpress)
+//extern "C" {
+//    __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+//    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+//}
 //
 //struct Vec3 { float x,y,z; };
 //struct Mat4 { float m[16]; };
@@ -122,7 +129,7 @@
 //void main(){
 //    gl_Position = uMVP * vec4(inPos,1.0);
 //    vUV = inUV;
-//    gl_PointSize = 1.5;
+//    gl_PointSize = 1.0;
 //}
 //)";
 //
@@ -134,7 +141,7 @@
 //void main(){
 //    // 円形ポイント (必要なければ外周 discard を外す)
 //    vec2 d = gl_PointCoord*2.0 - 1.0;
-//    if(dot(d,d) > 1.0) discard;
+//    //if(dot(d,d) > 1.0) discard;
 //
 //    // RealSense BGR8 をアップロード時に FORMAT=GL_BGR 指定しているのでそのまま
 //    vec3 col = texture(uColorTex, vUV).rgb;
@@ -142,9 +149,28 @@
 //}
 //)";
 //
+//static void printGLInfo(const char* tag) {
+//    const GLubyte* vendor = glGetString(GL_VENDOR);
+//    const GLubyte* renderer = glGetString(GL_RENDERER);
+//    const GLubyte* version = glGetString(GL_VERSION);
+//    const GLubyte* glsl = glGetString(GL_SHADING_LANGUAGE_VERSION);
+//    std::printf("[%s] GL_VENDOR   = %s\n", tag, vendor ? (const char*)vendor : "(null)");
+//    std::printf("[%s] GL_RENDERER = %s\n", tag, renderer ? (const char*)renderer : "(null)");
+//    std::printf("[%s] GL_VERSION  = %s\n", tag, version ? (const char*)version : "(null)");
+//    std::printf("[%s] GLSL        = %s\n", tag, glsl ? (const char*)glsl : "(null)");
+//}
+//
+//static GLFWmonitor* getMonitorByIndex(int index) {
+//    int count = 0;
+//    GLFWmonitor** mons = glfwGetMonitors(&count);
+//    if (count <= 0) return nullptr;
+//    if (index < 0 || index >= count) return glfwGetPrimaryMonitor();
+//    return mons[index];
+//}
+//
 //int main(){
 //    // ---- 固定パラメータ ----
-//    const int CAM_COLS=40, CAM_ROWS=40;
+//    const int CAM_COLS=128, CAM_ROWS=40;
 //    const int VIEW_W=60, VIEW_H=60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
 //    const int WIN_H = CAM_ROWS * VIEW_H;
@@ -159,13 +185,41 @@
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
 //    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
 //    glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+//
+//    // Stage1 ウィンドウ (ボーダレス + オフセット配置)
+//    int targetMonitor = 0;
+//    GLFWmonitor* mon = getMonitorByIndex(targetMonitor);
+//    if (!mon) mon = glfwGetPrimaryMonitor();
+//    const GLFWvidmode* mode = glfwGetVideoMode(mon);
+//
+//    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+//#ifdef GLFW_FLOATING
+//    glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
+//#endif
+//    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+//
+//    int offsetX = 2560;
+//    int offsetY = 0;
+//    int winW = std::max(WIN_W, mode->width - offsetX);
+//    int winH = std::max(WIN_H, mode->height - offsetY);
+//
 //    GLFWwindow* win = glfwCreateWindow(WIN_W,WIN_H,"Grid Cameras (Optimized)",nullptr,nullptr);
 //    if(!win){ glfwTerminate(); return -1; }
 //    glfwMakeContextCurrent(win);
-//    glfwSwapInterval(0); // 垂直同期 OFF (必要なら 1)
+//    glfwSwapInterval(1); // 垂直同期 OFF (必要なら 1)
+//
+//    int mx = 0, my = 0;
+//    glfwGetMonitorPos(mon, &mx, &my);
+//    glfwSetWindowPos(win, mx + offsetX, my + offsetY);
+//#ifdef GLFW_FLOATING
+//    glfwSetWindowAttrib(win, GLFW_FLOATING, GLFW_TRUE); // 修正: gridWin -> win
+//#endif
+//    glfwShowWindow(win);
+//
 //    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
 //        std::fprintf(stderr,"GLAD fail\n"); return -1;
 //    }
+//    printGLInfo("Stage1");
 //
 //    // sRGB (必要に応じ切替)
 //    glEnable(GL_FRAMEBUFFER_SRGB);
@@ -188,7 +242,7 @@
 //    for(int j=0;j<CAM_ROWS;++j){
 //        float y = -(j - (CAM_ROWS - 1)*0.5f)*pinhole_pitch;
 //        for(int i=0;i<CAM_COLS;++i){
-//            float x = (i - (CAM_COLS - 1)*0.5f)*pinhole_pitch;
+//            float x = -(i - (CAM_COLS - 1)*0.5f)*pinhole_pitch;
 //            cams.push_back({ {x,y,0.f} });
 //        }
 //    }
@@ -197,6 +251,41 @@
 //    const float tanHalf = display_pixel_pitch * VIEW_H * 0.5f / focal_length;
 //    const float baseFovY = std::atan(tanHalf) * 2.f;
 //    Mat4 proj = perspective(baseFovY, aspectTile, 0.05f, 100.f);
+//
+//    // ---- タイルごとの MVP/Viewport を事前計算（並列） ----
+//    const size_t TILE_COUNT = size_t(CAM_COLS) * size_t(CAM_ROWS);
+//    std::vector<Mat4> tileMVP(TILE_COUNT);
+//    std::vector<int> tileVX(TILE_COUNT), tileVY(TILE_COUNT);
+//
+//    auto recomputeTileData = [&](){
+//        unsigned tc = std::max(1u, std::thread::hardware_concurrency());
+//        std::vector<std::thread> threads;
+//        threads.reserve(tc);
+//
+//        auto worker = [&](size_t begin, size_t end){
+//            for(size_t idx=begin; idx<end; ++idx){
+//                int r = int(idx / CAM_COLS);
+//                int c = int(idx % CAM_COLS);
+//                const Vec3& eye = cams[idx].eye;
+//                Vec3 ctr{ eye.x + forwardDir.x, eye.y + forwardDir.y, eye.z + forwardDir.z };
+//                Mat4 view = lookAt(eye, ctr, {0,1,0});
+//                tileMVP[idx] = multiply(proj, view);
+//                tileVX[idx] = c * VIEW_W;
+//                tileVY[idx] = (CAM_ROWS - 1 - r) * VIEW_H;
+//            }
+//        };
+//
+//        size_t chunk = (TILE_COUNT + tc - 1) / tc;
+//        for(unsigned t=0; t<tc; ++t){
+//            size_t b = size_t(t) * chunk;
+//            size_t e = std::min(TILE_COUNT, b + chunk);
+//            if(b < e) threads.emplace_back(worker, b, e);
+//        }
+//        for(auto& th : threads) th.join();
+//    };
+//
+//    // 現状の設定では静的なので一度だけで良い（将来FOV/配置が変わるなら再実行）
+//    recomputeTileData();
 //
 //    // ---- GL リソース ----
 //    GLuint prog = createProgram(kVS,kFS);
@@ -239,8 +328,8 @@
 //    int frameCounter=0;
 //    double acc=0.0;
 //
-//	int frameNum = 0;
-//	long long sumTime = 0;
+//    int frameNum = 0;
+//    long long sumTime = 0;
 //    while(!glfwWindowShouldClose(win)){
 //
 //        if(glfwGetKey(win,GLFW_KEY_ESCAPE)==GLFW_PRESS)
@@ -274,7 +363,7 @@
 //                    continue;
 //                }
 //                const auto& uv = tcoords[i];
-//                mapped[i] = { v.x, -v.y, v.z + D, uv.u, uv.v };
+//                mapped[i] = { -v.x, -v.y, v.z + D, uv.u, uv.v };
 //            }
 //            glUnmapBuffer(GL_ARRAY_BUFFER);
 //        }
@@ -287,7 +376,7 @@
 //
 //        // ---- 描画 ----
 //        glViewport(0,0,WIN_W,WIN_H);
-//        glClearColor(0.04f,0.05f,0.08f,1.f);
+//        glClearColor(0.f,0.f,0.f,1.f);
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //
 //        glUseProgram(prog);
@@ -300,14 +389,14 @@
 //        for(int r=0;r<CAM_ROWS;++r){
 //            for(int c=0;c<CAM_COLS;++c){
 //                int idx = r * CAM_COLS + c;
-//                Vec3 eye = cams[idx].eye;
-//                Vec3 ctr{ eye.x + forwardDir.x, eye.y + forwardDir.y, eye.z + forwardDir.z };
-//                Mat4 view = lookAt(eye, ctr, {0,1,0});
-//                Mat4 mvp  = multiply(proj, view);
+//
+//                // 事前計算済みの MVP とビューポートを使用
+//                const Mat4& mvp = tileMVP[(size_t)idx];
 //                glUniformMatrix4fv(locMVP,1,GL_FALSE,mvp.m);
 //
-//                int vx = c * VIEW_W;
-//                int vy = (CAM_ROWS - 1 - r) * VIEW_H;
+//                int vx = tileVX[(size_t)idx];
+//                int vy = tileVY[(size_t)idx];
+//
 //                glViewport(vx,vy,VIEW_W,VIEW_H);
 //                glScissor(vx,vy,VIEW_W,VIEW_H);
 //                glClear(GL_DEPTH_BUFFER_BIT);
@@ -321,16 +410,16 @@
 //        glfwSwapBuffers(win);
 //        glfwPollEvents();
 //
-//		auto end = std::chrono::high_resolution_clock::now();
-//		auto duration = end - start;
-//		std::cout << duration.count() / 1e6 << " ms" << std::endl;
-//		sumTime += duration.count() / 1e6;
-//		frameNum++;
+//        auto end = std::chrono::high_resolution_clock::now();
+//        auto duration = end - start;
+//        std::cout << duration.count() / 1e6 << " ms" << std::endl;
+//        sumTime += duration.count() / 1e6;
+//        frameNum++;
 //    }
 //
-//	if (frameNum > 0) {
-//		std::cout << "frame num:" << frameNum << ", Average time: " << (sumTime / frameNum) << " ms" << std::endl;
-//	}
+//    if (frameNum > 0) {
+//        std::cout << "frame num:" << frameNum << ", Average time: " << (sumTime / frameNum) << " ms" << std::endl;
+//    }
 //    pipe.stop();
 //    glDeleteProgram(prog);
 //    glDeleteBuffers(1,&vbo);

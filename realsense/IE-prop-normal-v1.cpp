@@ -168,7 +168,7 @@
 //            data[i] = (double*)malloc(sizeof(double) * cols);
 //        }
 //
-//        std::string filenamein = "./images/standard/mandrill.bmp";
+//        std::string filenamein = "./images/standard/grid_image.png";
 //        cv::Mat image_input = cv::imread(filenamein);
 //
 //        if (image_input.empty())
@@ -460,8 +460,8 @@
 //
 //        // •\Ž¦‰æ‘œ‚Ì•Û‘¶
 //        ostringstream stream;
-//        //stream << "D:/ForStudy/reconstruction/prop-improve-v1/prop-improve-v1-mandrill_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
-//        stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/prop-improve-v1/prop-improve-v1-grid_tileNotExpand_Nx" << px_height_img << "_Ny" << px_width_img << "_Nz" << nzl << "_N" << ptimes << "_zi" << (int)subz << ".png";
+//        stream << "C:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //        cv::String filename = stream.str();
 //        imwrite(filename, img_display);
 //

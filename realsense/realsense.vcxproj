@@ -192,7 +192,9 @@
     <ClCompile Include="OpenGL-v4.cpp" />
     <ClCompile Include="OpenGL-vt-v1-trial.cpp" />
     <ClCompile Include="OpenGL-vt-v1.cpp" />
-    <ClCompile Include="OpenGL-vt-v2.cpp" />
+    <ClCompile Include="OpenGL-learn-v1.cpp" />
+    <ClCompile Include="OpenGL-vt-v1-2.cpp" />
+    <ClCompile Include="OpenGL-vt-v2-trial.cpp" />
     <ClCompile Include="SIMD-v1.cpp" />
     <ClCompile Include="SMC-distortion-check_v1.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />
