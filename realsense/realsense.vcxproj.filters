@@ -594,8 +594,26 @@
     <ClCompile Include="OpenGL-learn-ex2-3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ex3-1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="learn-shader-ch3.vert" />
+    <None Include="learn-shader-ch3.frag" />
+    <None Include="learn-shader-ch4.vert" />
+    <None Include="learn-shader-ch4.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shader_s.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

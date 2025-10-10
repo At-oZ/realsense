@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;C:\Users\hamal\source\repos\At-oZ\realsense\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\opencv\build\include;C:\Program Files (x86)\Intel RealSense SDK 2.0\include;C:\glfw-3.4.bin.WIN64\include;C:\Users\taw11\vcpkg\packages\glad_x64-windows\include;C:\Users\hamal\source\repos\At-oZ\realsense\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>/Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -188,9 +188,12 @@
     <ClCompile Include="observe-image_through-pinhole.cpp" />
     <ClCompile Include="OpenGL-learn-ch1.cpp" />
     <ClCompile Include="OpenGL-learn-ch2-2.cpp" />
+    <ClCompile Include="OpenGL-learn-ch3.cpp" />
+    <ClCompile Include="OpenGL-learn-ch4.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-1.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-2.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-3.cpp" />
+    <ClCompile Include="OpenGL-learn-ex3-1.cpp" />
     <ClCompile Include="OpenGL-v1.cpp" />
     <ClCompile Include="OpenGL-v2.cpp" />
     <ClCompile Include="OpenGL-v3.cpp" />
@@ -344,7 +347,14 @@
     <ClCompile Include="vvv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="learn-shader-ch3.frag" />
+    <None Include="learn-shader-ch3.vert" />
+    <None Include="learn-shader-ch4.frag" />
+    <None Include="learn-shader-ch4.vert" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shader_s.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
