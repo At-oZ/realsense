@@ -169,7 +169,7 @@
 //
 //int main() {
 //    // ---- 定数 ----
-//    const int CAM_COLS = 40, CAM_ROWS = 40;
+//    const int CAM_COLS = 128, CAM_ROWS = 40;
 //    const int VIEW_W = 60, VIEW_H = 60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
 //    const int WIN_H = CAM_ROWS * VIEW_H;
@@ -283,7 +283,6 @@
 //    const Vec3 forwardDir{ 0.f,0.f,1.f };
 //    const float aspectTile = (float)VIEW_W / (float)VIEW_H;
 //
-//    auto t_start = std::chrono::high_resolution_clock::now();
 //    bool measured = false;
 //
 //    // 全体キャプチャ (初回のみ)
@@ -292,6 +291,8 @@
 //    while (!glfwWindowShouldClose(gridWin)) {
 //        if (glfwGetKey(gridWin, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 //            glfwSetWindowShouldClose(gridWin, GLFW_TRUE);
+//
+//        auto t_start = std::chrono::high_resolution_clock::now();
 //
 //        // タイル論理全域クリア
 //        glViewport(0, 0, WIN_W, WIN_H);
@@ -325,6 +326,9 @@
 //        glDisable(GL_SCISSOR_TEST);
 //        glBindVertexArray(0);
 //        glUseProgram(0);
+//
+//        glfwSwapBuffers(gridWin);
+//        glfwPollEvents();
 //
 //        if (!measured) {
 //            auto t_end = std::chrono::high_resolution_clock::now();
@@ -362,9 +366,6 @@
 //            savedFull = true;
 //        }
 //
-//
-//        glfwSwapBuffers(gridWin);
-//        glfwPollEvents();
 //    }
 //
 //    glDeleteProgram(prog);

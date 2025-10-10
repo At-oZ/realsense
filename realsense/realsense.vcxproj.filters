@@ -570,13 +570,28 @@
     <ClCompile Include="get-diff-reconstruction.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL-learn-v1.cpp">
+    <ClCompile Include="OpenGL-learn-ch2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL-vt-v1-2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL-vt-v2-trial.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch2-2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ex2-1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ex2-2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ex2-3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

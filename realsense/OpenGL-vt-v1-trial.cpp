@@ -170,7 +170,7 @@
 //
 //int main(){
 //    // ---- 固定パラメータ ----
-//    const int CAM_COLS=128, CAM_ROWS=40;
+//    const int CAM_COLS=128, CAM_ROWS=80;
 //    const int VIEW_W=60, VIEW_H=60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
 //    const int WIN_H = CAM_ROWS * VIEW_H;
@@ -300,7 +300,7 @@
 //    glBindBuffer(GL_ARRAY_BUFFER,vbo);
 //
 //    const size_t max_points = size_t(PC_W) * PC_H;
-//    glBufferData(GL_ARRAY_BUFFER, max_points * sizeof(Point), nullptr, GL_STREAM_DRAW);
+//    glBufferData(GL_ARRAY_BUFFER, max_points * sizeof(Point), nullptr, GL_DYNAMIC_DRAW);
 //    glEnableVertexAttribArray(0); // pos
 //    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(Point),(void*)0);
 //    glEnableVertexAttribArray(1); // uv
@@ -335,8 +335,6 @@
 //        if(glfwGetKey(win,GLFW_KEY_ESCAPE)==GLFW_PRESS)
 //            glfwSetWindowShouldClose(win,GL_TRUE);
 //
-//        auto start = std::chrono::high_resolution_clock::now();
-//
 //        rs2::frameset fs = pipe.wait_for_frames();
 //        fs = align_to_color.process(fs);
 //        rs2::depth_frame depth = fs.get_depth_frame();
@@ -351,9 +349,15 @@
 //
 //        // ---- 頂点バッファ更新 (Map) ----
 //        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+//
+//        auto start = std::chrono::high_resolution_clock::now();
+//
 //        Point* mapped = (Point*)glMapBufferRange(GL_ARRAY_BUFFER, 0,
 //                              pointCount * sizeof(Point),
 //                              GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+//
+//        auto end = std::chrono::high_resolution_clock::now();
+//
 //        if(mapped){
 //            for(size_t i=0;i<pointCount;++i){
 //                const rs2::vertex& v = verts[i];
@@ -410,7 +414,6 @@
 //        glfwSwapBuffers(win);
 //        glfwPollEvents();
 //
-//        auto end = std::chrono::high_resolution_clock::now();
 //        auto duration = end - start;
 //        std::cout << duration.count() / 1e6 << " ms" << std::endl;
 //        sumTime += duration.count() / 1e6;

@@ -1,23 +1,12 @@
 //#include <glad/glad.h>
 //#include <GLFW/glfw3.h>
-//#include <opencv2/opencv.hpp>
-//#include <vector>
-//#include <string>
-//#include <cmath>
-//#include <cstdio>
-//#include <chrono>
-//#include <filesystem>
 //#include <iostream>
-//#include <sstream>
-//#include <fstream>
-//#include <iomanip>
 //
 //#ifndef GLFW_TRUE
 //#define GLFW_TRUE 1
 //#define GLFW_FALSE 0
 //#endif
 //
-//using namespace cv;
 //using namespace std;
 //
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -32,18 +21,6 @@
 //}
 //
 //int main(void) {
-//
-//	float vertices[] = {
-//		-0.5f, -0.5f, 0.0f,
-//		 0.5f, 0.5f, 0.0f,
-//		 0.0f, 0.5f, 0.0f
-//	};
-//
-//	unsigned int VBO;
-//	glGenBuffers(1, &VBO);
-//	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
 //
 //	glfwInit();
 //	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
