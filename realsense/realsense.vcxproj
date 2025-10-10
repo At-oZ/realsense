@@ -190,6 +190,7 @@
     <ClCompile Include="OpenGL-learn-ch2-2.cpp" />
     <ClCompile Include="OpenGL-learn-ch3.cpp" />
     <ClCompile Include="OpenGL-learn-ch4.cpp" />
+    <ClCompile Include="OpenGL-learn-ch5.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-1.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-2.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-3.cpp" />
@@ -351,6 +352,8 @@
     <None Include="learn-shader-ch3.vert" />
     <None Include="learn-shader-ch4.frag" />
     <None Include="learn-shader-ch4.vert" />
+    <None Include="learn-shader-ch5.frag" />
+    <None Include="learn-shader-ch5.vert" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
