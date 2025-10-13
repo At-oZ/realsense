@@ -203,6 +203,7 @@
     <ClCompile Include="OpenGL-v4.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v1-oblique.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v1.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v2-oblique.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v2.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v3.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v4.cpp" />
