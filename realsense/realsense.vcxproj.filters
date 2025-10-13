@@ -606,6 +606,39 @@
     <ClCompile Include="OpenGL-learn-ch5.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch6.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-learn-ch7.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-prop-normal-v1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-observe-evaluation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v5.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v6.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v1-skew.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -615,9 +648,20 @@
     <None Include="learn-shader-ch4.frag" />
     <None Include="learn-shader-ch5.vert" />
     <None Include="learn-shader-ch5.frag" />
+    <None Include="learn-shader-ch6.vert" />
+    <None Include="learn-shader-ch6.frag" />
+    <None Include="learn-shader-ch7.vert" />
+    <None Include="learn-shader-ch7.frag" />
+    <None Include="shader-vt-v1.vert" />
+    <None Include="shader-vt-v1.frag" />
+    <None Include="shader-vt-v5.vert" />
+    <None Include="shader-vt-v5.frag" />
+    <None Include="shader-accum-resolve.vert" />
+    <None Include="shader-accum-resolve.frag" />
+    <None Include="shader_vt_v1-skew.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shader_s.h">
+    <ClInclude Include="camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

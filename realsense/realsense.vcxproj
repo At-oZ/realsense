@@ -191,6 +191,8 @@
     <ClCompile Include="OpenGL-learn-ch3.cpp" />
     <ClCompile Include="OpenGL-learn-ch4.cpp" />
     <ClCompile Include="OpenGL-learn-ch5.cpp" />
+    <ClCompile Include="OpenGL-learn-ch6.cpp" />
+    <ClCompile Include="OpenGL-learn-ch7.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-1.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-2.cpp" />
     <ClCompile Include="OpenGL-learn-ex2-3.cpp" />
@@ -199,11 +201,20 @@
     <ClCompile Include="OpenGL-v2.cpp" />
     <ClCompile Include="OpenGL-v3.cpp" />
     <ClCompile Include="OpenGL-v4.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v1-skew.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v1.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v2.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v3.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v4.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v5.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v6.cpp" />
     <ClCompile Include="OpenGL-vt-v1-trial.cpp" />
     <ClCompile Include="OpenGL-vt-v1.cpp" />
     <ClCompile Include="OpenGL-learn-ch2.cpp" />
     <ClCompile Include="OpenGL-vt-v1-2.cpp" />
     <ClCompile Include="OpenGL-vt-v2-trial.cpp" />
+    <ClCompile Include="PCSJ2025-observe-evaluation.cpp" />
+    <ClCompile Include="PCSJ2025-prop-normal-v1.cpp" />
     <ClCompile Include="SIMD-v1.cpp" />
     <ClCompile Include="SMC-distortion-check_v1.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />
@@ -354,10 +365,21 @@
     <None Include="learn-shader-ch4.vert" />
     <None Include="learn-shader-ch5.frag" />
     <None Include="learn-shader-ch5.vert" />
+    <None Include="learn-shader-ch6.frag" />
+    <None Include="learn-shader-ch6.vert" />
+    <None Include="learn-shader-ch7.frag" />
+    <None Include="learn-shader-ch7.vert" />
     <None Include="packages.config" />
+    <None Include="shader-accum-resolve.frag" />
+    <None Include="shader-accum-resolve.vert" />
+    <None Include="shader-vt-v1.frag" />
+    <None Include="shader-vt-v1.vert" />
+    <None Include="shader-vt-v5.frag" />
+    <None Include="shader-vt-v5.vert" />
+    <None Include="shader_vt_v1-skew.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shader_s.h" />
+    <ClInclude Include="camera.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

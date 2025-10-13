@@ -169,7 +169,7 @@
 //
 //int main() {
 //    // ---- 定数 ----
-//    const int CAM_COLS = 128, CAM_ROWS = 40;
+//    const int CAM_COLS = 40, CAM_ROWS = 40;
 //    const int VIEW_W = 60, VIEW_H = 60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
 //    const int WIN_H = CAM_ROWS * VIEW_H;
@@ -184,15 +184,17 @@
 //    const float tanHalf = display_pixel_pitch * (VIEW_H - 1) * 0.5f / focal_length;
 //    const float baseFovY = std::atan(tanHalf) * 2.f;
 //
-//    double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
-//    int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//    //double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
+//    //int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//    int element_image_px = 60;
+//    double intv = (double)element_image_px;
 //    double display_area_size = element_image_px * num_pinhole * display_pixel_pitch; //表示画像の大きさ
 //    int display_px = element_image_px * num_pinhole; // 表示画像の解像度
 //
 //    const float subject_z = 1.0f;
 //    const int   subject_image_resolution = 554;
 //    const float subject_size = display_area_size * (subject_z + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加);
-//    const float subject_pixel_pitch = subject_size / subject_image_resolution;
+//    const float subject_pixel_pitch = subject_size / (subject_image_resolution - 1);
 //    const float subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0f);
 //
 //    if (!glfwInit()) { std::fprintf(stderr, "Failed to init GLFW\n"); return -1; }
@@ -341,6 +343,7 @@
 //        if (!savedFull) {
 //            // WIN_W×WIN_H 領域のみ取得 (高 DPI の場合は必要に応じて調整)
 //            std::vector<unsigned char> buf(WIN_W * WIN_H * 3);
+//            glReadBuffer(GL_FRONT);
 //            glReadPixels(0, 0, WIN_W, WIN_H, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
 //
 //            cv::Mat img(WIN_H, WIN_W, CV_8UC3);
@@ -355,7 +358,7 @@
 //            }
 //
 //            std::ostringstream stream;
-//            stream << "C:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << (focal_length * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (subject_size * 1000.f) << "_zi" << (int)(subject_z * 1000.f) << "_2.png";
+//            stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << (focal_length * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (subject_size * 1000.f) << "_zi" << (int)(subject_z * 1000.f) << "_2.png";
 //            std::string outPath = stream.str();
 //            if (cv::imwrite(outPath, img)) {
 //                std::printf("[Stage1] Saved full image: %s (%dx%d)\n", outPath.c_str(), WIN_W, WIN_H);
