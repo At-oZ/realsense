@@ -636,7 +636,7 @@
     <ClCompile Include="OpenGL-vt-scratch-v6.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL-vt-scratch-v1-skew.cpp">
+    <ClCompile Include="OpenGL-vt-scratch-v1-oblique.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -658,7 +658,6 @@
     <None Include="shader-vt-v5.frag" />
     <None Include="shader-accum-resolve.vert" />
     <None Include="shader-accum-resolve.frag" />
-    <None Include="shader_vt_v1-skew.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">

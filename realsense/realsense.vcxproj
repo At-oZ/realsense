@@ -201,7 +201,7 @@
     <ClCompile Include="OpenGL-v2.cpp" />
     <ClCompile Include="OpenGL-v3.cpp" />
     <ClCompile Include="OpenGL-v4.cpp" />
-    <ClCompile Include="OpenGL-vt-scratch-v1-skew.cpp" />
+    <ClCompile Include="OpenGL-vt-scratch-v1-oblique.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v1.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v2.cpp" />
     <ClCompile Include="OpenGL-vt-scratch-v3.cpp" />
@@ -376,7 +376,6 @@
     <None Include="shader-vt-v1.vert" />
     <None Include="shader-vt-v5.frag" />
     <None Include="shader-vt-v5.vert" />
-    <None Include="shader_vt_v1-skew.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
