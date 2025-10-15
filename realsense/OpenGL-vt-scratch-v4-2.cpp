@@ -1,7 +1,7 @@
-ï»¿///*
-//	OpenGLç‰ˆvtã‚’ã‚¹ã‚¯ãƒ©ãƒƒãƒã§ä½œæˆ(learn-OpenGL-ch3ãƒ™ãƒ¼ã‚¹ã ãŒ)
-//	v5:ç‚¹ã®è‰²æƒ…å ±ã‚’åŠ é‡å¹³å‡
-//	æ³¨æ„ç‚¹:å„æ–¹å‘ã®ãƒ¬ãƒ³ã‚ºæ•°ã€ç‚¹ç¾¤æ•°ã¨ã‚‚ã«å¶æ•°ã‚’ä»®å®šï¼
+///*
+//	OpenGL”Åvt‚ğƒXƒNƒ‰ƒbƒ`‚Åì¬(learn-OpenGL-ch3ƒx[ƒX‚¾‚ª)
+//	v4-2:ˆ—‘¬“x‚Ì‚‘¬‰»(ƒeƒNƒXƒ`ƒƒ•t‚«•½–ÊƒIƒuƒWƒFƒNƒg‰»)
+//	’ˆÓ“_:Še•ûŒü‚ÌƒŒƒ“ƒY”A“_ŒQ”‚Æ‚à‚É‹ô”‚ğ‰¼’èI
 //*/
 //
 //#include <glad/glad.h>
@@ -12,6 +12,7 @@
 //#include <glm/gtc/type_ptr.hpp>
 //
 //#include <shader_m.h>
+//#include <stb_image.h>
 //
 //#include <opencv2/opencv.hpp>
 //
@@ -23,7 +24,7 @@
 //#define GLFW_FALSE 0
 //#endif
 //
-//// dGPU è¦æ±‚ (Optimus / PowerXpress)
+//// dGPU —v‹ (Optimus / PowerXpress)
 //extern "C" {
 //	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
 //	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
@@ -31,7 +32,7 @@
 //
 //using namespace std;
 //
-//// å®šæ•°(è¦³å¯Ÿè€…å´)
+//// ’è”(ŠÏ@Ò‘¤)
 ////------------------------------
 //
 //const float MIN_OBSERVE_Z = 1.0f;
@@ -39,7 +40,7 @@
 ////------------------------------
 //
 //
-//// å®šæ•°(è¡¨ç¤ºç³»å´)
+//// ’è”(•\¦Œn‘¤)
 ////------------------------------
 //
 //const float DISPLAY_PX_PITCH = 13.4f * 0.0254f / std::sqrt(3840.f * 3840.f + 2400.f * 2400.f);
@@ -50,13 +51,13 @@
 //const int HALF_NUM_LENS_W = NUM_LENS_W * 0.5f;
 //const int HALF_NUM_LENS_H = NUM_LENS_H * 0.5f;
 //
-////// ãƒ¬ãƒ³ã‚ºãƒ”ãƒƒãƒã‚’å›ºå®šã™ã‚‹å ´åˆ(A-1)
+////// ƒŒƒ“ƒYƒsƒbƒ`‚ğŒÅ’è‚·‚éê‡(A-1)
 ////const float LENS_PITCH_X = 0.00451f;
 ////const float LENS_PITCH_Y = 0.00451f;
 ////const float DISPLAY_AREA_SIZE_X = LENS_PITCH_X * NUM_LENS_W;
 ////const float DISPLAY_AREA_SIZE_Y = LENS_PITCH_Y * NUM_LENS_H;
 //
-//// ãƒ¬ãƒ³ã‚ºã‚¢ãƒ¬ã‚¤å¹…ã‚’å›ºå®šã™ã‚‹å ´åˆ(A-2)
+//// ƒŒƒ“ƒYƒAƒŒƒC•‚ğŒÅ’è‚·‚éê‡(A-2)
 //const float LENS_ARRAY_W = 0.1804f;
 //const float LENS_ARRAY_H = 0.1804f;
 //const float LENS_PITCH_X = LENS_ARRAY_W / (float)NUM_LENS_W;
@@ -66,11 +67,11 @@
 //const float HALF_LENS_PITCH_X = LENS_PITCH_X * 0.5f;
 //const float HALF_LENS_PITCH_Y = LENS_PITCH_Y * 0.5f;
 //
-//// ç„¡é™é ã«å‘ã‘ãŸå…‰ç·šå ´å†ç¾ã®å ´åˆ(B-1)
+//// –³ŒÀ‰“‚ÉŒü‚¯‚½ŒõüêÄŒ»‚Ìê‡(B-1)
 //const float ELEM_IMG_PITCH_X = LENS_PITCH_X;
 //const float ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
 //
-////// æƒ³å®šè¦³å¯Ÿè·é›¢ã«å‘ã‘ãŸå…‰ç·šå ´å†ç¾ã®å ´åˆ(B-2)
+////// ‘z’èŠÏ@‹——£‚ÉŒü‚¯‚½ŒõüêÄŒ»‚Ìê‡(B-2)
 ////const float ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
 ////const float ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
 //
@@ -82,7 +83,7 @@
 //const float DISPLAY_AREA_SIZE_X = NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
 //const float DISPLAY_AREA_SIZE_Y = NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
 //
-//// ä»®æƒ³ã‚«ãƒ¡ãƒ©è¨­å®š
+//// ‰¼‘zƒJƒƒ‰İ’è
 //const float FOCAL_LENGTH = MIN_OBSERVE_Z / (3.0f * (float)NUM_LENS_H - 1.0f);
 //const float TAN_HALF_Y = ELEM_IMG_PITCH_Y / FOCAL_LENGTH * 0.5f;
 //const float FOV_Y = atan(TAN_HALF_Y) * 2.0f;
@@ -92,17 +93,17 @@
 ////------------------------------
 //
 //
-//// å®šæ•°(è¢«å†™ä½“å´)
+//// ’è”(”íÊ‘Ì‘¤)
 ////------------------------------
 //
 //const float SUBJECT_Z = 1.0f;
-//const unsigned int NUM_SUBJECT_POINTS_X = 554;
-//const unsigned int NUM_SUBJECT_POINTS_Y = 554;
+//const unsigned int NUM_SUBJECT_POINTS_X = 300;
+//const unsigned int NUM_SUBJECT_POINTS_Y = 300;
 //const int NUM_POINTS = NUM_SUBJECT_POINTS_X * NUM_SUBJECT_POINTS_Y;
 //const int HALF_NUM_SUBJECT_POINTS_X = NUM_SUBJECT_POINTS_X * 0.5f;
 //const int HALF_NUM_SUBJECT_POINTS_Y = NUM_SUBJECT_POINTS_Y * 0.5f;
-//const float SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // è¢«å†™ä½“ã®æ°´å¹³æ–¹å‘ã®ã‚µã‚¤ã‚º(æ‹¡å¤§ã™ã‚‹å ´åˆ" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"ã‚’è¿½åŠ );
-//const float SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // è¢«å†™ä½“ã®å‚ç›´æ–¹å‘ã®ã‚µã‚¤ã‚º(æ‹¡å¤§ã™ã‚‹å ´åˆ" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"ã‚’è¿½åŠ );
+//const float SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // ”íÊ‘Ì‚Ì…•½•ûŒü‚ÌƒTƒCƒY(Šg‘å‚·‚éê‡" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"‚ğ’Ç‰Á);
+//const float SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // ”íÊ‘Ì‚Ì‚’¼•ûŒü‚ÌƒTƒCƒY(Šg‘å‚·‚éê‡" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"‚ğ’Ç‰Á);
 //const float SUBJECT_POINTS_PITCH_X = SUBJECT_SIZE_X / static_cast<float>(NUM_SUBJECT_POINTS_X - 1);
 //const float SUBJECT_POINTS_PITCH_Y = SUBJECT_SIZE_Y / static_cast<float>(NUM_SUBJECT_POINTS_Y - 1);
 //const float HALF_SUBJECT_POINTS_PITCH_X = SUBJECT_POINTS_PITCH_X * 0.5f;
@@ -154,7 +155,7 @@
 //	cout << endl;
 //
 //
-//	// GLFWã®åˆæœŸè¨­å®š
+//	// GLFW‚Ì‰Šúİ’è
 //	//------------------------------
 //
 //	glfwInit();
@@ -199,60 +200,59 @@
 //	//------------------------------
 //
 //
-//	// OpenGLã®å„ç¨®æ©Ÿèƒ½
+//	// OpenGL‚ÌŠeí‹@”\
 //	//------------------------------
 //
-//	glEnable(GL_PROGRAM_POINT_SIZE); // ç‚¹ã‚µã‚¤ã‚ºã‚’ã‚·ã‚§ãƒ¼ãƒ€ã§è¨­å®šã™ã‚‹å ´åˆ
-//	// glDisable(GL_DEPTH_TEST); // æ·±åº¦ã‚’ä½¿ã‚ãšå…¨ç‚¹ã‚’å¹³å‡ã™ã‚‹ãªã‚‰æ˜ç¤ºçš„ã«OFFã§ã‚‚è‰¯ã„
-//
-//	//------------------------------
-//
-//
-//	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã¨ãƒ•ãƒ©ã‚°ãƒ¡ãƒ³ãƒˆã‚·ã‚§ãƒ¼ãƒ€ã®æŒ‡å®š
-//	Shader ourShader("shader-vt-v5.vert", "shader-vt-v5.frag");
-//	Shader resolveShader("shader-accum-resolve.vert", "shader-accum-resolve.frag");
-//
-//	// ç‚¹ç¾¤ãƒ‡ãƒ¼ã‚¿ã®ç”Ÿæˆ
-//	//------------------------------
-//
-//	// è¢«å†™ä½“ç”»åƒèª­ã¿è¾¼ã¿
-//	cv::Mat image_input = cv::imread("./images/standard/grid_image.png");
-//	if (image_input.empty()) {
-//		std::cout << "ç”»åƒã‚’é–‹ãã“ã¨ãŒã§ãã¾ã›ã‚“ã§ã—ãŸã€‚\n";
-//		return -1;
-//	}
-//	cv::Mat resized_image;
-//	cv::resize(image_input, resized_image, cv::Size((int)NUM_SUBJECT_POINTS_Y, (int)NUM_SUBJECT_POINTS_X), 0, 0, cv::INTER_NEAREST);
-//
-//	// ç‚¹ç¾¤
-//	float* points = new float[NUM_POINTS * 6];
-//	for (int r = -HALF_NUM_SUBJECT_POINTS_Y; r < HALF_NUM_SUBJECT_POINTS_Y; ++r)
-//	{
-//		int row = r + HALF_NUM_SUBJECT_POINTS_Y;
-//		int reverseRow = NUM_SUBJECT_POINTS_Y - 1 - row;
-//
-//		for (int c = -HALF_NUM_SUBJECT_POINTS_X; c < HALF_NUM_SUBJECT_POINTS_X; ++c)
-//		{
-//			int col = c + HALF_NUM_SUBJECT_POINTS_X;
-//			int idx = (row * NUM_SUBJECT_POINTS_X + col) * 6;
-//
-//			points[idx] = (2.0f * (float)c + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X;
-//			points[idx + 1] = (2.0f * (float)r + 1.0f) * HALF_SUBJECT_POINTS_PITCH_Y;
-//			points[idx + 2] = SUBJECT_Z;
-//			points[idx + 3] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[2] / 255.0f);
-//			points[idx + 4] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[1] / 255.0f);
-//			points[idx + 5] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[0] / 255.0f);
-//
-//		}
-//	}
-//
-//	cout << "SUBJECT POINT OFFSET X:" << points[0] << endl;
-//	cout << "SUBJECT POINT OFFSET Y:" << points[1] << endl;
+//	//glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 //
 //	//------------------------------
 //
 //
-//	// ã‚«ãƒ¡ãƒ©é…ç½®
+//	// ’¸“_ƒVƒF[ƒ_‚Æƒtƒ‰ƒOƒƒ“ƒgƒVƒF[ƒ_‚Ìw’è
+//	Shader ourShader("shader-vt-v4-2.vert", "shader-vt-v4-2.frag");
+//
+//
+//	// “_ŒQƒf[ƒ^‚Ì¶¬
+//	//------------------------------
+//	
+//	//// ”íÊ‘Ì‰æ‘œ“Ç‚İ‚İ
+//	//cv::Mat image_input = cv::imread("./images/standard/grid_image.png");
+//	//if (image_input.empty()) {
+//	//	std::cout << "‰æ‘œ‚ğŠJ‚­‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B\n";
+//	//	return -1;
+//	//}
+//	//cv::Mat resized_image;
+//	//cv::resize(image_input, resized_image, cv::Size((int)NUM_SUBJECT_POINTS_Y, (int)NUM_SUBJECT_POINTS_X), 0, 0, cv::INTER_NEAREST);
+//
+//	//// “_ŒQ
+//	//float* points = new float[NUM_POINTS * 6];
+//	//for (int r = -HALF_NUM_SUBJECT_POINTS_Y; r < HALF_NUM_SUBJECT_POINTS_Y; ++r)
+//	//{
+//	//	int row = r + HALF_NUM_SUBJECT_POINTS_Y;
+//	//	int reverseRow = NUM_SUBJECT_POINTS_Y - 1 - row;
+//
+//	//	for (int c = -HALF_NUM_SUBJECT_POINTS_X; c < HALF_NUM_SUBJECT_POINTS_X; ++c)
+//	//	{
+//	//		int col = c + HALF_NUM_SUBJECT_POINTS_X;
+//	//		int idx = (row * NUM_SUBJECT_POINTS_X + col) * 6;
+//
+//	//		points[idx] = (2.0f * (float)c + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X;
+//	//		points[idx + 1] = (2.0f * (float)r + 1.0f) * HALF_SUBJECT_POINTS_PITCH_Y;
+//	//		points[idx + 2] = SUBJECT_Z;
+//	//		points[idx + 3] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[2] / 255.0f);
+//	//		points[idx + 4] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[1] / 255.0f);
+//	//		points[idx + 5] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[0] / 255.0f);
+//
+//	//	}
+//	//}
+//
+//	//cout << "SUBJECT POINT OFFSET X:" << points[0] << endl;
+//	//cout << "SUBJECT POINT OFFSET Y:" << points[1] << endl;
+//
+//	//------------------------------
+//
+//
+//	// ƒJƒƒ‰”z’u
 //	glm::vec3* camPos = new glm::vec3[NUM_LENS_W * NUM_LENS_H];
 //	for (int r = -HALF_NUM_LENS_H; r < HALF_NUM_LENS_H; ++r)
 //	{
@@ -270,116 +270,117 @@
 //		}
 //	}
 //
+//	float vertices[] = {
+//		// positions          // colors           // texture coords
+//		(2.0f * (float)HALF_NUM_SUBJECT_POINTS_X + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X, (2.0f * (float)HALF_NUM_SUBJECT_POINTS_Y + 1.0f) * HALF_SUBJECT_POINTS_PITCH_Y, SUBJECT_Z,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+//		(2.0f * (float)HALF_NUM_SUBJECT_POINTS_X + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X, (2.0f * -(float)HALF_NUM_SUBJECT_POINTS_Y + 1.0f)* HALF_SUBJECT_POINTS_PITCH_Y, SUBJECT_Z,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+//		(2.0f * -(float)HALF_NUM_SUBJECT_POINTS_X + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X,(2.0f * -(float)HALF_NUM_SUBJECT_POINTS_Y + 1.0f)* HALF_SUBJECT_POINTS_PITCH_Y, SUBJECT_Z,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+//		(2.0f * -(float)HALF_NUM_SUBJECT_POINTS_X + 1.0f) * HALF_SUBJECT_POINTS_PITCH_X,(2.0f * (float)HALF_NUM_SUBJECT_POINTS_Y + 1.0f) * HALF_SUBJECT_POINTS_PITCH_Y, SUBJECT_Z,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+//	};
+//	unsigned int indices[] = {
+//		0, 1, 3, // first triangle
+//		1, 2, 3  // second triangle
+//	};
 //
-//	// VBO, VAO, FBOã®è¨­å®š
+//	// VBO‚ÆVAO‚ÆEBO‚Ìİ’è
 //	//------------------------------
 //
-//	// è“„ç©ã‚¿ãƒ¼ã‚²ãƒƒãƒˆï¼ˆRGBA16Fï¼‰
-//	GLuint accumFBO = 0, accumTex = 0;
-//	glGenFramebuffers(1, &accumFBO);
-//	glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-//
-//	glGenTextures(1, &accumTex);
-//	glBindTexture(GL_TEXTURE_2D, accumTex);
-//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, WIN_W, WIN_H, 0, GL_RGBA, GL_HALF_FLOAT, nullptr);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, accumTex, 0);
-//
-//	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-//		std::fprintf(stderr, "accumFBO not complete\n");
-//		return -1;
-//	}
-//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//
-//	// è§£æ±ºç”¨ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚¯ã‚¢ãƒƒãƒ‰
-//	GLuint quadVAO = 0, quadVBO = 0;
-//	{
-//		const float quad[] = {
-//			// pos   // uv
-//			-1.f, -1.f, 0.f, 0.f,
-//			 1.f, -1.f, 1.f, 0.f,
-//			 1.f,  1.f, 1.f, 1.f,
-//			-1.f, -1.f, 0.f, 0.f,
-//			 1.f,  1.f, 1.f, 1.f,
-//			-1.f,  1.f, 0.f, 1.f,
-//		};
-//		glGenVertexArrays(1, &quadVAO);
-//		glGenBuffers(1, &quadVBO);
-//		glBindVertexArray(quadVAO);
-//		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-//		glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-//		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-//		glEnableVertexAttribArray(0);
-//		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-//		glEnableVertexAttribArray(1);
-//		glBindBuffer(GL_ARRAY_BUFFER, 0);
-//		glBindVertexArray(0);
-//	}
-//
-//	// ç‚¹ç¾¤ VAO/VBO ã®ä½œæˆï¼ˆFBOä½œæˆã‚ˆã‚Šå‰ã§ã‚‚å¾Œã§ã‚‚ã‚ˆã„ï¼‰
-//	unsigned int VBO, VAO;
+//	unsigned int VBO, VAO, EBO;
 //	glGenVertexArrays(1, &VAO);
 //	glGenBuffers(1, &VBO);
+//	glGenBuffers(1, &EBO);
 //
 //	glBindVertexArray(VAO);
+//
 //	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//	glBufferData(GL_ARRAY_BUFFER, NUM_POINTS * 6 * sizeof(float), points, GL_STATIC_DRAW);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 //
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//
+//	// position attribute
+//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 //	glEnableVertexAttribArray(0);
-//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+//	// color attribute
+//	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 //	glEnableVertexAttribArray(1);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	glBindVertexArray(0);
+//	// texture coord attribute
+//	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+//	glEnableVertexAttribArray(2);
 //
 //	//------------------------------
 //
 //
-//	// ãƒ•ãƒ¬ãƒ¼ãƒ å‡¦ç†
+//	// ƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh‚Æì¬
+//	//------------------------------
+//	unsigned int texture1;
+//	// texture 1
+//	// ---------
+//	glGenTextures(1, &texture1);
+//	glBindTexture(GL_TEXTURE_2D, texture1);
+//	// set the texture wrapping parameters
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//	// set texture filtering parameters
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//	// load image, create texture and generate mipmaps
+//	int width, height, nrChannels;
+//	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+//	// The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+//	unsigned char* data = stbi_load("./images/standard/grid_image.png", &width, &height, &nrChannels, 0);
+//	if (data)
+//	{
+//		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+//		glGenerateMipmap(GL_TEXTURE_2D);
+//	}
+//	else
+//	{
+//		std::cout << "Failed to load texture" << std::endl;
+//	}
+//	stbi_image_free(data);
+//	ourShader.use();
+//	ourShader.setInt("texture1", 0);
+//
+//	//------------------------------
+//
+//
+//	// ƒtƒŒ[ƒ€ˆ—
 //	//------------------------------
 //
 //	glfwSetFramebufferSizeCallback(gridWin, framebuffer_size_callback);
 //
-//	long long sum_time = 0;
-//	int numFrame = 0;
-//
 //	while (!glfwWindowShouldClose(gridWin))
 //	{
-//		// æ¸¬å®šé–‹å§‹æ™‚åˆ»ã‚’è¨˜éŒ²
-//		auto start = std::chrono::high_resolution_clock::now();
-//
 //		processInput(gridWin);
 //
-//		// ãƒ«ãƒ¼ãƒ—å†…: ãƒ‘ã‚¹1 è“„ç©ï¼ˆåŠ ç®—ï¼‰
-//		glBindFramebuffer(GL_FRAMEBUFFER, accumFBO);
-//		glViewport(0, 0, WIN_W, WIN_H);
-//		glDisable(GL_SCISSOR_TEST);
-//		glClearColor(0.f, 0.f, 0.f, 0.f);
+//		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 //		glClear(GL_COLOR_BUFFER_BIT);
+//		//ourShader.setFloat("pSize", 0.1f);
 //
-//		glEnable(GL_BLEND);
-//		glBlendFunc(GL_ONE, GL_ONE);
-//		glBlendEquation(GL_FUNC_ADD);
+//		// bind textures on corresponding texture units
+//		glActiveTexture(GL_TEXTURE0);
+//		glBindTexture(GL_TEXTURE_2D, texture1);
 //
 //		ourShader.use();
-//		ourShader.setFloat("uPointSize", 1.0f); // å¿…è¦ã«å¿œã˜ã¦ 2ã€œ3px ç­‰ã¸
-//		ourShader.setFloat("uWeight", 1.0f);
-//
 //		glBindVertexArray(VAO);
 //
+//		// pass projection matrix to shader (note that in this case it could change every frame)
 //		glm::mat4 projection = glm::perspective(FOV_Y, (float)NUM_ELEM_IMG_PX_X / (float)NUM_ELEM_IMG_PX_Y, 0.1f, 100.0f);
 //		ourShader.setMat4("projection", projection);
-//		glm::mat4 model = glm::mat4(1.0f);
+//
+//		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+//		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 //		ourShader.setMat4("model", model);
 //
 //		glEnable(GL_SCISSOR_TEST);
 //		for (int r = -HALF_NUM_LENS_H; r < HALF_NUM_LENS_H; ++r)
 //		{
+//
 //			int row = r + HALF_NUM_LENS_H;
 //			for (int c = -HALF_NUM_LENS_W; c < HALF_NUM_LENS_W; ++c)
 //			{
+//
 //				int col = c + HALF_NUM_LENS_W;
 //				int idx = row * NUM_LENS_W + col;
 //
@@ -388,95 +389,62 @@
 //
 //				glViewport(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
 //				glScissor(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
-//				glClear(GL_COLOR_BUFFER_BIT); // ã‚¿ã‚¤ãƒ«é ˜åŸŸã®ã¿0ã‚¯ãƒªã‚¢
 //
-//				glm::mat4 view = glm::lookAt(camPos[idx], glm::vec3(camPos[idx].x, camPos[idx].y, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//				// camera/view transformation
+//				glm::mat4 view = glm::lookAt(camPos[idx], glm::vec3(camPos[idx].x, camPos[idx].y, 1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
 //				ourShader.setMat4("view", view);
 //
-//				glDrawArrays(GL_POINTS, 0, NUM_POINTS);
+//				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 //			}
 //		}
 //		glDisable(GL_SCISSOR_TEST);
-//		glDisable(GL_BLEND);
 //		glBindVertexArray(0);
 //		glUseProgram(0);
 //
-//		// ãƒ‘ã‚¹2: è§£æ±ºï¼ˆæ­£è¦åŒ–ï¼‰ â†’ ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ•ãƒ¬ãƒ¼ãƒ ãƒãƒƒãƒ•ã‚¡
-//		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//		glViewport(0, 0, WIN_W, WIN_H);
-//		glClearColor(0.f, 0.f, 0.f, 1.f);
-//		glClear(GL_COLOR_BUFFER_BIT);
-//
-//		resolveShader.use();
-//		glActiveTexture(GL_TEXTURE0);
-//		glBindTexture(GL_TEXTURE_2D, accumTex);
-//		resolveShader.setInt("uAccum", 0);
-//
-//		glBindVertexArray(quadVAO);
-//		glDrawArrays(GL_TRIANGLES, 0, 6);
-//		glBindVertexArray(0);
-//		glUseProgram(0);
 //
 //		glfwSwapBuffers(gridWin);
 //		glfwPollEvents();
-//
-//		// æ¸¬å®šçµ‚äº†æ™‚åˆ»ã‚’è¨˜éŒ²
-//		auto end = std::chrono::high_resolution_clock::now();
-//
-//		// é–‹å§‹æ™‚åˆ»ã¨çµ‚äº†æ™‚åˆ»ã®å·®ã‚’è¨ˆç®—ã—ã€ãƒŸãƒªç§’å˜ä½ã§å‡ºåŠ›
-//		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-//
-//		sum_time += duration.count();
-//		numFrame++;
-//
 //	}
 //
-//	cout << "ãƒ•ãƒ¬ãƒ¼ãƒ æ•°:" << numFrame << endl;
-//	cout << "å¹³å‡å®Ÿè¡Œæ™‚é–“: " << sum_time / numFrame << " ms" << endl;
+//	//------------------------------
+//
+//
+//	// •\¦‰æ‘œ‚Ì•Û‘¶
+//	//------------------------------
+//
+//	//vector<unsigned char> buf(WIN_W * WIN_H * 3);
+//	//glReadBuffer(GL_FRONT);
+//	//glReadPixels(0, 0, WIN_W, WIN_H, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
+//
+//	//cv::Mat img(WIN_H, WIN_W, CV_8UC3);
+//	//for (int y = 0; y < WIN_H; ++y) {
+//	//	unsigned char* dst = img.ptr<unsigned char>(WIN_H - 1 - y);
+//	//	const unsigned char* src = buf.data() + y * WIN_W * 3;
+//	//	for (int x = 0; x < WIN_W; ++x) {
+//	//		dst[x * 3 + 0] = src[(WIN_W - 1 - x) * 3 + 2]; // B
+//	//		dst[x * 3 + 1] = src[(WIN_W - 1 - x) * 3 + 1]; // G
+//	//		dst[x * 3 + 2] = src[(WIN_W - 1 - x) * 3 + 0]; // R
+//	//	}
+//	//}
+//
+//	//std::ostringstream stream;
+//	//stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v1/OpenGL-scratch-normal-v1-grid_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
+//	//std::string outPath = stream.str();
+//
+//	//cv::imwrite(outPath, img);
 //
 //	//------------------------------
 //
 //
-//	// è¡¨ç¤ºç”»åƒã®ä¿å­˜
-//	//------------------------------
-//
-//	vector<unsigned char> buf(WIN_W * WIN_H * 3);
-//	glReadBuffer(GL_FRONT);
-//	glReadPixels(0, 0, WIN_W, WIN_H, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
-//
-//	cv::Mat img(WIN_H, WIN_W, CV_8UC3);
-//	for (int y = 0; y < WIN_H; ++y) {
-//		unsigned char* dst = img.ptr<unsigned char>(WIN_H - 1 - y);
-//		const unsigned char* src = buf.data() + y * WIN_W * 3;
-//		for (int x = 0; x < WIN_W; ++x) {
-//			dst[x * 3 + 0] = src[(WIN_W - 1 - x) * 3 + 2]; // B
-//			dst[x * 3 + 1] = src[(WIN_W - 1 - x) * 3 + 1]; // G
-//			dst[x * 3 + 2] = src[(WIN_W - 1 - x) * 3 + 0]; // R
-//		}
-//	}
-//
-//	std::ostringstream stream;
-//	stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v2/OpenGL-scratch-normal-v2-grid_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
-//	std::string outPath = stream.str();
-//
-//	cv::imwrite(outPath, img);
-//
-//	//------------------------------
-//
-//
-//	// å¾Œå§‹æœ«
+//	// Œãˆ—
 //	//------------------------------
 //
 //	glDeleteVertexArrays(1, &VAO);
 //	glDeleteBuffers(1, &VBO);
-//
-//	glDeleteVertexArrays(1, &quadVAO);
-//	glDeleteBuffers(1, &quadVBO);
-//	glDeleteFramebuffers(1, &accumFBO);
-//	glDeleteTextures(1, &accumTex);
+//	glDeleteBuffers(1, &EBO);
 //
 //	delete[] camPos;
-//	delete[] points;
+//	//delete[] points;
 //
 //	glfwTerminate();
 //

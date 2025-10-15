@@ -135,7 +135,7 @@
 //void main(){
 //    gl_Position = uMVP * vec4(inPos,1.0);
 //    vCol = inCol.bgr / 255.0;       // RGB 順に並べ替えつつ 0..1 に正規化
-//    gl_PointSize = 1.0;
+//    //gl_PointSize = 1.0;
 //}
 //)";
 //static const char* kFS = R"(#version 330 core
@@ -169,14 +169,14 @@
 //
 //int main() {
 //    // ---- 定数 ----
-//    const int CAM_COLS = 40, CAM_ROWS = 40;
+//    const int CAM_COLS = 128, CAM_ROWS = 80;
 //    const int VIEW_W = 60, VIEW_H = 60;
 //    const int WIN_W = CAM_COLS * VIEW_W;
 //    const int WIN_H = CAM_ROWS * VIEW_H;
 //
-//    const float pinhole_array_width = 0.1804f;
-//    const int   num_pinhole = CAM_COLS;
-//    const float pinhole_pitch = pinhole_array_width / num_pinhole;
+//    //const float pinhole_array_width = 0.1804f;
+//    const int   num_pinhole = CAM_ROWS;
+//    const float pinhole_pitch = 0.00451f;
 //
 //    const float zo_min = 1.f;
 //    const float focal_length = zo_min / (3.f * (float)num_pinhole - 1.f);
@@ -268,8 +268,8 @@
 //    glEnableVertexAttribArray(1);
 //    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)offsetof(Point, r));
 //    glBindVertexArray(0);
-//    glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_PROGRAM_POINT_SIZE);
+//    //glEnable(GL_DEPTH_TEST);
+//    //glEnable(GL_PROGRAM_POINT_SIZE);
 //
 //    // カメラ配置
 //    struct Cam { Vec3 eye; };
@@ -288,18 +288,22 @@
 //    bool measured = false;
 //
 //    // 全体キャプチャ (初回のみ)
-//    bool savedFull = false;
+//    bool savedFull = true;
 //
+//    long long sum_time = 0;
+//    int numFrame = 0;
 //    while (!glfwWindowShouldClose(gridWin)) {
+//
+//        auto t_start = std::chrono::high_resolution_clock::now();
+//
 //        if (glfwGetKey(gridWin, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 //            glfwSetWindowShouldClose(gridWin, GLFW_TRUE);
 //
-//        auto t_start = std::chrono::high_resolution_clock::now();
 //
 //        // タイル論理全域クリア
 //        glViewport(0, 0, WIN_W, WIN_H);
 //        glClearColor(0.f, 0.f, 0.f, 1.f);
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        glClear(GL_COLOR_BUFFER_BIT);
 //
 //        glUseProgram(prog);
 //        glBindVertexArray(vao);
@@ -317,7 +321,7 @@
 //
 //                glViewport(vx, vy, VIEW_W, VIEW_H);
 //                glScissor(vx, vy, VIEW_W, VIEW_H);
-//                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//                glClear(GL_COLOR_BUFFER_BIT);
 //
 //                Mat4 view = lookAt(eye, center, { 0.f,-1.f,0.f });
 //                Mat4 mvp = multiply(proj, view);
@@ -332,12 +336,13 @@
 //        glfwSwapBuffers(gridWin);
 //        glfwPollEvents();
 //
-//        if (!measured) {
-//            auto t_end = std::chrono::high_resolution_clock::now();
-//            std::printf("[Stage1 InitElapsed] %.3f ms\n",
-//                std::chrono::duration<double, std::milli>(t_end - t_start).count());
-//            measured = true;
-//        }
+//        auto t_end = std::chrono::high_resolution_clock::now();
+//
+//        // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
+//        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t_end - t_start);
+//
+//        sum_time += duration.count();
+//        numFrame++;
 //
 //        // 初回フレームでタイル全体を一枚に保存
 //        if (!savedFull) {
@@ -370,6 +375,9 @@
 //        }
 //
 //    }
+//
+//    std::cout << "フレーム数:" << numFrame << std::endl;
+//    std::cout << "平均実行時間: " << sum_time / numFrame << " ms" << std::endl;
 //
 //    glDeleteProgram(prog);
 //    glDeleteBuffers(1, &vbo);

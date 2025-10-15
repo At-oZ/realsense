@@ -17,6 +17,8 @@
 //
 //#include <iostream>
 //#include <vector>
+//#include <cmath>
+//#include <chrono>
 //
 //#ifndef GLFW_TRUE
 //#define GLFW_TRUE 1
@@ -50,6 +52,8 @@
 //const int HALF_NUM_LENS_W = NUM_LENS_W * 0.5f;
 //const int HALF_NUM_LENS_H = NUM_LENS_H * 0.5f;
 //
+//const float FOCAL_LENGTH = MIN_OBSERVE_Z / (3.0f * (float)NUM_LENS_H - 1.0f);
+//
 ////// レンズピッチを固定する場合(A-1)
 ////const float LENS_PITCH_X = 0.00451f;
 ////const float LENS_PITCH_Y = 0.00451f;
@@ -66,28 +70,40 @@
 //const float HALF_LENS_PITCH_X = LENS_PITCH_X * 0.5f;
 //const float HALF_LENS_PITCH_Y = LENS_PITCH_Y * 0.5f;
 //
-//// 無限遠に向けた光線場再現の場合(B-1)
-//const float ELEM_IMG_PITCH_X = LENS_PITCH_X;
-//const float ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
+////// 無限遠に向けた光線場再現の場合(B-1)
+////const float ELEM_IMG_PITCH_X = LENS_PITCH_X;
+////const float ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
 //
-////// 想定観察距離に向けた光線場再現の場合(B-2)
-////const float ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
-////const float ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
+//// 想定観察距離に向けた光線場再現の場合(B-2)
+//const float ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
+//const float ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
+//
+//const unsigned int WIN_W = static_cast<unsigned int>(std::lround(NUM_LENS_W * ELEM_IMG_PITCH_X / DISPLAY_PX_PITCH));
+//const unsigned int WIN_H = static_cast<unsigned int>(std::lround(NUM_LENS_H * ELEM_IMG_PITCH_Y / DISPLAY_PX_PITCH));
+//const unsigned int HALF_WIN_W = WIN_W / 2;
+//const unsigned int HALF_WIN_H = WIN_H / 2;
 //
 //const float FLOAT_NUM_ELEM_IMG_PX_X = ELEM_IMG_PITCH_X / DISPLAY_PX_PITCH;
 //const float FLOAT_NUM_ELEM_IMG_PX_Y = ELEM_IMG_PITCH_Y / DISPLAY_PX_PITCH;
 //const unsigned int NUM_ELEM_IMG_PX_X = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_X);
 //const unsigned int NUM_ELEM_IMG_PX_Y = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_Y);
 //
-//const float DISPLAY_AREA_SIZE_X = NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
-//const float DISPLAY_AREA_SIZE_Y = NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
+//const float DISPLAY_AREA_SIZE_X = FLOAT_NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
+//const float DISPLAY_AREA_SIZE_Y = FLOAT_NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
 //
 //// 仮想カメラ設定
-//const float FOCAL_LENGTH = MIN_OBSERVE_Z / (3.0f * (float)NUM_LENS_H - 1.0f);
 //const float TAN_HALF_Y = ELEM_IMG_PITCH_Y / FOCAL_LENGTH * 0.5f;
 //const float FOV_Y = atan(TAN_HALF_Y) * 2.0f;
-//const unsigned int WIN_W = NUM_LENS_W * NUM_ELEM_IMG_PX_X;
-//const unsigned int WIN_H = NUM_LENS_H * NUM_ELEM_IMG_PX_Y;
+//const float ASPECT_RATIO = (float)ELEM_IMG_PITCH_X / (float)ELEM_IMG_PITCH_Y;
+//const float NEAR_PLANE = 0.1f;
+//const float FAR_PLANE = 100.0f;
+//
+//// ビューボリューム初期設定
+//const float VIEW_TOP = TAN_HALF_Y * NEAR_PLANE;
+//const float VIEW_BOTTOM = -VIEW_TOP;
+//const float VIEW_RIGHT = VIEW_TOP * ASPECT_RATIO;
+//const float VIEW_LEFT = -VIEW_RIGHT;
+//
 //
 ////------------------------------
 //
@@ -95,14 +111,14 @@
 //// 定数(被写体側)
 ////------------------------------
 //
-//const float SUBJECT_Z = 1.0f;
+//const float SUBJECT_Z = -1.0f;
 //const unsigned int NUM_SUBJECT_POINTS_X = 554;
 //const unsigned int NUM_SUBJECT_POINTS_Y = 554;
 //const int NUM_POINTS = NUM_SUBJECT_POINTS_X * NUM_SUBJECT_POINTS_Y;
 //const int HALF_NUM_SUBJECT_POINTS_X = NUM_SUBJECT_POINTS_X * 0.5f;
 //const int HALF_NUM_SUBJECT_POINTS_Y = NUM_SUBJECT_POINTS_Y * 0.5f;
-//const float SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の水平方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
-//const float SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の垂直方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
+//const float SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (-SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の水平方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
+//const float SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (-SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の垂直方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
 //const float SUBJECT_POINTS_PITCH_X = SUBJECT_SIZE_X / static_cast<float>(NUM_SUBJECT_POINTS_X - 1);
 //const float SUBJECT_POINTS_PITCH_Y = SUBJECT_SIZE_Y / static_cast<float>(NUM_SUBJECT_POINTS_Y - 1);
 //const float HALF_SUBJECT_POINTS_PITCH_X = SUBJECT_POINTS_PITCH_X * 0.5f;
@@ -203,7 +219,7 @@
 //	//------------------------------
 //
 //	glEnable(GL_PROGRAM_POINT_SIZE); // 点サイズをシェーダで設定する場合
-//	// glDisable(GL_DEPTH_TEST); // 深度を使わず全点を平均するなら明示的にOFFでも良い
+//	glDisable(GL_DEPTH_TEST); // 深度を使わず全点を平均するなら明示的にOFFでも良い
 //
 //	//------------------------------
 //
@@ -243,6 +259,27 @@
 //			points[idx + 4] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[1] / 255.0f);
 //			points[idx + 5] = (float)(resized_image.at<cv::Vec3b>(reverseRow, col)[0] / 255.0f);
 //
+//		}
+//	}
+//
+//	// シフト量
+//	float* shifts = new float[NUM_LENS_W * NUM_LENS_H * 2];
+//	float inv2zo = 1.0f / (2.0f * MIN_OBSERVE_Z);
+//	for (int r = -HALF_NUM_LENS_H; r < HALF_NUM_LENS_H; ++r)
+//	{
+//		int row = r + HALF_NUM_LENS_H;
+//		float angleY = (2.0f * r + 1.0f) * HALF_LENS_PITCH_Y * inv2zo;
+//
+//		for (int c = -HALF_NUM_LENS_W; c < HALF_NUM_LENS_W; ++c)
+//		{
+//			int col = c + HALF_NUM_LENS_W;
+//			int idx = (row * NUM_LENS_W + col) * 2;
+//
+//			// 外側の要素画像ほどシフト量を大きく外側に（計算は図で書けばわかる）
+//			float angleX = (2.0f * c + 1.0f) * HALF_LENS_PITCH_X * inv2zo;
+//
+//			shifts[idx] = NEAR_PLANE * angleX;
+//			shifts[idx + 1] = NEAR_PLANE * angleY;
 //		}
 //	}
 //
@@ -342,8 +379,20 @@
 //
 //	glfwSetFramebufferSizeCallback(gridWin, framebuffer_size_callback);
 //
+//	// ループ直前（固定パラメータを計算）
+//	const float pitchX = FLOAT_NUM_ELEM_IMG_PX_X; // 連続座標でのピッチ(px)
+//	const float pitchY = FLOAT_NUM_ELEM_IMG_PX_Y;
+//	const float originX = HALF_WIN_W - pitchX * (float)NUM_LENS_W * 0.5f; // 左端の連続X
+//	const float originY = HALF_WIN_H - pitchY * (float)NUM_LENS_H * 0.5f; // 下端の連続Y
+//
+//	long long sum_time = 0;
+//	int numFrame = 0;
 //	while (!glfwWindowShouldClose(gridWin))
 //	{
+//
+//		// 測定開始時刻を記録
+//		auto start = std::chrono::high_resolution_clock::now();
+//
 //		processInput(gridWin);
 //
 //		// ループ内: パス1 蓄積（加算）
@@ -352,6 +401,7 @@
 //		glDisable(GL_SCISSOR_TEST);
 //		glClearColor(0.f, 0.f, 0.f, 0.f);
 //		glClear(GL_COLOR_BUFFER_BIT);
+//		glClear(GL_DEPTH_BUFFER_BIT);
 //
 //		glEnable(GL_BLEND);
 //		glBlendFunc(GL_ONE, GL_ONE);
@@ -363,34 +413,56 @@
 //
 //		glBindVertexArray(VAO);
 //
-//		glm::mat4 projection = glm::perspective(FOV_Y, (float)NUM_ELEM_IMG_PX_X / (float)NUM_ELEM_IMG_PX_Y, 0.1f, 100.0f);
-//		ourShader.setMat4("projection", projection);
 //		glm::mat4 model = glm::mat4(1.0f);
 //		ourShader.setMat4("model", model);
 //
 //		glEnable(GL_SCISSOR_TEST);
+//		// ループ内（ビューポート矩形の算出部分を置き換え）
 //		for (int r = -HALF_NUM_LENS_H; r < HALF_NUM_LENS_H; ++r)
 //		{
 //			int row = r + HALF_NUM_LENS_H;
+//
+//			// タイルの連続Y端点を丸める（[y0, y1)）
+//			int y0 = static_cast<int>(std::lround(originY + (float)row * pitchY));
+//			int y1 = static_cast<int>(std::lround(originY + (float)(row + 1) * pitchY));
+//			y0 = std::clamp(y0, 0, (int)WIN_H);
+//			y1 = std::clamp(y1, 0, (int)WIN_H);
+//			int vy = y0;
+//			int vh = std::max(0, y1 - y0);
+//
 //			for (int c = -HALF_NUM_LENS_W; c < HALF_NUM_LENS_W; ++c)
 //			{
 //				int col = c + HALF_NUM_LENS_W;
+//
+//				// タイルの連続X端点を丸める（[x0, x1)）
+//				int x0 = static_cast<int>(std::lround(originX + (float)col * pitchX));
+//				int x1 = static_cast<int>(std::lround(originX + (float)(col + 1) * pitchX));
+//				x0 = std::clamp(x0, 0, (int)WIN_W);
+//				x1 = std::clamp(x1, 0, (int)WIN_W);
+//
+//				int vx = x0;
+//				int vw = std::max(0, x1 - x0);
+//
 //				int idx = row * NUM_LENS_W + col;
 //
-//				int vx = (NUM_LENS_W - 1 - col) * NUM_ELEM_IMG_PX_X;
-//				int vy = row * NUM_ELEM_IMG_PX_Y;
+//				float finalLeft = VIEW_LEFT - shifts[idx * 2];
+//				float finalRight = VIEW_RIGHT - shifts[idx * 2];
+//				float finalBottom = VIEW_BOTTOM - shifts[idx * 2 + 1];
+//				float finalTop = VIEW_TOP - shifts[idx * 2 + 1];
 //
-//				glViewport(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
-//				glScissor(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
-//				glClear(GL_COLOR_BUFFER_BIT); // タイル領域のみ0クリア
+//				glm::mat4 projection = glm::frustum(finalLeft, finalRight, finalBottom, finalTop, NEAR_PLANE, FAR_PLANE);
+//				ourShader.setMat4("projection", projection);
 //
-//				glm::mat4 view = glm::lookAt(camPos[idx], glm::vec3(camPos[idx].x, camPos[idx].y, 1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//				glViewport(vx, vy, vw, vh);
+//				glScissor(vx, vy, vw, vh);
+//				glClear(GL_COLOR_BUFFER_BIT);
+//
+//				glm::mat4 view = glm::lookAt(camPos[idx], glm::vec3(camPos[idx].x, camPos[idx].y, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 //				ourShader.setMat4("view", view);
 //
 //				glDrawArrays(GL_POINTS, 0, NUM_POINTS);
 //			}
-//		}
-//		glDisable(GL_SCISSOR_TEST);
+//		}		glDisable(GL_SCISSOR_TEST);
 //		glDisable(GL_BLEND);
 //		glBindVertexArray(0);
 //		glUseProgram(0);
@@ -413,7 +485,19 @@
 //
 //		glfwSwapBuffers(gridWin);
 //		glfwPollEvents();
+//
+//		// 測定終了時刻を記録
+//		auto end = std::chrono::high_resolution_clock::now();
+//
+//		// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
+//		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+//
+//		sum_time += duration.count();
+//		numFrame++;
 //	}
+//
+//	cout << "フレーム数:" << numFrame << endl;
+//	cout << "平均実行時間: " << sum_time / numFrame << " ms" << endl;
 //
 //	//------------------------------
 //
@@ -437,7 +521,7 @@
 //	}
 //
 //	std::ostringstream stream;
-//	stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v2/OpenGL-scratch-normal-v2-grid_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
+//	stream << "D:/ForStudy/reconstruction/OpenGL-scratch-wideview-v1/OpenGL-scratch-wideview-v1-grid_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(-SUBJECT_Z * 1000.f) << ".png";
 //	std::string outPath = stream.str();
 //
 //	cv::imwrite(outPath, img);
@@ -458,6 +542,7 @@
 //
 //	delete[] camPos;
 //	delete[] points;
+//	delete[] shifts;
 //
 //	glfwTerminate();
 //

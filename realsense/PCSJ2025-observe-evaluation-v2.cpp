@@ -48,13 +48,13 @@
 //const double HALF_LENS_PITCH_X = LENS_PITCH_X * 0.5f;
 //const double HALF_LENS_PITCH_Y = LENS_PITCH_Y * 0.5f;
 //
-//// 無限遠に向けた光線場再現の場合(B-1)
-//const double ELEM_IMG_PITCH_X = LENS_PITCH_X;
-//const double ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
+////// 無限遠に向けた光線場再現の場合(B-1)
+////const double ELEM_IMG_PITCH_X = LENS_PITCH_X;
+////const double ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
 //
-////// 想定観察距離に向けた光線場再現の場合(B-2)
-////const double ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
-////const double ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
+//// 想定観察距離に向けた光線場再現の場合(B-2)
+//const double ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
+//const double ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
 //
 //const unsigned int WIN_W = static_cast<unsigned int>(std::lround(NUM_LENS_W * ELEM_IMG_PITCH_X / DISPLAY_PX_PITCH));
 //const unsigned int WIN_H = static_cast<unsigned int>(std::lround(NUM_LENS_H * ELEM_IMG_PITCH_Y / DISPLAY_PX_PITCH));
@@ -66,10 +66,10 @@
 //const unsigned int NUM_ELEM_IMG_PX_X = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_X);
 //const unsigned int NUM_ELEM_IMG_PX_Y = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_Y);
 //
-//const double DISPLAY_AREA_SIZE_X = FLOAT_NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
-//const double DISPLAY_AREA_SIZE_Y = FLOAT_NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
-//const double DISPLAY_IMG_SIZE_X = NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
-//const double DISPLAY_IMG_SIZE_Y = NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
+//const double DISPLAY_IMG_SIZE_X = WIN_W * DISPLAY_PX_PITCH;
+//const double DISPLAY_IMG_SIZE_Y = WIN_H * DISPLAY_PX_PITCH;
+//const double DISPLAY_AREA_SIZE_X = FLOAT_NUM_ELEM_IMG_PX_X * NUM_LENS_W;
+//const double DISPLAY_AREA_SIZE_Y = FLOAT_NUM_ELEM_IMG_PX_Y * NUM_LENS_H;
 //
 ////------------------------------
 //
@@ -83,10 +83,10 @@
 //const int NUM_POINTS = NUM_SUBJECT_POINTS_X * NUM_SUBJECT_POINTS_Y;
 //const int HALF_NUM_SUBJECT_POINTS_X = NUM_SUBJECT_POINTS_X * 0.5f;
 //const int HALF_NUM_SUBJECT_POINTS_Y = NUM_SUBJECT_POINTS_Y * 0.5f;
-//const double SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の水平方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
-//const double SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の垂直方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
-//const double SUBJECT_POINTS_PITCH_X = SUBJECT_SIZE_X / static_cast<double>(NUM_SUBJECT_POINTS_X - 1);
-//const double SUBJECT_POINTS_PITCH_Y = SUBJECT_SIZE_Y / static_cast<double>(NUM_SUBJECT_POINTS_Y - 1);
+//const double SUBJECT_SIZE_X = DISPLAY_IMG_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の水平方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
+//const double SUBJECT_SIZE_Y = DISPLAY_IMG_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の垂直方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
+//const double SUBJECT_POINTS_PITCH_X = SUBJECT_SIZE_X / static_cast<double>(NUM_SUBJECT_POINTS_X);
+//const double SUBJECT_POINTS_PITCH_Y = SUBJECT_SIZE_Y / static_cast<double>(NUM_SUBJECT_POINTS_Y);
 //const double HALF_SUBJECT_POINTS_PITCH_X = SUBJECT_POINTS_PITCH_X * 0.5f;
 //const double HALF_SUBJECT_POINTS_PITCH_Y = SUBJECT_POINTS_PITCH_Y * 0.5f;
 //
@@ -112,9 +112,8 @@
 //Mat getDiff(const Mat& I1, const Mat& I2);
 //int writeCSV1(const std::vector<double> array);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
-//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos);
-//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observe_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px);
-//
+////cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos);
+//cv::Mat observe(cv::Mat inputImg, int numPinhole, double pinholePitch, double focalLength, double observerX, double observerY, double observerZ, double pinholeSize, double displayImgSize, double displayPxPitch, int numDisplayImgPx);
 //int main(int argc, char* argv[]) {
 //
 //    cout << "PCSJ2025-observe-evaluation" << endl;
@@ -135,8 +134,8 @@
 //    cout << "FLOAT NUM ELEMENTAL IMAGE PX Y:" << FLOAT_NUM_ELEM_IMG_PX_Y << endl;
 //    cout << "NUM ELEMENTAL IMAGE PX X:" << NUM_ELEM_IMG_PX_X << endl;
 //    cout << "NUM ELEMENTAL IMAGE PX Y:" << NUM_ELEM_IMG_PX_Y << endl;
-//    cout << "DISPLAY AREA SIZE X:" << DISPLAY_AREA_SIZE_X << endl;
-//    cout << "DISPLAY AREA SIZE Y:" << DISPLAY_AREA_SIZE_Y << endl;
+//    cout << "DISPLAY IMG SIZE X:" << DISPLAY_IMG_SIZE_X << endl;
+//    cout << "DISPLAY IMG SIZE Y:" << DISPLAY_IMG_SIZE_Y << endl;
 //    cout << endl;
 //    cout << "FOCAL LENGTH:" << FOCAL_LENGTH << endl;
 //    cout << "WINDOW WIDTH:" << WIN_W << endl;
@@ -161,10 +160,10 @@
 //    std::vector<double> array(8);
 //
 //    // 画像を読み込む
-//    std::string filenameTile = "./images/standard/grid_image.png";
+//    std::string filenameTile = "./images/standard/Mandrill.bmp";
 //    cv::Mat tileImg = cv::imread(filenameTile);
-//    int tilePx = tileImg.size().width;
-//    cout << tilePx << endl;
+//    int numTilePx = tileImg.size().width;
+//    cout << numTilePx << endl;
 //
 //    if (tileImg.empty())
 //    {
@@ -221,8 +220,9 @@
 //    int idx = 0;
 //    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
 //
-//        // 被写体(タイル)の拡大後サイズを一貫して計算
+//        // 被写体平面の拡大後サイズを一貫して計算
 //        double tileSize = DISPLAY_IMG_SIZE_X * (subz + MIN_OBSERVE_Z) / MIN_OBSERVE_Z;
+//        double tilePxPitch = tileSize / (double)numTilePx;
 //
 //        // 理想表示用の表示画像の読み込み
 //        //std::string filename_display_standard = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_parrots_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png";
@@ -237,11 +237,11 @@
 //        // 比較対象用の表示画像の読み込み
 //        stream.str("");
 //        //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//        //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
+//        stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-mandrill_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
 //        //stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << "_2.png";
-//        stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v4-2-2/OpenGL-scratch-normal-v4-2-2-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//        //stream << "D:/ForStudy/reconstruction/OpenGL-scratch-wideview-v4-2-3/OpenGL-scratch-wideview-v4-2-3-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//		cout << "filename compared image:" << stream.str() << endl;
+//        //stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v4-2-2/OpenGL-scratch-normal-v4-2-2-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/OpenGL-scratch-wideview-v4-2-3/OpenGL-scratch-wideview-v4-2-3-mandrill_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
+//        cout << "filename compared image:" << stream.str() << endl;
 //        std::string filename_display_compared = stream.str();
 //        cv::Mat display_compared_image = cv::imread(filename_display_compared);
 //
@@ -258,16 +258,7 @@
 //
 //                // 直接観察の観察画像
 //                //cv::Mat resized_std_img = direct_observe(tileImg, observer_x[nobs], observer_y[nobs], MIN_OBSERVE_Z, DISPLAY_PX_PITCH, WIN_W, tileSize, tilePx, subz); // 解像度を2400 x 2400にする場合
-//                cv::Mat standard_image = direct_observe(
-//                    tileImg,
-//                    observer_x[nobs], observer_y[nobs],
-//                    OBSERVER_Z,                // 変更: 符号統一
-//                    LENS_PITCH_X,              // pixel_size
-//                    NUM_LENS_W,                // display_image_px (= 40)
-//                    tileSize,                  // タイル物理サイズ
-//                    tilePx,                    // タイル画像ピクセル
-//                    subz
-//                );
+//                cv::Mat standard_image = observe(tileImg, NUM_LENS_W, LENS_PITCH_X, subz, observer_x[nobs], observer_y[nobs], OBSERVER_Z, DISPLAY_PX_PITCH, tileSize, tilePxPitch, numTilePx);
 //
 //                // 理想表示の観察画像
 //                //cv::Mat standard_image = ideal_observe(display_standard_image, nph, LENS_PITCH_X, FOCAL_LENGTH, observer_x[nobs], observer_y[nobs], MIN_OBSERVE_Z, VISIBLE_RANGE_THROUGH_LENS, DISPLAY_IMG_SIZE_X, DISPLAY_PX_PITCH, WIN_W);
@@ -275,18 +266,7 @@
 //                //cv::resize(standard_image, resized_std_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
 //
 //                // 比較対象の観察画像
-//                cv::Mat compared_image = ideal_observe(
-//                    display_compared_image,
-//                    NUM_LENS_W,
-//                    LENS_PITCH_X,
-//                    FOCAL_LENGTH,
-//                    observer_x[nobs], observer_y[nobs],
-//                    OBSERVER_Z,
-//                    DISPLAY_PX_PITCH,
-//                    DISPLAY_AREA_SIZE_X,
-//                    DISPLAY_PX_PITCH,
-//                    WIN_W
-//                );
+//                cv::Mat compared_image = observe(display_compared_image, NUM_LENS_W, LENS_PITCH_X, FOCAL_LENGTH, observer_x[nobs], observer_y[nobs], OBSERVER_Z, DISPLAY_PX_PITCH, DISPLAY_IMG_SIZE_X, DISPLAY_PX_PITCH, WIN_W);
 //                //cv::Mat resized_cmpd_img;
 //                //cv::resize(compared_image, resized_cmpd_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
 //
@@ -296,42 +276,45 @@
 //
 //    //            // 観察画像のウィンドウ表示
 //    //            cv::imshow("images", compared_image);
-//				//cv::waitKey(0);
+//                //cv::waitKey(0);
 //
 //                /* 観察画像の保存 */
 //
 //                // 解像度2400 x 2400の場合
 //                //std::string std_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/real-direct_2400_tileExpand/real-direct-observe_" + std::to_string(static_cast<int>(WIN_W)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
 //                //std::string cmpd_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/prop-improve-v1_2400_tileExpand/prop-improve-v1-observe_" + std::to_string(static_cast<int>(WIN_W)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
-//				
+//
 //                // 解像度nph x nphの場合->400x400にリサイズして保存
-//				//std::ostringstream filenameout_stream;
-//				//filenameout_stream << "D:/ForStudy/observe-images/real-direct/real-direct-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//				//std::string std_filenameout = filenameout_stream.str();
+//                //std::ostringstream filenameout_stream;
+//                //filenameout_stream << "D:/ForStudy/observe-images/real-direct/real-direct-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //std::string std_filenameout = filenameout_stream.str();
 //                //cv::Mat resized_std_img;
 //                //cv::resize(standard_image, resized_std_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
+//                //cv::imwrite(std_filenameout, resized_std_img);
+//                //std::cout << "基準画像を" << std_filenameout << "として保存しました。\n";
 //
-//				//filenameout_stream.str("");
+//                //std::ostringstream filenameout_stream;
+//                //filenameout_stream.str("");
 //                //filenameout_stream << "D:/ForStudy/observe-images/IE-prop-normal-v1/IE-prop-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
 //                //filenameout_stream << "D:/ForStudy/observe-images/OpenGL-normal-v1/OpenGL-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //filenameout_stream << "D:/ForStudy/observe-images/OpenGL-normal-v4-2-2/OpenGL-normal-v4-2-2-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //filenameout_stream << "D:/ForStudy/observe-images/OpenGL-wideview-v4-2-3/OpenGL-wideview-v4-2-3-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
 //                //std::string cmpd_filenameout = filenameout_stream.str();
 //                //cv::Mat resized_cmpd_img;
 //                //cv::resize(compared_image, resized_cmpd_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
 //
-//                //cv::imwrite(std_filenameout, resized_std_img);
-//                //std::cout << "基準画像を" << std_filenameout << "として保存しました。\n";
 //                //cv::imwrite(cmpd_filenameout, resized_cmpd_img);
 //                //std::cout << "比較画像を" << cmpd_filenameout << "として保存しました。\n";
 //
-//                //// 観察画像の差分
-//                //cv::Mat diff;
-//                //cv::absdiff(standard_image, compared_image, diff);
+//                // 観察画像の差分
+//                cv::Mat diff;
+//                cv::absdiff(standard_image, compared_image, diff);
 //
-//                //std::ostringstream filenameout_stream;
-//                //filenameout_stream << "D:/ForStudy/observe-images/diff/OpenGL-scratch-wideview-v4-2-3/subz_" << static_cast<int>(subz) << "mm/OpenGL-scratch-normal-v2-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//                ////filenameout_stream << "D:/ForStudy/observe-images/diff/PCSJ2025-prop-normal-v1/subz_" << static_cast<int>(subz) << "mm/PCSJ2025-prop-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//                //std::string diff_filenameout = filenameout_stream.str();
-//                //cv::imwrite(diff_filenameout, diff);
+//                std::ostringstream filenameout_stream;
+//                filenameout_stream << "D:/ForStudy/observe-images/diff/OpenGL-scratch-wideview-v4-2-3/subz_" << static_cast<int>(subz) << "mm/OpenGL-scratch-normal-v2-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //filenameout_stream << "D:/ForStudy/observe-images/diff/PCSJ2025-prop-normal-v1/subz_" << static_cast<int>(subz) << "mm/PCSJ2025-prop-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                std::string diff_filenameout = filenameout_stream.str();
+//                cv::imwrite(diff_filenameout, diff);
 //
 //                //cv::Mat observe_img = cv::Mat::zeros(cv::Size(2400, 2400), CV_8UC3);
 //                //for (int i = 0; i < 2400; ++i) {
@@ -462,7 +445,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/OpenGL-scratch-wideview-v4-2-3-direct-grid-area1.csv");
+//    std::ofstream file("./numbers/OpenGL-scratch-wideview-v4-2-3-direct-grid-area1_halfbox1-glLinear.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -515,82 +498,227 @@
 //    return 0;
 //}
 //
-//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos) {
+////cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos) {
+////
+////    // ディスプレイの設定
+////    const double display_area_size = display_image_px * pixel_size;
+////
+////    // タイルの設定
+////    const double pixel_size_mm = tile_size_mm / image_size_px; // タイルに貼る画像のピクセルサイズ（mm）
+////
+////    // ピンホールの設定
+////    const double pinhole_spacing = display_area_size / display_image_px;    // ピンホール間の間隔（mm）
+////    const double pinhole_size = pinhole_spacing;        // ピンホールの一辺の長さ（mm）(lennaの画像を直接みるときはpinhole_spacingと同じ, 表示系の再現の場合は指定する)
+////
+////    // ピンホールの位置を計算
+////    std::vector<cv::Point2d> pinhole_positions;
+////    int half_display_image_px = display_image_px / 2;
+////    double half_pinhole_spacing = pinhole_spacing / 2;
+////
+////    if (display_image_px % 2 == 0)
+////    {
+////        for (int i = -half_display_image_px; i < half_display_image_px; ++i)
+////        {
+////            for (int j = -half_display_image_px; j < half_display_image_px; ++j)
+////            {
+////                double x = (2.0 * (double)j + 1.0) * half_pinhole_spacing;
+////                double y = (2.0 * (double)i + 1.0) * half_pinhole_spacing;
+////                pinhole_positions.emplace_back(x, y);
+////            }
+////        }
+////    }
+////    else
+////    {
+////        for (int i = -half_display_image_px; i <= half_display_image_px; ++i)
+////        {
+////            for (int j = -half_display_image_px; j <= half_display_image_px; ++j)
+////            {
+////                double x = (double)j * pinhole_spacing;
+////                double y = (double)i * pinhole_spacing;
+////                pinhole_positions.emplace_back(x, y);
+////            }
+////        }
+////    }
+////
+////    // 出力画像を作成
+////    cv::Mat output_image(display_image_px, display_image_px, CV_8UC3);
+////
+////    // 各ピンホールについて観察される色を計算
+////    int index = 0;
+////    for (int i = 0; i < display_image_px; ++i)
+////    {
+////        for (int j = 0; j < display_image_px; ++j)
+////        {
+////            const auto& pinhole_pos = pinhole_positions[index++];
+////
+////            // ピンホールを通して見えるタイル上の領域を計算
+////            // 視線を通してピンホールからタイルへの射影を計算
+////            double scale = (tile_pos - observe_z) / (0.0 - observe_z); // z=observe_zからz=tile_posへの拡大率
+////            double view_x = (pinhole_pos.x - observer_x) * scale + observer_x;
+////            double view_y = (pinhole_pos.y - observer_y) * scale + observer_y;
+////
+////            // タイル上での可視領域（ピンホールの開口を考慮）
+////            double pinhole_half = pinhole_size / 2.0;
+////            double view_pinhole_half = pinhole_half * scale;
+////
+////            double visible_area_min_x = view_x - view_pinhole_half;
+////            double visible_area_max_x = view_x + view_pinhole_half;
+////            double visible_area_min_y = view_y - view_pinhole_half;
+////            double visible_area_max_y = view_y + view_pinhole_half;
+////
+////            // タイルの範囲内に制限
+////            visible_area_min_x = (std::max)(-tile_size_mm / 2.0, visible_area_min_x);
+////            visible_area_max_x = (std::min)(tile_size_mm / 2.0, visible_area_max_x);
+////            visible_area_min_y = (std::max)(-tile_size_mm / 2.0, visible_area_min_y);
+////            visible_area_max_y = (std::min)(tile_size_mm / 2.0, visible_area_max_y);
+////
+////            // 可視領域がタイル内に存在しない場合
+////            if (visible_area_min_x >= visible_area_max_x || visible_area_min_y >= visible_area_max_y)
+////            {
+////                // 黒色を設定
+////                output_image.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, 0);
+////                continue;
+////            }
+////
+////            // ピクセルインデックスの範囲を計算
+////            int x_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_x + tile_size_mm / 2) / pixel_size_mm)));
+////            int x_max_idx = (std::min)(image_size_px - 1, static_cast<int>(std::floor((visible_area_max_x + tile_size_mm / 2) / pixel_size_mm)));
+////            int y_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_y + tile_size_mm / 2) / pixel_size_mm)));
+////            int y_max_idx = (std::min)(image_size_px - 1, static_cast<int>(std::floor((visible_area_max_y + tile_size_mm / 2) / pixel_size_mm)));
+////
+////            //std::cout << "x min idx:" << x_min_idx << ", x max idx:" << x_max_idx << ", y min idx:" << y_min_idx << ", y max idx:" << y_max_idx << std::endl;
+////
+////            // 観察される色の加重平均を計算
+////            cv::Vec3d weighted_color(0, 0, 0);
+////            double total_area = 0.0;
+////
+////            for (int x_idx = x_min_idx; x_idx <= x_max_idx; ++x_idx)
+////            {
+////                // ピクセルのx座標範囲を計算
+////                double x_pixel_min = x_idx * pixel_size_mm - tile_size_mm / 2;
+////                double x_pixel_max = (x_idx + 1) * pixel_size_mm - tile_size_mm / 2;
+////
+////                double x_overlap = (std::max)(0.0, (std::min)(visible_area_max_x, x_pixel_max) - (std::max)(visible_area_min_x, x_pixel_min));
+////
+////                if (x_overlap <= 0) continue;
+////
+////                for (int y_idx = y_min_idx; y_idx <= y_max_idx; ++y_idx)
+////                {
+////                    // ピクセルのy座標範囲を計算
+////                    double y_pixel_min = y_idx * pixel_size_mm - tile_size_mm / 2;
+////                    double y_pixel_max = (y_idx + 1) * pixel_size_mm - tile_size_mm / 2;
+////
+////                    double y_overlap = (std::max)(0.0, (std::min)(visible_area_max_y, y_pixel_max) - (std::max)(visible_area_min_y, y_pixel_min));
+////
+////                    if (y_overlap <= 0) continue;
+////
+////                    double overlap_area = x_overlap * y_overlap;
+////                    total_area += overlap_area;
+////
+////                    // ピクセル値を取得し、加重平均に加算
+////                    cv::Vec3b pixel = input_image.at<cv::Vec3b>(y_idx, x_idx);
+////                    weighted_color += cv::Vec3d(pixel) * overlap_area;
+////                }
+////            }
+////
+////            cv::Vec3b final_color;
+////            if (total_area > 0)
+////            {
+////                weighted_color /= total_area;
+////                final_color = cv::Vec3b(
+////                    static_cast<uchar>(weighted_color[0]),
+////                    static_cast<uchar>(weighted_color[1]),
+////                    static_cast<uchar>(weighted_color[2])
+////                );
+////            }
+////            else
+////            {
+////                // 観察可能な領域がない場合は黒色
+////                final_color = cv::Vec3b(0, 0, 0);
+////            }
+////
+////            // 出力画像に色を設定
+////            output_image.at<cv::Vec3b>(i, j) = final_color;
+////        }
+////    }
+////
+////    return output_image;
+////}
 //
-//    // ディスプレイの設定
-//    const double display_area_size = display_image_px * pixel_size;
-//
-//    // タイルの設定
-//    const double pixel_size_mm = tile_size_mm / image_size_px; // タイルに貼る画像のピクセルサイズ（mm）
-//
-//    // ピンホールの設定
-//    const double pinhole_spacing = display_area_size / display_image_px;    // ピンホール間の間隔（mm）
-//    const double pinhole_size = pinhole_spacing;        // ピンホールの一辺の長さ（mm）(lennaの画像を直接みるときはpinhole_spacingと同じ, 表示系の再現の場合は指定する)
+//cv::Mat observe(cv::Mat inputImg, int numPinhole, double pinholePitch, double focalLength, double observerX, double observerY, double observerZ, double pinholeSize, double displayImgSize, double displayPxPitch, int numDisplayImgPx) {
 //
 //    // ピンホールの位置を計算
-//    std::vector<cv::Point2d> pinhole_positions;
-//    int half_display_image_px = display_image_px / 2;
-//    double half_pinhole_spacing = pinhole_spacing / 2;
+//    //------------------------------
 //
-//    if (display_image_px % 2 == 0)
+//    std::vector<cv::Point2d> pinholePosition;
+//    int halfNumLens = numPinhole / 2;
+//    double halfPinholePitch = pinholePitch / 2.0;
+//
+//    if (numPinhole % 2 == 0)
 //    {
-//        for (int i = -half_display_image_px; i < half_display_image_px; ++i)
+//        for (int i = -halfNumLens; i < halfNumLens; ++i)
 //        {
-//            for (int j = -half_display_image_px; j < half_display_image_px; ++j)
+//            for (int j = -halfNumLens; j < halfNumLens; ++j)
 //            {
-//                double x = (2.0 * (double)j + 1.0) * half_pinhole_spacing;
-//                double y = (2.0 * (double)i + 1.0) * half_pinhole_spacing;
-//                pinhole_positions.emplace_back(x, y);
+//                double x = (2.0 * (double)j + 1.0) * halfPinholePitch;
+//                double y = (2.0 * (double)i + 1.0) * halfPinholePitch;
+//                pinholePosition.emplace_back(x, y);
 //            }
 //        }
+//
 //    }
 //    else
 //    {
-//        for (int i = -half_display_image_px; i <= half_display_image_px; ++i)
+//        for (int i = -halfNumLens; i <= halfNumLens; ++i)
 //        {
-//            for (int j = -half_display_image_px; j <= half_display_image_px; ++j)
+//            for (int j = -halfNumLens; j <= halfNumLens; ++j)
 //            {
-//                double x = (double)j * pinhole_spacing;
-//                double y = (double)i * pinhole_spacing;
-//                pinhole_positions.emplace_back(x, y);
+//                double x = (double)j * pinholePitch;
+//                double y = (double)i * pinholePitch;
+//                pinholePosition.emplace_back(x, y);
 //            }
 //        }
+//
 //    }
 //
-//    // 出力画像を作成
-//    cv::Mat output_image(display_image_px, display_image_px, CV_8UC3);
+//    //------------------------------
+//
 //
 //    // 各ピンホールについて観察される色を計算
+//    //------------------------------
+//
+//    cv::Mat output_image(numPinhole, numPinhole, CV_8UC3);
+//
 //    int index = 0;
-//    for (int i = 0; i < display_image_px; ++i)
+//    for (int i = 0; i < numPinhole; ++i)
 //    {
-//        for (int j = 0; j < display_image_px; ++j)
+//        for (int j = 0; j < numPinhole; ++j)
 //        {
-//            const auto& pinhole_pos = pinhole_positions[index++];
+//            const auto& pinholePos = pinholePosition[index++];
 //
-//            // ピンホールを通して見えるタイル上の領域を計算
-//            // 視線を通してピンホールからタイルへの射影を計算
-//            double scale = (tile_pos - observe_z) / (0.0 - observe_z); // z=observe_zからz=tile_posへの拡大率
-//            double view_x = (pinhole_pos.x - observer_x) * scale + observer_x;
-//            double view_y = (pinhole_pos.y - observer_y) * scale + observer_y;
+//            // ピンホールを通して見える被写体平面上の領域を計算
+//            // 視線を通してピンホールから被写体平面への射影を計算
+//            double scale = (focalLength - observerZ) / (0.0 - observerZ); // z=observerZからz=focalLengthへの拡大率
+//            double viewX = (pinholePos.x - observerX) * scale + observerX;
+//            double viewY = (pinholePos.y - observerY) * scale + observerY;
 //
-//            // タイル上での可視領域（ピンホールの開口を考慮）
-//            double pinhole_half = pinhole_size / 2.0;
-//            double view_pinhole_half = pinhole_half * scale;
+//            // 被写体平面上での可視領域（ピンホールの開口を考慮）
+//            double halfPinholeSize = pinholeSize / 2.0;
+//            double viewHalfPinholeSize = halfPinholeSize * scale;
 //
-//            double visible_area_min_x = view_x - view_pinhole_half;
-//            double visible_area_max_x = view_x + view_pinhole_half;
-//            double visible_area_min_y = view_y - view_pinhole_half;
-//            double visible_area_max_y = view_y + view_pinhole_half;
+//            double visibleAreaMinX = viewX - viewHalfPinholeSize;
+//            double visibleAreaMaxX = viewX + viewHalfPinholeSize;
+//            double visibleAreaMinY = viewY - viewHalfPinholeSize;
+//            double visibleAreaMaxY = viewY + viewHalfPinholeSize;
 //
-//            // タイルの範囲内に制限
-//            visible_area_min_x = (std::max)(-tile_size_mm / 2.0, visible_area_min_x);
-//            visible_area_max_x = (std::min)(tile_size_mm / 2.0, visible_area_max_x);
-//            visible_area_min_y = (std::max)(-tile_size_mm / 2.0, visible_area_min_y);
-//            visible_area_max_y = (std::min)(tile_size_mm / 2.0, visible_area_max_y);
+//            // 被写体平面の範囲内に制限
+//            visibleAreaMinX = (std::max)(-displayImgSize / 2.0, visibleAreaMinX);
+//            visibleAreaMaxX = (std::min)(displayImgSize / 2.0, visibleAreaMaxX);
+//            visibleAreaMinY = (std::max)(-displayImgSize / 2.0, visibleAreaMinY);
+//            visibleAreaMaxY = (std::min)(displayImgSize / 2.0, visibleAreaMaxY);
 //
-//            // 可視領域がタイル内に存在しない場合
-//            if (visible_area_min_x >= visible_area_max_x || visible_area_min_y >= visible_area_max_y)
+//            // 可視領域が被写体平面内に存在しない場合
+//            if (visibleAreaMinX >= visibleAreaMaxX || visibleAreaMinY >= visibleAreaMaxY)
 //            {
 //                // 黒色を設定
 //                output_image.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, 0);
@@ -598,10 +726,10 @@
 //            }
 //
 //            // ピクセルインデックスの範囲を計算
-//            int x_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_x + tile_size_mm / 2) / pixel_size_mm)));
-//            int x_max_idx = (std::min)(image_size_px - 1, static_cast<int>(std::floor((visible_area_max_x + tile_size_mm / 2) / pixel_size_mm)));
-//            int y_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_y + tile_size_mm / 2) / pixel_size_mm)));
-//            int y_max_idx = (std::min)(image_size_px - 1, static_cast<int>(std::floor((visible_area_max_y + tile_size_mm / 2) / pixel_size_mm)));
+//            int x_min_idx = (std::max)(0, static_cast<int>(std::floor((visibleAreaMinX + displayImgSize / 2) / displayPxPitch)));
+//            int x_max_idx = (std::min)(numDisplayImgPx - 1, static_cast<int>(std::floor((visibleAreaMaxX + displayImgSize / 2) / displayPxPitch)));
+//            int y_min_idx = (std::max)(0, static_cast<int>(std::floor((visibleAreaMinY + displayImgSize / 2) / displayPxPitch)));
+//            int y_max_idx = (std::min)(numDisplayImgPx - 1, static_cast<int>(std::floor((visibleAreaMaxY + displayImgSize / 2) / displayPxPitch)));
 //
 //            //std::cout << "x min idx:" << x_min_idx << ", x max idx:" << x_max_idx << ", y min idx:" << y_min_idx << ", y max idx:" << y_max_idx << std::endl;
 //
@@ -612,20 +740,20 @@
 //            for (int x_idx = x_min_idx; x_idx <= x_max_idx; ++x_idx)
 //            {
 //                // ピクセルのx座標範囲を計算
-//                double x_pixel_min = x_idx * pixel_size_mm - tile_size_mm / 2;
-//                double x_pixel_max = (x_idx + 1) * pixel_size_mm - tile_size_mm / 2;
+//                double x_pixel_min = x_idx * displayPxPitch - displayImgSize / 2;
+//                double x_pixel_max = (x_idx + 1) * displayPxPitch - displayImgSize / 2;
 //
-//                double x_overlap = (std::max)(0.0, (std::min)(visible_area_max_x, x_pixel_max) - (std::max)(visible_area_min_x, x_pixel_min));
+//                double x_overlap = (std::max)(0.0, (std::min)(visibleAreaMaxX, x_pixel_max) - (std::max)(visibleAreaMinX, x_pixel_min));
 //
 //                if (x_overlap <= 0) continue;
 //
 //                for (int y_idx = y_min_idx; y_idx <= y_max_idx; ++y_idx)
 //                {
 //                    // ピクセルのy座標範囲を計算
-//                    double y_pixel_min = y_idx * pixel_size_mm - tile_size_mm / 2;
-//                    double y_pixel_max = (y_idx + 1) * pixel_size_mm - tile_size_mm / 2;
+//                    double y_pixel_min = y_idx * displayPxPitch - displayImgSize / 2;
+//                    double y_pixel_max = (y_idx + 1) * displayPxPitch - displayImgSize / 2;
 //
-//                    double y_overlap = (std::max)(0.0, (std::min)(visible_area_max_y, y_pixel_max) - (std::max)(visible_area_min_y, y_pixel_min));
+//                    double y_overlap = (std::max)(0.0, (std::min)(visibleAreaMaxY, y_pixel_max) - (std::max)(visibleAreaMinY, y_pixel_min));
 //
 //                    if (y_overlap <= 0) continue;
 //
@@ -633,7 +761,7 @@
 //                    total_area += overlap_area;
 //
 //                    // ピクセル値を取得し、加重平均に加算
-//                    cv::Vec3b pixel = input_image.at<cv::Vec3b>(y_idx, x_idx);
+//                    cv::Vec3b pixel = inputImg.at<cv::Vec3b>(y_idx, x_idx);
 //                    weighted_color += cv::Vec3d(pixel) * overlap_area;
 //                }
 //            }
@@ -659,125 +787,7 @@
 //        }
 //    }
 //
-//    return output_image;
-//}
-//
-//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observe_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px) {
-//
-//    // ピンホールの位置を計算
-//    std::vector<cv::Point2d> pinhole_positions;
-//    double offset = -((num_pinhole_per_axis - 1) * pinhole_pitch) / 2.0;
-//
-//    for (int i = 0; i < num_pinhole_per_axis; ++i)
-//    {
-//        for (int j = 0; j < num_pinhole_per_axis; ++j)
-//        {
-//            double x = (offset + j * pinhole_pitch);
-//            double y = (offset + i * pinhole_pitch);
-//            pinhole_positions.emplace_back(x, y);
-//        }
-//    }
-//
-//    cv::Mat output_image(num_pinhole_per_axis, num_pinhole_per_axis, CV_8UC3);    // 各ピンホールについて観察される色を計算
-//
-//    // 各ピンホールについて観察される色を計算
-//    int index = 0;
-//    for (int i = 0; i < num_pinhole_per_axis; ++i)
-//    {
-//        for (int j = 0; j < num_pinhole_per_axis; ++j)
-//        {
-//            const auto& pinhole_pos = pinhole_positions[index++];
-//
-//            // ピンホールを通して見えるタイル上の領域を計算
-//            // 視線を通してピンホールからタイルへの射影を計算
-//            double scale = (focal_length - observe_z) / (0.0 - observe_z); // z=observe_zからz=focal_lengthへの拡大率
-//            double view_x = (pinhole_pos.x - observer_x) * scale + observer_x;
-//            double view_y = (pinhole_pos.y - observer_y) * scale + observer_y;
-//
-//            // タイル上での可視領域（ピンホールの開口を考慮）
-//            double pinhole_half = pinhole_size / 2.0;
-//            double view_pinhole_half = pinhole_half * scale;
-//
-//            double visible_area_min_x = view_x - view_pinhole_half;
-//            double visible_area_max_x = view_x + view_pinhole_half;
-//            double visible_area_min_y = view_y - view_pinhole_half;
-//            double visible_area_max_y = view_y + view_pinhole_half;
-//
-//            // タイルの範囲内に制限
-//            visible_area_min_x = (std::max)(-display_image_size / 2.0, visible_area_min_x);
-//            visible_area_max_x = (std::min)(display_image_size / 2.0, visible_area_max_x);
-//            visible_area_min_y = (std::max)(-display_image_size / 2.0, visible_area_min_y);
-//            visible_area_max_y = (std::min)(display_image_size / 2.0, visible_area_max_y);
-//
-//            // 可視領域がタイル内に存在しない場合
-//            if (visible_area_min_x >= visible_area_max_x || visible_area_min_y >= visible_area_max_y)
-//            {
-//                // 黒色を設定
-//                output_image.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, 0);
-//                continue;
-//            }
-//
-//            // ピクセルインデックスの範囲を計算
-//            int x_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_x + display_image_size / 2) / display_px_size)));
-//            int x_max_idx = (std::min)(display_image_px - 1, static_cast<int>(std::floor((visible_area_max_x + display_image_size / 2) / display_px_size)));
-//            int y_min_idx = (std::max)(0, static_cast<int>(std::floor((visible_area_min_y + display_image_size / 2) / display_px_size)));
-//            int y_max_idx = (std::min)(display_image_px - 1, static_cast<int>(std::floor((visible_area_max_y + display_image_size / 2) / display_px_size)));
-//
-//            //std::cout << "x min idx:" << x_min_idx << ", x max idx:" << x_max_idx << ", y min idx:" << y_min_idx << ", y max idx:" << y_max_idx << std::endl;
-//
-//            // 観察される色の加重平均を計算
-//            cv::Vec3d weighted_color(0, 0, 0);
-//            double total_area = 0.0;
-//
-//            for (int x_idx = x_min_idx; x_idx <= x_max_idx; ++x_idx)
-//            {
-//                // ピクセルのx座標範囲を計算
-//                double x_pixel_min = x_idx * display_px_size - display_image_size / 2;
-//                double x_pixel_max = (x_idx + 1) * display_px_size - display_image_size / 2;
-//
-//                double x_overlap = (std::max)(0.0, (std::min)(visible_area_max_x, x_pixel_max) - (std::max)(visible_area_min_x, x_pixel_min));
-//
-//                if (x_overlap <= 0) continue;
-//
-//                for (int y_idx = y_min_idx; y_idx <= y_max_idx; ++y_idx)
-//                {
-//                    // ピクセルのy座標範囲を計算
-//                    double y_pixel_min = y_idx * display_px_size - display_image_size / 2;
-//                    double y_pixel_max = (y_idx + 1) * display_px_size - display_image_size / 2;
-//
-//                    double y_overlap = (std::max)(0.0, (std::min)(visible_area_max_y, y_pixel_max) - (std::max)(visible_area_min_y, y_pixel_min));
-//
-//                    if (y_overlap <= 0) continue;
-//
-//                    double overlap_area = x_overlap * y_overlap;
-//                    total_area += overlap_area;
-//
-//                    // ピクセル値を取得し、加重平均に加算
-//                    cv::Vec3b pixel = input_image.at<cv::Vec3b>(y_idx, x_idx);
-//                    weighted_color += cv::Vec3d(pixel) * overlap_area;
-//                }
-//            }
-//
-//            cv::Vec3b final_color;
-//            if (total_area > 0)
-//            {
-//                weighted_color /= total_area;
-//                final_color = cv::Vec3b(
-//                    static_cast<uchar>(weighted_color[0]),
-//                    static_cast<uchar>(weighted_color[1]),
-//                    static_cast<uchar>(weighted_color[2])
-//                );
-//            }
-//            else
-//            {
-//                // 観察可能な領域がない場合は黒色
-//                final_color = cv::Vec3b(0, 0, 0);
-//            }
-//
-//            // 出力画像に色を設定
-//            output_image.at<cv::Vec3b>(i, j) = final_color;
-//        }
-//    }
+//    //------------------------------
 //
 //    return output_image;
 //}

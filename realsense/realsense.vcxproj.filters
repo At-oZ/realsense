@@ -621,9 +621,6 @@
     <ClCompile Include="OpenGL-vt-scratch-v3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="OpenGL-vt-scratch-v4.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="PCSJ2025-prop-normal-v1.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -640,6 +637,36 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL-vt-scratch-v2-oblique.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-prop-wideview-v1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v7.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4-1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4-2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4-2-2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4-2-3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-observe-evaluation-before.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-observe-evaluation-v2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL-vt-scratch-v4-2-3-trial.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -661,6 +688,10 @@
     <None Include="shader-vt-v5.frag" />
     <None Include="shader-accum-resolve.vert" />
     <None Include="shader-accum-resolve.frag" />
+    <None Include="shader-vt-v4-2.vert" />
+    <None Include="shader-vt-v4-2.frag" />
+    <None Include="shader-slices-compose.vert" />
+    <None Include="shader-slices-compose.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">

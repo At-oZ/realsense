@@ -10,148 +10,16 @@
 //using namespace cv;
 //using namespace std;
 //
-//// 定数(観察者側)
-////------------------------------
-//
-//const double MIN_OBSERVE_Z = 1000.0f;
-//const double OBSERVER_Z = -MIN_OBSERVE_Z; // 統一: 観察者を z<0 に
-//
-////------------------------------
-//
-//
-//// 定数(表示系側)
-////------------------------------
-//
-//const double DISPLAY_PX_PITCH = 13.4f * 25.4f / std::sqrt(3840.f * 3840.f + 2400.f * 2400.f);
-//
-//const unsigned int NUM_LENS_W = 40;
-//const unsigned int NUM_LENS_H = 40;
-//
-//const int HALF_NUM_LENS_W = NUM_LENS_W * 0.5f;
-//const int HALF_NUM_LENS_H = NUM_LENS_H * 0.5f;
-//
-//const double FOCAL_LENGTH = MIN_OBSERVE_Z / (3.0f * (double)NUM_LENS_H - 1.0f);
-//
-////// レンズピッチを固定する場合(A-1)
-////const double LENS_PITCH_X = 4.51f;
-////const double LENS_PITCH_Y = 4.51f;
-////const double LENS_ARRAY_W = LENS_PITCH_X * NUM_LENS_W;
-////const double LENS_ARRAY_H = LENS_PITCH_Y * NUM_LENS_H;
-//
-//// レンズアレイ幅を固定する場合(A-2)
-//const double LENS_ARRAY_W = 180.4f;
-//const double LENS_ARRAY_H = 180.4f;
-//const double LENS_PITCH_X = LENS_ARRAY_W / (double)NUM_LENS_W;
-//const double LENS_PITCH_Y = LENS_ARRAY_H / (double)NUM_LENS_H;
-//
-//
-//const double HALF_LENS_PITCH_X = LENS_PITCH_X * 0.5f;
-//const double HALF_LENS_PITCH_Y = LENS_PITCH_Y * 0.5f;
-//
-//// 無限遠に向けた光線場再現の場合(B-1)
-//const double ELEM_IMG_PITCH_X = LENS_PITCH_X;
-//const double ELEM_IMG_PITCH_Y = LENS_PITCH_Y;
-//
-////// 想定観察距離に向けた光線場再現の場合(B-2)
-////const double ELEM_IMG_PITCH_X = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_X;
-////const double ELEM_IMG_PITCH_Y = (FOCAL_LENGTH + MIN_OBSERVE_Z) / MIN_OBSERVE_Z * LENS_PITCH_Y;
-//
-//const unsigned int WIN_W = static_cast<unsigned int>(std::lround(NUM_LENS_W * ELEM_IMG_PITCH_X / DISPLAY_PX_PITCH));
-//const unsigned int WIN_H = static_cast<unsigned int>(std::lround(NUM_LENS_H * ELEM_IMG_PITCH_Y / DISPLAY_PX_PITCH));
-//const unsigned int HALF_WIN_W = WIN_W / 2;
-//const unsigned int HALF_WIN_H = WIN_H / 2;
-//
-//const double FLOAT_NUM_ELEM_IMG_PX_X = ELEM_IMG_PITCH_X / DISPLAY_PX_PITCH;
-//const double FLOAT_NUM_ELEM_IMG_PX_Y = ELEM_IMG_PITCH_Y / DISPLAY_PX_PITCH;
-//const unsigned int NUM_ELEM_IMG_PX_X = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_X);
-//const unsigned int NUM_ELEM_IMG_PX_Y = static_cast<unsigned int>(FLOAT_NUM_ELEM_IMG_PX_Y);
-//
-//const double DISPLAY_AREA_SIZE_X = FLOAT_NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
-//const double DISPLAY_AREA_SIZE_Y = FLOAT_NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
-//const double DISPLAY_IMG_SIZE_X = NUM_ELEM_IMG_PX_X * NUM_LENS_W * DISPLAY_PX_PITCH;
-//const double DISPLAY_IMG_SIZE_Y = NUM_ELEM_IMG_PX_Y * NUM_LENS_H * DISPLAY_PX_PITCH;
-//
-////------------------------------
-//
-//
-//// 定数(被写体側)
-////------------------------------
-//
-//const double SUBJECT_Z = 1000.0f;
-//const unsigned int NUM_SUBJECT_POINTS_X = 554;
-//const unsigned int NUM_SUBJECT_POINTS_Y = 554;
-//const int NUM_POINTS = NUM_SUBJECT_POINTS_X * NUM_SUBJECT_POINTS_Y;
-//const int HALF_NUM_SUBJECT_POINTS_X = NUM_SUBJECT_POINTS_X * 0.5f;
-//const int HALF_NUM_SUBJECT_POINTS_Y = NUM_SUBJECT_POINTS_Y * 0.5f;
-//const double SUBJECT_SIZE_X = DISPLAY_AREA_SIZE_X * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の水平方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
-//const double SUBJECT_SIZE_Y = DISPLAY_AREA_SIZE_Y * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z; // 被写体の垂直方向のサイズ(拡大する場合" * (SUBJECT_Z + MIN_OBSERVE_Z) / MIN_OBSERVE_Z"を追加);
-//const double SUBJECT_POINTS_PITCH_X = SUBJECT_SIZE_X / static_cast<double>(NUM_SUBJECT_POINTS_X - 1);
-//const double SUBJECT_POINTS_PITCH_Y = SUBJECT_SIZE_Y / static_cast<double>(NUM_SUBJECT_POINTS_Y - 1);
-//const double HALF_SUBJECT_POINTS_PITCH_X = SUBJECT_POINTS_PITCH_X * 0.5f;
-//const double HALF_SUBJECT_POINTS_PITCH_Y = SUBJECT_POINTS_PITCH_Y * 0.5f;
-//
-////------------------------------
-//
-//
-//// 定数(3次元配列側)
-////------------------------------
-//
-//const int N = 3;
-//const double Z_PLANE_IMG_PITCH = DISPLAY_PX_PITCH / (double)N;
-//const int Z_PLANE_IMG_PX_X = 100 * N;
-//const int Z_PLANE_IMG_PX_Y = 100 * N;
-//const int NUM_Z_PLANE = 60;
-//const double MIN_Z = 200.0f;
-//const double COEF_TRANS = (double)NUM_Z_PLANE * MIN_Z;
-//const double INV_COEF_TRANS = 1.0f / COEF_TRANS;
-//const int HALF_SEARCH_BOX_SIZE = (int)(N / 2.0f);
-//
-////------------------------------
-//
 //double getPSNR(const Mat& I1, const Mat& I2);
 //Mat getDiff(const Mat& I1, const Mat& I2);
 //int writeCSV1(const std::vector<double> array);
 //int writeCSV2(const std::vector<std::vector<double>> array, int NxNy, int ptimes);
-//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos);
-//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observe_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px);
+//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observer_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos);
+//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observer_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px);
 //
 //int main(int argc, char* argv[]) {
 //
 //    cout << "PCSJ2025-observe-evaluation" << endl;
-//
-//    cout << "MIN OBSERVE Z:" << MIN_OBSERVE_Z << endl;
-//    cout << "//----------------------------" << endl;
-//    cout << "DISPLAY PIXEL PITCH:" << DISPLAY_PX_PITCH << endl;
-//    cout << "NUM LENS WIDTH:" << NUM_LENS_W << endl;
-//    cout << "NUM LENS HEIGHT:" << NUM_LENS_H << endl;
-//    cout << "LENS ARRAY WIDTH:" << LENS_ARRAY_W << endl;
-//    cout << "LENS ARRAY HEIGHT:" << LENS_ARRAY_H << endl;
-//    cout << "LENS PITCH X:" << LENS_PITCH_X << endl;
-//    cout << "LENS PITCH Y:" << LENS_PITCH_Y << endl;
-//    cout << endl;
-//    cout << "ELEMENTAL IMAGE PITCH X:" << ELEM_IMG_PITCH_X << endl;
-//    cout << "ELEMENTAL IMAGE PITCH Y:" << ELEM_IMG_PITCH_Y << endl;
-//    cout << "FLOAT NUM ELEMENTAL IMAGE PX X:" << FLOAT_NUM_ELEM_IMG_PX_X << endl;
-//    cout << "FLOAT NUM ELEMENTAL IMAGE PX Y:" << FLOAT_NUM_ELEM_IMG_PX_Y << endl;
-//    cout << "NUM ELEMENTAL IMAGE PX X:" << NUM_ELEM_IMG_PX_X << endl;
-//    cout << "NUM ELEMENTAL IMAGE PX Y:" << NUM_ELEM_IMG_PX_Y << endl;
-//    cout << "DISPLAY AREA SIZE X:" << DISPLAY_AREA_SIZE_X << endl;
-//    cout << "DISPLAY AREA SIZE Y:" << DISPLAY_AREA_SIZE_Y << endl;
-//    cout << endl;
-//    cout << "FOCAL LENGTH:" << FOCAL_LENGTH << endl;
-//    cout << "WINDOW WIDTH:" << WIN_W << endl;
-//    cout << "WINDOW HEIGHT:" << WIN_H << endl;
-//    cout << "//----------------------------" << endl;
-//    cout << "SUBJECT Z:" << SUBJECT_Z << endl;
-//    cout << "NUM SUBJECT POINTS X:" << NUM_SUBJECT_POINTS_X << endl;
-//    cout << "NUM SUBJECT POINTS Y:" << NUM_SUBJECT_POINTS_Y << endl;
-//    cout << "NUM POINTS:" << NUM_POINTS << endl;
-//    cout << "SUBJECT SIZE X:" << SUBJECT_SIZE_X << endl;
-//    cout << "SUBJECT SIZE Y:" << SUBJECT_SIZE_Y << endl;
-//    cout << "SUBJECT POINTS PITCH X:" << SUBJECT_POINTS_PITCH_X << endl;
-//    cout << "SUBJECT POINTS PITCH Y:" << SUBJECT_POINTS_PITCH_Y << endl;
-//    cout << "//----------------------------" << endl;
-//    cout << endl;
 //
 //    ostringstream stream;
 //
@@ -160,13 +28,51 @@
 //    //std::vector<std::vector<double>> array(1, std::vector<double>(8)); // 横：subz, 縦：ptimes
 //    std::vector<double> array(8);
 //
-//    // 画像を読み込む
-//    std::string filenameTile = "./images/standard/grid_image.png";
-//    cv::Mat tileImg = cv::imread(filenameTile);
-//    int tilePx = tileImg.size().width;
-//    cout << tilePx << endl;
+//    int array_index = 0;
+//    int NxNy = 300;
+//    int pt = 3;
+//    int nzl = 60;
 //
-//    if (tileImg.empty())
+//    // ピクセルサイズの計算
+//    const double coef = 1.0; // 倍率
+//    const double display_px_size = 13.4 * 25.4 / std::sqrt(3840 * 3840 + 2400 * 2400) / coef; // ディスプレイのピクセルサイズ
+//
+//    // ディスプレイの設定
+//    const int display_image_px = 2400 * coef;
+//    const double display_image_size = display_image_px * display_px_size;
+//    //int element_image_px = 60; // 要素画像の解像度
+//    //double intv = (double)element_image_px; // 要素画像の間隔
+//
+//    // 観察者とタイルの設定
+//    const double observer_z = -1000.0; // 観察者の位置
+//    const double observer_z_min = 1000.0;
+//    const int tile_px = 256; // タイルの解像度
+//
+//    // 表示系の設定
+//
+//    // ピンホールアレイと表示系のパラメータ(mm)
+//    const int num_pinhole = 40;
+//    //const int element_image_px = 60; // 要素画像の解像度
+//    //double intv = (double)element_image_px; // 要素画像の間隔
+//    //const double pinhole_pitch = element_image_px * display_px_size;    // ピンホール間の間隔（mm）(normalview:element_image_px * display_px_size)
+//    //double display_area_size = display_image_size; //表示画像の大きさ
+//    const double focal_length = observer_z_min / (3 * num_pinhole - 1); // レンズアレイの焦点距離
+//    const double pinhole_pitch = 180.4 / num_pinhole; // observer_z_min / (focal_length + observer_z_min) * element_image_px * display_px_size;    // ピンホール間の間隔（mm）(wideview:observer_z_min / (focal_length + observer_z_min) * )
+//    double intv = pinhole_pitch / display_px_size; // 要素画像の間隔 (wideview:(focal_length + observer_z_min) / observer_z_min * )
+//    int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
+//    double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
+//    double display_area_size = element_image_px * num_pinhole * display_px_size; //表示画像の大きさ (wideview:(focal_length + observer_z_min) / observer_z_min * )
+//    int display_px = element_image_px * num_pinhole; // 表示画像の解像度
+//    const double pinhole_size = display_px_size;        // ピンホールの一辺の長さ（mm）
+//
+//    cout << "focal length:" << focal_length << fixed << setprecision(3) << ", pinhole pitch:" << pinhole_pitch << fixed << setprecision(3) << ", pinhole size:" << pinhole_size << fixed << setprecision(5) << endl;
+//    cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_px_size << fixed << setprecision(5) << endl;
+//
+//    // 画像を読み込む
+//    std::string filename_tile = "./images/standard/grid_image.png";
+//    cv::Mat tile_image = cv::imread(filename_tile);
+//
+//    if (tile_image.empty())
 //    {
 //        std::cout << "画像を開くことができませんでした。\n";
 //        return -1;
@@ -179,15 +85,15 @@
 //    std::mt19937 enginey(seedy);
 //
 //    //// 領域2, 3用
-//    //std::uniform_real_distribution<double> dist(-(FOCAL_LENGTH + MIN_OBSERVE_Z) / FOCAL_LENGTH * LENS_PITCH_X * 0.5, (FOCAL_LENGTH + MIN_OBSERVE_Z) / FOCAL_LENGTH * LENS_PITCH_X * 0.5);
+//    //std::uniform_real_distribution<double> dist(-(focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5, (focal_length + observer_z_min) / focal_length * pinhole_pitch * 0.5);
 //
 //    //int rand_size = 100;
-//    //double* observer_x = new double[rand_size];
-//    //double* observer_y = new double[rand_size];
+//    //double* observer_x = (double*)malloc(sizeof(double) * rand_size);
+//    //double* observer_y = (double*)malloc(sizeof(double) * rand_size);
 //
 //    //// 除外する範囲の設定
-//    //const double exclude_min = -LENS_PITCH_X * (MIN_OBSERVE_Z / FOCAL_LENGTH - (NUM_LENS_W - 1)) * 0.5;
-//    //const double exclude_max = LENS_PITCH_X * (MIN_OBSERVE_Z / FOCAL_LENGTH - (NUM_LENS_W - 1)) * 0.5;
+//    //const double exclude_min = -pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
+//    //const double exclude_max = pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5;
 //
 //    //for (int i = 0; i < rand_size; i++) {
 //    //    // 除外範囲外の値が得られるまで乱数を生成
@@ -205,11 +111,11 @@
 //    //observer_y[99] = 0;
 //
 //    // 領域1用
-//    std::uniform_real_distribution<double> dist(-LENS_PITCH_X * (MIN_OBSERVE_Z / FOCAL_LENGTH - (NUM_LENS_W - 1)) * 0.5, LENS_PITCH_X * (MIN_OBSERVE_Z / FOCAL_LENGTH - (NUM_LENS_W - 1)) * 0.5);
+//    std::uniform_real_distribution<double> dist(-pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5, pinhole_pitch * (observer_z_min / focal_length - (num_pinhole - 1)) * 0.5);
 //
 //    int rand_size = 100;
-//    double* observer_x = new double[rand_size];
-//    double* observer_y = new double[rand_size];
+//    double* observer_x = (double*)malloc(sizeof(double) * rand_size);
+//    double* observer_y = (double*)malloc(sizeof(double) * rand_size);
 //
 //    for (int i = 0; i < rand_size - 1; i++) {
 //        observer_x[i] = dist(enginex);
@@ -221,8 +127,10 @@
 //    int idx = 0;
 //    for (double subz = 300.0; subz <= 1000.0; subz += 100) {
 //
-//        // 被写体(タイル)の拡大後サイズを一貫して計算
-//        double tileSize = DISPLAY_IMG_SIZE_X * (subz + MIN_OBSERVE_Z) / MIN_OBSERVE_Z;
+//        const double tile_size = display_area_size * (subz + observer_z_min) / observer_z_min; // 拡大の場合 * (subz + observer_z_min) / observer_z_minを付ける
+//        const double tile_px_size = tile_size / tile_px; // タイルに貼る画像のピクセルサイズ（mm）
+//
+//        std::cout << "filename:" << filename_tile << ", NumPinhole:" << num_pinhole << ", NxNy:" << NxNy << ", NumZLevel:" << nzl << ", subjectZ:" << subz << ", pitchTimes:" << pt << std::endl;
 //
 //        // 理想表示用の表示画像の読み込み
 //        //std::string filename_display_standard = "C:/Users/taw11/EvacuatedStorage/prop-reconstruction/ideal/ideal-tileExpand_parrots_gridSize" + std::to_string(nph) + "_zi" + std::to_string((int)tile_pos) + ".png";
@@ -236,12 +144,12 @@
 //
 //        // 比較対象用の表示画像の読み込み
 //        stream.str("");
-//        //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//        //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//        //stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << "_2.png";
-//        stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v4-2-2/OpenGL-scratch-normal-v4-2-2-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//        //stream << "D:/ForStudy/reconstruction/OpenGL-scratch-wideview-v4-2-3/OpenGL-scratch-wideview-v4-2-3-grid_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << tileSize << "_zi" << (int)subz << ".png";
-//		cout << "filename compared image:" << stream.str() << endl;
+//        //stream << "./images/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << "_2.png";
+//        stream << "D:/ForStudy/reconstruction/OpenGL-scratch-normal-v2/OpenGL-scratch-normal-v2-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        cout << "filename compared image:" << stream.str() << endl;
 //        std::string filename_display_compared = stream.str();
 //        cv::Mat display_compared_image = cv::imread(filename_display_compared);
 //
@@ -252,41 +160,24 @@
 //        }
 //
 //        double sum_psnr = 0;
-//        for (int nobs = 0; nobs < rand_size; ++nobs) {
+//        double psnrValue;
+//        for (int nobs = 0; nobs < rand_size; nobs++) {
+//
+//            std::cout << "nobs:" << nobs << std::endl;
 //
 //            try {
 //
 //                // 直接観察の観察画像
-//                //cv::Mat resized_std_img = direct_observe(tileImg, observer_x[nobs], observer_y[nobs], MIN_OBSERVE_Z, DISPLAY_PX_PITCH, WIN_W, tileSize, tilePx, subz); // 解像度を2400 x 2400にする場合
-//                cv::Mat standard_image = direct_observe(
-//                    tileImg,
-//                    observer_x[nobs], observer_y[nobs],
-//                    OBSERVER_Z,                // 変更: 符号統一
-//                    LENS_PITCH_X,              // pixel_size
-//                    NUM_LENS_W,                // display_image_px (= 40)
-//                    tileSize,                  // タイル物理サイズ
-//                    tilePx,                    // タイル画像ピクセル
-//                    subz
-//                );
+//                //cv::Mat resized_std_img = direct_observe(tile_image, observer_x[nobs], observer_y[nobs], observer_z, display_px_size, display_image_px, tile_size, tile_px, subz); // 解像度を2400 x 2400にする場合
+//                cv::Mat standard_image = direct_observe(tile_image, observer_x[nobs], observer_y[nobs], observer_z, pinhole_pitch, num_pinhole, tile_size, tile_px, subz); // 解像度をnph x nphにする場合
 //
 //                // 理想表示の観察画像
-//                //cv::Mat standard_image = ideal_observe(display_standard_image, nph, LENS_PITCH_X, FOCAL_LENGTH, observer_x[nobs], observer_y[nobs], MIN_OBSERVE_Z, VISIBLE_RANGE_THROUGH_LENS, DISPLAY_IMG_SIZE_X, DISPLAY_PX_PITCH, WIN_W);
+//                //cv::Mat standard_image = ideal_observe(display_standard_image, nph, pinhole_pitch, focal_length, observer_x[nobs], observer_y[nobs], observer_z, pinhole_size, display_image_size, display_px_size, display_image_px);
 //                //cv::Mat resized_std_img;
 //                //cv::resize(standard_image, resized_std_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
 //
 //                // 比較対象の観察画像
-//                cv::Mat compared_image = ideal_observe(
-//                    display_compared_image,
-//                    NUM_LENS_W,
-//                    LENS_PITCH_X,
-//                    FOCAL_LENGTH,
-//                    observer_x[nobs], observer_y[nobs],
-//                    OBSERVER_Z,
-//                    DISPLAY_PX_PITCH,
-//                    DISPLAY_AREA_SIZE_X,
-//                    DISPLAY_PX_PITCH,
-//                    WIN_W
-//                );
+//                cv::Mat compared_image = ideal_observe(display_compared_image, num_pinhole, pinhole_pitch, focal_length, observer_x[nobs], observer_y[nobs], observer_z, pinhole_size, display_image_size, display_px_size, display_image_px);
 //                //cv::Mat resized_cmpd_img;
 //                //cv::resize(compared_image, resized_cmpd_img, cv::Size(2400, 2400), 0, 0, cv::INTER_NEAREST);
 //
@@ -296,24 +187,24 @@
 //
 //    //            // 観察画像のウィンドウ表示
 //    //            cv::imshow("images", compared_image);
-//				//cv::waitKey(0);
+//                //cv::waitKey(0);
 //
 //                /* 観察画像の保存 */
 //
 //                // 解像度2400 x 2400の場合
-//                //std::string std_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/real-direct_2400_tileExpand/real-direct-observe_" + std::to_string(static_cast<int>(WIN_W)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
-//                //std::string cmpd_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/prop-improve-v1_2400_tileExpand/prop-improve-v1-observe_" + std::to_string(static_cast<int>(WIN_W)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
-//				
+//                //std::string std_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/real-direct_2400_tileExpand/real-direct-observe_" + std::to_string(static_cast<int>(display_image_px)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                //std::string cmpd_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/grid/prop-improve-v1_2400_tileExpand/prop-improve-v1-observe_" + std::to_string(static_cast<int>(display_image_px)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//
 //                // 解像度nph x nphの場合->400x400にリサイズして保存
-//				//std::ostringstream filenameout_stream;
-//				//filenameout_stream << "D:/ForStudy/observe-images/real-direct/real-direct-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//				//std::string std_filenameout = filenameout_stream.str();
+//                //std::ostringstream filenameout_stream;
+//                //filenameout_stream << "D:/ForStudy/observe-images/real-direct/real-direct-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//                //std::string std_filenameout = filenameout_stream.str();
 //                //cv::Mat resized_std_img;
 //                //cv::resize(standard_image, resized_std_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
 //
-//				//filenameout_stream.str("");
-//                //filenameout_stream << "D:/ForStudy/observe-images/IE-prop-normal-v1/IE-prop-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//                //filenameout_stream << "D:/ForStudy/observe-images/OpenGL-normal-v1/OpenGL-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //filenameout_stream.str("");
+//                //filenameout_stream << "D:/ForStudy/observe-images/IE-prop-normal-v1/IE-prop-normal-v1-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//                //filenameout_stream << "D:/ForStudy/observe-images/OpenGL-normal-v1/OpenGL-normal-v1-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
 //                //std::string cmpd_filenameout = filenameout_stream.str();
 //                //cv::Mat resized_cmpd_img;
 //                //cv::resize(compared_image, resized_cmpd_img, cv::Size(400, 400), 0, 0, cv::INTER_NEAREST);
@@ -327,9 +218,8 @@
 //                //cv::Mat diff;
 //                //cv::absdiff(standard_image, compared_image, diff);
 //
-//                //std::ostringstream filenameout_stream;
-//                //filenameout_stream << "D:/ForStudy/observe-images/diff/OpenGL-scratch-wideview-v4-2-3/subz_" << static_cast<int>(subz) << "mm/OpenGL-scratch-normal-v2-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
-//                ////filenameout_stream << "D:/ForStudy/observe-images/diff/PCSJ2025-prop-normal-v1/subz_" << static_cast<int>(subz) << "mm/PCSJ2025-prop-normal-v1-grid-observe_" << NUM_LENS_W << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(MIN_OBSERVE_Z)) << "mm.png";
+//                //filenameout_stream << "D:/ForStudy/observe-images/diff/OpenGL-scratch-normal-v2/subz_" << static_cast<int>(subz) << "mm/OpenGL-scratch-normal-v2-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
+//                ////filenameout_stream << "D:/ForStudy/observe-images/diff/PCSJ2025-prop-normal-v1/subz_" << static_cast<int>(subz) << "mm/PCSJ2025-prop-normal-v1-grid-observe_" << num_pinhole << "px_zi" << static_cast<int>(subz) << "_xo" << static_cast<int>(observer_x[nobs] * 1000) << "um_yo" << static_cast<int>(observer_y[nobs] * 1000) << "um_zo" << static_cast<int>(abs(observer_z)) << "mm.png";
 //                //std::string diff_filenameout = filenameout_stream.str();
 //                //cv::imwrite(diff_filenameout, diff);
 //
@@ -365,13 +255,13 @@
 //                //        }
 //                //    }
 //                //}
-//                //std::string observe_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/compare/prop-improve-v1_2400_tileNotExpand/DeltaFocal" + std::to_string(static_cast<int>(Df)) + "mm/prop-improve-v1-observe_" + std::to_string(static_cast<int>(WIN_W)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
+//                //std::string observe_filenameout = "C:/Users/taw11/EvacuatedStorage/observe-image/compare/prop-improve-v1_2400_tileNotExpand/DeltaFocal" + std::to_string(static_cast<int>(Df)) + "mm/prop-improve-v1-observe_" + std::to_string(static_cast<int>(display_image_px)) + "px_zi" + std::to_string(static_cast<int>(subz)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
 //                //cv::imwrite(observe_filenameout, observe_img);
 //                //std::cout << "比較用観察画像を" << observe_filenameout << "として保存しました。\n";
 //
 //                // 移植の整合性の確認（点検用）
-//                //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/parrots/lensarray/ideal/gridSize" + std::to_string(nph) + "/ideal-observe-lenna_" + std::to_string(nph) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(MIN_OBSERVE_Z))) + ".png";
-//                //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/ICIP/prop-original-v1/prop-v1-observe-parrots_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + "mm_obx" + std::to_string((int)(observer_x[nobs] * 1000)) + "um_oby" + std::to_string((int)(observer_y[nobs] * 1000)) + "um_obz" + std::to_string((int)abs(MIN_OBSERVE_Z)) + "mm.png";
+//                //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/parrots/lensarray/ideal/gridSize" + std::to_string(nph) + "/ideal-observe-lenna_" + std::to_string(nph) + "px_zi" + std::to_string(static_cast<int>(subject_z)) + "_xo" + std::to_string(static_cast<int>(observer_x[nobs] * 1000)) + "um_yo" + std::to_string(static_cast<int>(observer_y[nobs] * 1000)) + "um_zo" + std::to_string(static_cast<int>(abs(observer_z))) + ".png";
+//                //std::string filename_original = "C:/Users/taw11/EvacuatedStorage/observe-image/ICIP/prop-original-v1/prop-v1-observe-parrots_Nz" + std::to_string(nzl) + "_subjectZ" + std::to_string((int)subz) + "mm_obx" + std::to_string((int)(observer_x[nobs] * 1000)) + "um_oby" + std::to_string((int)(observer_y[nobs] * 1000)) + "um_obz" + std::to_string((int)abs(observer_z)) + "mm.png";
 //                //cv::Mat original_image = cv::imread(filename_original);
 //
 //                //if (compared_image.empty())
@@ -381,14 +271,14 @@
 //                //}
 //
 //                //psnrValue = getPSNR(resized_std_img, resized_cmpd_img); // 解像度を2400 x 2400に統一した場合
-//                double psnr = getPSNR(standard_image, compared_image);
-//                sum_psnr += psnr;
+//                psnrValue = getPSNR(standard_image, compared_image); // 解像度をnph x nphに統一した場合
+//                sum_psnr += psnrValue;
 //                //cout << "PSNR value is: " << psnrValue << " dB" << endl;
 //
 //                //cv::Mat img_diff = getDiff(resized_std_img, compared_image);
 //
-//                //for (int i = 0; i < WIN_W; ++i) {
-//                //    for (int j = 0; j < WIN_W; ++j) {
+//                //for (int i = 0; i < display_image_px; ++i) {
+//                //    for (int j = 0; j < display_image_px; ++j) {
 //                //        if (img_diff.at<cv::Vec3b>(i, j)[0] > 0 && img_diff.at<cv::Vec3b>(i, j)[1] > 0 && img_diff.at<cv::Vec3b>(i, j)[2] > 0) {
 //                //            img_diff.at<cv::Vec3b>(i, j)[0] = 255;
 //                //            img_diff.at<cv::Vec3b>(i, j)[1] = 255;
@@ -419,14 +309,11 @@
 //            }
 //        }
 //
-//        cout << "Average PSNR value is: " << (sum_psnr / rand_size) << " dB" << endl;
+//        cout << "Average PSNR value is: " << sum_psnr / rand_size << " dB" << endl;
 //        array[idx] = sum_psnr / rand_size;
 //        idx++;
 //    }
-//    //writeCSV1(array);
-//
-//    delete[] observer_x;
-//    delete[] observer_y;
+//    writeCSV1(array);
 //
 //    MessageBeep(-1);
 //    return 0;
@@ -435,7 +322,7 @@
 //double getPSNR(const Mat& I1, const Mat& I2) {
 //    Mat s1;
 //    absdiff(I1, I2, s1);       // |I1 - I2|
-//    s1.convertTo(s1, CV_32F);  // Convert to double
+//    s1.convertTo(s1, CV_32F);  // Convert to float
 //    s1 = s1.mul(s1);           // |I1 - I2|^2
 //
 //    Scalar s = sum(s1);        // Sum elements per channel
@@ -462,7 +349,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/OpenGL-scratch-wideview-v4-2-3-direct-grid-area1.csv");
+//    std::ofstream file("./numbers/OpenGL-scratch-normal-v2-direct-normal-grid-area1.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -515,7 +402,7 @@
 //    return 0;
 //}
 //
-//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observe_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos) {
+//cv::Mat direct_observe(cv::Mat input_image, double observer_x, double observer_y, double observer_z, double pixel_size, int display_image_px, double tile_size_mm, int image_size_px, double tile_pos) {
 //
 //    // ディスプレイの設定
 //    const double display_area_size = display_image_px * pixel_size;
@@ -527,8 +414,12 @@
 //    const double pinhole_spacing = display_area_size / display_image_px;    // ピンホール間の間隔（mm）
 //    const double pinhole_size = pinhole_spacing;        // ピンホールの一辺の長さ（mm）(lennaの画像を直接みるときはpinhole_spacingと同じ, 表示系の再現の場合は指定する)
 //
+//    // 観察者とタイルの位置
+//    const int image_resolution = static_cast<int>(floor(display_image_px / display_image_px)); // 画像の解像度（ピクセル）
+//
 //    // ピンホールの位置を計算
 //    std::vector<cv::Point2d> pinhole_positions;
+//    double offset = -((display_image_px - 1) * pinhole_spacing) / 2.0;
 //    int half_display_image_px = display_image_px / 2;
 //    double half_pinhole_spacing = pinhole_spacing / 2;
 //
@@ -570,7 +461,7 @@
 //
 //            // ピンホールを通して見えるタイル上の領域を計算
 //            // 視線を通してピンホールからタイルへの射影を計算
-//            double scale = (tile_pos - observe_z) / (0.0 - observe_z); // z=observe_zからz=tile_posへの拡大率
+//            double scale = (tile_pos - observer_z) / (0.0 - observer_z); // z=observe_zからz=tile_posへの拡大率
 //            double view_x = (pinhole_pos.x - observer_x) * scale + observer_x;
 //            double view_y = (pinhole_pos.y - observer_y) * scale + observer_y;
 //
@@ -662,7 +553,7 @@
 //    return output_image;
 //}
 //
-//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observe_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px) {
+//cv::Mat ideal_observe(cv::Mat input_image, int num_pinhole_per_axis, double pinhole_pitch, double focal_length, double observer_x, double observer_y, double observer_z, double pinhole_size, double display_image_size, double display_px_size, int display_image_px) {
 //
 //    // ピンホールの位置を計算
 //    std::vector<cv::Point2d> pinhole_positions;
@@ -690,7 +581,7 @@
 //
 //            // ピンホールを通して見えるタイル上の領域を計算
 //            // 視線を通してピンホールからタイルへの射影を計算
-//            double scale = (focal_length - observe_z) / (0.0 - observe_z); // z=observe_zからz=focal_lengthへの拡大率
+//            double scale = (focal_length - observer_z) / (0.0 - observer_z); // z=observe_zからz=focal_lengthへの拡大率
 //            double view_x = (pinhole_pos.x - observer_x) * scale + observer_x;
 //            double view_y = (pinhole_pos.y - observer_y) * scale + observer_y;
 //

@@ -149,7 +149,7 @@
 //            }
 //        }
 //
-//        double s, t, u, v, xt, yt, zt, nz;
+//        double u, v;
 //        double offset_st = -((num_pinhole - 1) * pinhole_pitch) * 0.5;
 //        double offset_uv = -((element_image_px - 1) * display_pixel_pitch) * 0.5;
 //        for (int i = 0; i < element_image_px; i++) {
@@ -157,31 +157,25 @@
 //            u = offset_uv + i * display_pixel_pitch;
 //            v = offset_uv + i * display_pixel_pitch;
 //
+//            // s, u から nx を計算（各層の中心 (nz+0.5)*inv_coef を使う）
 //            for (int j = 0; j < num_pinhole; j++) {
-//
-//                s = offset_st + j * pinhole_pitch;
-//                u_px[i][j] = static_cast<int>(floor((s + u + display_area_size * 0.5) / display_pixel_pitch));
-//                zt = (double)(num_z_level - 1) * inv_coef;
-//                xt = s * zt + u / focal_length;
+//                double s = offset_st + j * pinhole_pitch;
+//                u_px[i][j] = static_cast<int>(std::lround((s + u) / display_pixel_pitch + display_px * 0.5 - 0.5));
 //
 //                for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                    nx[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * xt + 0.5) + px_width_img * 0.5);
-//                    zt -= inv_coef;
-//                    xt -= s * inv_coef;
+//                    double zc = (nz + 0.5) * inv_coef;
+//                    double xt = s * zc + u / focal_length;
+//                    nx[i][j][nz] = static_cast<int>(std::lround((focal_length / img_pitch) * xt) + px_width_img * 0.5);
 //                }
 //            }
-//
 //            for (int j = 0; j < num_pinhole; j++) {
-//
-//                t = offset_st + j * pinhole_pitch;
-//                v_px[i][j] = static_cast<int>(floor((t + v + display_area_size * 0.5) / display_pixel_pitch));
-//                zt = (double)(num_z_level - 1) * inv_coef;
-//                yt = t * zt + v / focal_length;
+//                double t = offset_st + j * pinhole_pitch;
+//                v_px[i][j] = static_cast<int>(std::lround((t + v) / display_pixel_pitch + display_px * 0.5 - 0.5));
 //
 //                for (int nz = num_z_level - 1; nz >= 0; nz--) {
-//                    ny[i][j][nz] = static_cast<int>(floor((focal_length / img_pitch) * yt + 0.5) + px_height_img * 0.5);
-//                    zt -= inv_coef;
-//                    yt -= t * inv_coef;
+//                    double zc = (nz + 0.5) * inv_coef;
+//                    double yt = t * zc + v / focal_length;
+//                    ny[i][j][nz] = static_cast<int>(std::lround((focal_length / img_pitch) * yt) + px_height_img * 0.5);
 //                }
 //            }
 //        }
@@ -413,7 +407,7 @@
 //                        tmp_nz = static_cast<int>(floor(coef * tmp_zt + 0.5));
 //
 //                        dx = tmp_pcd_x - (tmp_nx - 0.5 - px_width_img * 0.5) * img_pitch / focal_length * tmp_zt;
-//                        dy = tmp_pcd_y - (tmp_ny - 0.5 - px_width_img * 0.5) * img_pitch / focal_length * tmp_zt;
+//                        dy = tmp_pcd_y - (tmp_ny - 0.5 - px_height_img * 0.5) * img_pitch / focal_length * tmp_zt;
 //
 //                        half_box_size_min_x = static_cast<int>(round(dx / abs(dx) * 0.5 - half_box_size * 0.5));
 //                        half_box_size_max_x = static_cast<int>(round(dx / abs(dx) * 0.5 + half_box_size * 0.5));

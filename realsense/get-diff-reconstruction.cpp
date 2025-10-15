@@ -5,10 +5,10 @@
 //
 //int main() {
 //	// âÊëúÇÃì«Ç›çûÇ›
-//	cv::Mat img1 = cv::imread("D:/ForStudy/reconstruction/OpenGL-scratch-normal-v1/OpenGL-scratch-normal-v1-grid_f8.4034_subsize252.55_zi400.png");
+//	cv::Mat img1 = cv::imread("D:/ForStudy/reconstruction/OpenGL-scratch-normal-v4-2-2/OpenGL-scratch-normal-v4-2-2-grid_f8.4034_subsize234.51_zi300.png");
 //	//cv::Mat img2 = cv::imread("D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f8.4034_subsize252.55_zi400.png");
 //	//cv::Mat img2 = cv::imread("D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f8.4034_subsize252.55_zi400.png");
-//	cv::Mat img2 = cv::imread("D:/ForStudy/reconstruction/PCSJ2025-prop-normal-v1/prop-normal-v1-grid_f8.4034_subsize252.55_zi400.png");
+//	cv::Mat img2 = cv::imread("D:/ForStudy/reconstruction/PCSJ2025-prop-normal-v1/prop-normal-v1-grid_f8.4034_subsize234.51_zi300.png");
 //	if (img1.empty() || img2.empty()) {
 //		std::cerr << "âÊëúÇÃì«Ç›çûÇ›Ç…é∏îsÇµÇ‹ÇµÇΩÅB" << std::endl;
 //		return -1;
@@ -74,6 +74,6 @@
 //
 //	// ç∑ï™âÊëúÇï€ë∂
 //	//cv::imwrite("D:/ForStudy/reconstruction/diff/diff_OpenGL-GPT_scratch_grid-normal-v1-grid_f8.4034_subsize252.55_zi400.png", diff_scaled);
-//	cv::imwrite("D:/ForStudy/reconstruction/diff/diff_prop-OpenGL_grid-normal-v1-grid_f8.4034_subsize252.55_zi400.png", diff_scaled);
+//	//cv::imwrite("D:/ForStudy/reconstruction/diff/diff_prop-OpenGL_grid-normal-v4-2-2-grid_f8.4034_subsize252.55_zi400.png", diff_scaled);
 //	return 0;
 //}
