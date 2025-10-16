@@ -660,13 +660,25 @@
     <ClCompile Include="OpenGL-vt-scratch-v4-2-3.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="PCSJ2025-observe-evaluation-before.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="PCSJ2025-observe-evaluation-v2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="OpenGL-vt-scratch-v4-2-3-trial.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-prop-wideview-v1-before.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-OpenGL-v1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-OpenGL-v2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-OpenGL-v3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="PCSJ2025-OpenGL-v2-2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -692,6 +704,10 @@
     <None Include="shader-vt-v4-2.frag" />
     <None Include="shader-slices-compose.vert" />
     <None Include="shader-slices-compose.frag" />
+    <None Include="PCSJ2025-v3-shader.vert" />
+    <None Include="PCSJ2025-v3-shader.frag" />
+    <None Include="shader-slice-depth.vert" />
+    <None Include="shader-slice-depth.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">

@@ -145,8 +145,8 @@
 //        // ”äŠr‘ÎÛ—p‚Ì•\¦‰æ‘œ‚Ì“Ç‚İ‚İ
 //        stream.str("");
 //        //stream << "./images/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
-//		//stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
-//        stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << "_2.png";
+//		stream << "D:/ForStudy/reconstruction/IE-prop-normal-v1/prop-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << ".png";
+//        //stream << "D:/ForStudy/reconstruction/OpenGL-normal-v1/OpenGL-normal-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << tile_size << "_zi" << (int)subz << "_2.png";
 //		cout << "filename compared image:" << stream.str() << endl;
 //        std::string filename_display_compared = stream.str();
 //        cv::Mat display_compared_image = cv::imread(filename_display_compared);
@@ -302,7 +302,7 @@
 //        array[idx] = sum_psnr / rand_size;
 //        idx++;
 //    }
-//    writeCSV1(array);
+//    //writeCSV1(array);
 //
 //    MessageBeep(-1);
 //    return 0;

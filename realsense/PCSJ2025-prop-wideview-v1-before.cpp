@@ -1,6 +1,6 @@
 ///* 点群データから4次元光線情報の再構成画像を作成するプログラム */
-///* ICIP-prop-improve-v1からの派生 */
-///* wideview版(ICIP-prop-wideviewの改善) */
+///* IE-prop-wideview-v1からの派生 */
+///* IE-prop-wideview-v1の細かい点を修正 */
 //
 //// #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 //#include <opencv2/opencv.hpp>
@@ -31,7 +31,7 @@
 //int main(int argc, char* argv[])
 //{
 //
-//    cout << "IE-prop-wideview-v1" << endl;
+//    cout << "PCSJ2025 wideview v1" << endl;
 //
 //    //std::string WINNAME = "image";
 //    //cv::namedWindow(WINNAME);
@@ -45,7 +45,7 @@
 //    bool interpolation = true;
 //    for (int NxNy = 300; NxNy <= 300; NxNy += 100) {
 //
-//        for (int nph = 40; nph <= 40; nph *= 2) {
+//        for (int nph = 100; nph <= 100; nph *= 2) {
 //
 //            int idx_pt = 0;
 //            for (int pt = 3; pt <= 3; pt++) {
@@ -67,25 +67,45 @@
 //                        int display_width_px = 3840, display_height_px = 2400; // ディスプレイの縦横の解像度
 //                        double display_pixel_pitch = display_size / sqrtf(display_width_px * display_width_px + display_height_px * display_height_px);  // 画素ピッチ
 //
+//                        cout << "display size:" << display_size << endl;
+//                        cout << "display width px:" << display_width_px << endl;
+//                        cout << "display height px:" << display_height_px << endl;
+//                        cout << "display pixel pitch:" << display_pixel_pitch << endl;
+//                        cout << "//---------------------------" << endl;
+//
 //                        // ピンホールアレイと表示系のパラメータ(mm)
-//                        double pinhole_array_width = 180.4;
-//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
-//                        double pinhole_pitch = pinhole_array_width / nph;   // ピンホールピッチ
 //                        int num_pinhole = nph;  // 各軸方向のピンホール数
-//                        double pinhole_array_size = pinhole_pitch * num_pinhole;   // 各軸方向のピンホールアレイのサイズ
+//                        double focal_length = zo_min / (3 * nph - 1); // ギャップ(zo_min / (3 * nph - 1))
+//                        double pinhole_array_size = 180.4;   // 各軸方向のピンホールアレイのサイズ
+//                        double pinhole_pitch = 4.51; // ピンホール間の間隔（mm）
 //                        double intv = (focal_length + zo_min) / zo_min * pinhole_pitch / display_pixel_pitch; // 要素画像の間隔
 //                        int element_image_px = static_cast<int>(floor(intv)); // 要素画像の解像度
 //                        double display_area_size = (focal_length + zo_min) / zo_min * pinhole_pitch * nph; //表示画像の大きさ
 //                        int display_px = static_cast<int>(floor(intv * nph)); // 表示画像の解像度
 //
-//                        cout << "display area size:" << display_area_size << fixed << setprecision(3) << ", intv:" << intv << fixed << setprecision(3) << ", element image px:" << element_image_px << fixed << setprecision(3) << ", display px:" << display_px << fixed << setprecision(5) << ", display pixel pitch:" << display_pixel_pitch << fixed << setprecision(5) << endl;
+//                        cout << "num pinhole:" << num_pinhole << endl;
+//                        cout << "focal length:" << focal_length << endl;
+//                        cout << "pinhole array size:" << pinhole_array_size << endl;
+//                        cout << "pinhole pitch:" << pinhole_pitch << endl;
+//                        cout << "intv:" << intv << endl;
+//                        cout << "element image px:" << element_image_px << endl;
+//                        cout << "display area size:" << display_area_size << endl;
+//                        cout << "display px:" << display_px << endl;
+//                        cout << "//---------------------------" << endl;
 //
 //                        // 被写体のパラメータ(mm)
 //                        int subject_image_resolution = 554; // 被写体の解像度
-//                        double subject_size = pinhole_array_width * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
-//                        double subject_pixel_pitch = subject_size / subject_image_resolution; // 被写体の画素ピッチ
-//                        double subject_position_offset = -((subject_size - subject_pixel_pitch) / 2.0); // 被写体の左上の位置
+//                        int half_subject_image_resolution = subject_image_resolution / 2;
+//                        double subject_size = display_area_size * (subz + zo_min) / zo_min; // 被写体のサイズ(拡大する場合 * (subz + zo_min) / zo_minを追加)
+//                        double subject_pixel_pitch = subject_size / (double)(subject_image_resolution - 1); // 被写体の画素ピッチ
+//                        double half_subject_pixel_pitch = subject_pixel_pitch / 2.0;
 //                        double subject_z = subz; // 被写体の奥行き方向の位置
+//
+//                        cout << "subject image resolution:" << subject_image_resolution << endl;
+//                        cout << "subject size" << subject_size << endl;
+//                        cout << "subject pixel pitch:" << subject_pixel_pitch << endl;
+//                        cout << "subject z:" << subject_z << endl;
+//                        cout << "//---------------------------" << endl;
 //
 //                        // 点群データ配列の行数と列数
 //                        int rows = subject_image_resolution * subject_image_resolution;
@@ -108,7 +128,9 @@
 //
 //                        int TIMES = 10;
 //
-//                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", subjectZ:" << subject_z << ", pitchTimes:" << ptimes << endl;
+//                        cout << "NumPinhole:" << num_pinhole << ", NumZLevel:" << num_z_level << ", pitchTimes:" << ptimes << endl;
+//                        cout << "//---------------------------" << endl;
+//                        cout << endl;
 //
 //                        // 各要素画像の原点画素位置(左上)
 //                        int** u_px = (int**)malloc(sizeof(int*) * element_image_px);
@@ -175,7 +197,7 @@
 //                            data[i] = (double*)malloc(sizeof(double) * cols);
 //                        }
 //
-//                        std::string filenamein = "./images/standard/Mandrill.bmp";
+//                        std::string filenamein = "./images/standard/grid_image.png";
 //                        cv::Mat image_input = cv::imread(filenamein);
 //
 //                        if (image_input.empty())
@@ -187,16 +209,26 @@
 //                        cv::Mat resized_image;
 //                        cv::resize(image_input, resized_image, cv::Size(554, 554), 0, 0, cv::INTER_NEAREST);
 //
-//                        for (int i = 0; i < subject_image_resolution; i++) {
-//                            for (int j = 0; j < subject_image_resolution; j++) {
-//                                data[i * subject_image_resolution + j][0] = subject_position_offset + j * subject_pixel_pitch;
-//                                data[i * subject_image_resolution + j][1] = subject_position_offset + i * subject_pixel_pitch;
-//                                data[i * subject_image_resolution + j][2] = subject_z;
-//                                data[i * subject_image_resolution + j][3] = resized_image.at<Vec3b>(i, j)[0];
-//                                data[i * subject_image_resolution + j][4] = resized_image.at<Vec3b>(i, j)[1];
-//                                data[i * subject_image_resolution + j][5] = resized_image.at<Vec3b>(i, j)[2];
+//                        for (int i = -half_subject_image_resolution; i < half_subject_image_resolution; i++) {
+//
+//                            int row = i + half_subject_image_resolution;
+//                            for (int j = -half_subject_image_resolution; j < half_subject_image_resolution; j++) {
+//
+//                                int col = j + half_subject_image_resolution;
+//                                int idx = row * subject_image_resolution + col;
+//
+//                                data[idx][0] = (2.0 * (double)j + 1.0) * half_subject_pixel_pitch;
+//                                data[idx][1] = (2.0 * (double)i + 1.0) * half_subject_pixel_pitch;
+//                                data[idx][2] = subject_z;
+//                                data[idx][3] = resized_image.at<Vec3b>(row, col)[0];
+//                                data[idx][4] = resized_image.at<Vec3b>(row, col)[1];
+//                                data[idx][5] = resized_image.at<Vec3b>(row, col)[2];
 //                            }
 //                        }
+//
+//                        cout << "upper-left point position:(" << data[0][0] << ", " << data[0][1] << ")" << endl;
+//                        cout << "lower-right point position:(" << data[(subject_image_resolution - 1) * subject_image_resolution + (subject_image_resolution - 1)][0] << ", " << data[(subject_image_resolution - 1) * subject_image_resolution + (subject_image_resolution - 1)][0] << ")" << endl;
+//                        cout << "//---------------------------" << endl;
 //
 //                        int*** red;
 //                        int*** green;
@@ -467,7 +499,7 @@
 //
 //                        // 表示画像の保存
 //                        ostringstream stream;
-//                        stream << "D:/ForStudy/reconstruction/IE-prop-wideview-v1-2/prop-wideview-v1-2-Mandrill_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
+//                        stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-grid_f" << std::fixed << std::setprecision(4) << focal_length << "_subsize" << std::fixed << std::setprecision(2) << subject_size << "_zi" << (int)subz << ".png";
 //                        cv::String filename = stream.str();
 //                        imwrite(filename, img_display);
 //
@@ -560,7 +592,7 @@
 //                    idx_nzl++;
 //
 //                }
-//                writeCSV2(array);
+//                //writeCSV2(array);
 //            }
 //        }
 //
