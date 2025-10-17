@@ -224,6 +224,7 @@
     <ClCompile Include="PCSJ2025-observe-evaluation.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v1.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v2-2.cpp" />
+    <ClCompile Include="PCSJ2025-OpenGL-v2-trial.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v2.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v3.cpp" />
     <ClCompile Include="PCSJ2025-prop-normal-v1.cpp" />
