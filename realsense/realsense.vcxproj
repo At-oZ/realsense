@@ -224,12 +224,14 @@
     <ClCompile Include="PCSJ2025-observe-evaluation.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v1.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v2-2.cpp" />
+    <ClCompile Include="PCSJ2025-OpenGL-v2-3.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v2-trial.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v2.cpp" />
     <ClCompile Include="PCSJ2025-OpenGL-v3.cpp" />
     <ClCompile Include="PCSJ2025-prop-normal-v1.cpp" />
     <ClCompile Include="PCSJ2025-prop-wideview-v1-before.cpp" />
     <ClCompile Include="PCSJ2025-prop-wideview-v1.cpp" />
+    <ClCompile Include="resize-images.cpp" />
     <ClCompile Include="SIMD-v1.cpp" />
     <ClCompile Include="SMC-distortion-check_v1.cpp" />
     <ClCompile Include="SMC-prop-improve-v1-2.cpp" />

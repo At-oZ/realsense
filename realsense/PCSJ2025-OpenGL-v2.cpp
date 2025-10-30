@@ -104,7 +104,7 @@
 ////------------------------------
 //
 //// 被写体平面の奥行位置
-//const float SUBJECT_Z = 0.5;
+//const float SUBJECT_Z = 1.0f;
 //
 //// 被写体平面の各軸点群数
 //const unsigned int NUM_SUBJECT_POINTS_X = 554;
@@ -278,7 +278,7 @@
 //	//------------------------------
 //
 //	// 被写体画像読み込み
-//	cv::Mat image_input = cv::imread("./images/standard/milkdrop.bmp");
+//	cv::Mat image_input = cv::imread("./images/standard/pepper.bmp");
 //	if (image_input.empty()) {
 //		std::cout << "画像を開くことができませんでした。\n";
 //		return -1;
@@ -440,19 +440,26 @@
 //
 //	glfwSetFramebufferSizeCallback(gridWin, framebuffer_size_callback);
 //
-//	float sum_time = 0.0f;
-//	//long long sum_time = 0;
+//	float sum_cpu_time = 0.0f;
+//	double sum_gpu_time = 0;
 //	int numFrame = 0;
 //	const float invZo = 1.0f / MIN_OBSERVE_Z;
+//	size_t pointCount = 0;
+//
 //	int rowsPerThread;
 //	int startRow, endRow;
 //
 //	while (!glfwWindowShouldClose(gridWin))
 //	{
-//		// 測定開始時刻を記録
-//		auto start = std::chrono::high_resolution_clock::now();
 //
 //		processInput(gridWin);
+//
+//		// GPU時間測定開始
+//		GLuint q = 0; glGenQueries(1, &q);
+//		glBeginQuery(GL_TIME_ELAPSED, q);
+//
+//		// 測定開始時刻を記録
+//		auto start = std::chrono::high_resolution_clock::now();
 //
 //		// 1) 各層バッファの初期化
 //		vector<thread> threads;
@@ -520,6 +527,7 @@
 //		}
 //		for (auto& t : threads) if (t.joinable()) t.join();
 //		threads.clear();
+//
 //
 //		// 4) 各層をテクスチャ配列へアップロード（RGBA8, A=存在フラグ）
 //		glBindTexture(GL_TEXTURE_2D_ARRAY, texSlices);
@@ -594,44 +602,56 @@
 //
 //		// 測定終了時刻を記録
 //		auto end = std::chrono::high_resolution_clock::now();
+//
+//		// GPU時間測定終了
+//		glEndQuery(GL_TIME_ELAPSED);
+//		GLuint64 ns = 0; glGetQueryObjectui64v(q, GL_QUERY_RESULT, &ns);
+//		double gpuMs = ns / 1.0e6;
+//		glDeleteQueries(1, &q);
+//
+//		// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-//		sum_time += duration.count();
+//
+//		sum_cpu_time += duration.count();
+//		sum_gpu_time += gpuMs;
 //		numFrame++;
 //
+//		if (numFrame == 100) glfwSetWindowShouldClose(gridWin, true);
+//
 //	}
 //
-//	float avg = sum_time / numFrame;
-//	std::cout << "フレーム数:" << numFrame << std::endl;
-//	std::cout << "平均実行時間: " << avg << " ms" << std::endl;
+//	cout << "フレーム数:" << numFrame << endl;
+//	cout << "平均CPU実行時間: " << sum_cpu_time / numFrame << " ms" << endl;
+//	cout << "平均GPU実行時間: " << sum_gpu_time / numFrame << " ms" << endl;
 //
 //	//------------------------------
 //
 //
-//	// 表示画像の保存
-//	//------------------------------
+//	//// 表示画像の保存
+//	////------------------------------
 //
-//	vector<unsigned char> buf(NUM_DISPLAY_IMG_PX_X * NUM_DISPLAY_IMG_PX_Y * 3);
-//	glReadBuffer(GL_FRONT);
-//	glReadPixels(0, 0, NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
+//	//vector<unsigned char> buf(NUM_DISPLAY_IMG_PX_X * NUM_DISPLAY_IMG_PX_Y * 3);
+//	//glReadBuffer(GL_FRONT);
+//	//glReadPixels(0, 0, NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
 //
-//	cv::Mat img(NUM_DISPLAY_IMG_PX_Y, NUM_DISPLAY_IMG_PX_X, CV_8UC3);
-//	for (int y = 0; y < NUM_DISPLAY_IMG_PX_Y; ++y) {
-//		unsigned char* dst = img.ptr<unsigned char>(NUM_DISPLAY_IMG_PX_Y - 1 - y);
-//		const unsigned char* src = buf.data() + y * NUM_DISPLAY_IMG_PX_X * 3;
-//		for (int x = 0; x < NUM_DISPLAY_IMG_PX_X; ++x) {
-//			dst[x * 3 + 0] = src[x * 3 + 2]; // B
-//			dst[x * 3 + 1] = src[x * 3 + 1]; // G
-//			dst[x * 3 + 2] = src[x * 3 + 0]; // R
-//		}
-//	}
+//	//cv::Mat img(NUM_DISPLAY_IMG_PX_Y, NUM_DISPLAY_IMG_PX_X, CV_8UC3);
+//	//for (int y = 0; y < NUM_DISPLAY_IMG_PX_Y; ++y) {
+//	//	unsigned char* dst = img.ptr<unsigned char>(NUM_DISPLAY_IMG_PX_Y - 1 - y);
+//	//	const unsigned char* src = buf.data() + y * NUM_DISPLAY_IMG_PX_X * 3;
+//	//	for (int x = 0; x < NUM_DISPLAY_IMG_PX_X; ++x) {
+//	//		dst[x * 3 + 0] = src[x * 3 + 2]; // B
+//	//		dst[x * 3 + 1] = src[x * 3 + 1]; // G
+//	//		dst[x * 3 + 2] = src[x * 3 + 0]; // R
+//	//	}
+//	//}
 //
-//	std::ostringstream stream;
-//	stream << "D:/ForStudy/reconstruction/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1-milkdrop_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
-//	std::string outPath = stream.str();
+//	//std::ostringstream stream;
+//	//stream << "D:/ForStudy/reconstruction/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1-pepper_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
+//	//std::string outPath = stream.str();
 //
-//	cv::imwrite(outPath, img);
+//	//cv::imwrite(outPath, img);
 //
-//	//------------------------------
+//	////------------------------------
 //
 //
 //	// 後処理

@@ -1,6 +1,6 @@
 ///*
 //	PCSJ 2025向けコード(OpenGL導入バージョン)
-//	v2-2:v2からの派生、DEPTH TESTの導入
+//	v2-3:v2からの派生;
 //*/
 //
 //#include <glad/glad.h>
@@ -18,6 +18,7 @@
 //#include <vector>
 //#include <thread>
 //#include <mutex>
+//#include <execution>
 //
 //#ifndef GLFW_TRUE
 //#define GLFW_TRUE 1
@@ -104,7 +105,7 @@
 ////------------------------------
 //
 //// 被写体平面の奥行位置
-//const float SUBJECT_Z = 1.0f;
+//const float SUBJECT_Z = 0.3f;
 //
 //// 被写体平面の各軸点群数
 //const unsigned int NUM_SUBJECT_POINTS_X = 554;
@@ -221,10 +222,9 @@
 //	//------------------------------
 //
 //	glfwInit();
-//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 //	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-//	glfwWindowHint(GLFW_DEPTH_BITS, 24); // 追加: 深度バッファ
 //
 //	int targetMonitor = 0;
 //	GLFWmonitor* mon = getMonitorByIndex(targetMonitor);
@@ -271,19 +271,15 @@
 //	//------------------------------
 //
 //
-//// 頂点シェーダとフラグメントシェーダの指定
-//	Shader composeDepth("shader-slice-depth.vert", "shader-slice-depth.frag");
-//	GLint locInvZ = glGetUniformLocation(composeDepth.ID, "uInvZ"); // 既存と同様
-//	GLint locLayerNdcZ = glGetUniformLocation(composeDepth.ID, "uLayerNdcZ");
-//	GLint locLayer = glGetUniformLocation(composeDepth.ID, "uLayer");
-//	GLint locTileSizePx = glGetUniformLocation(composeDepth.ID, "uTileSizePx");
-//	GLint locNumLens = glGetUniformLocation(composeDepth.ID, "uNumLens");
+//	// 頂点シェーダとフラグメントシェーダの指定
+//	Shader compose("shader-slices-compose.vert", "shader-slices-compose.frag");
+//	GLint locInvZ = glGetUniformLocation(compose.ID, "uInvZ");
 //
 //	// 点群データの生成
 //	//------------------------------
 //
 //	// 被写体画像読み込み
-//	cv::Mat image_input = cv::imread("./images/standard/pepper.bmp");
+//	cv::Mat image_input = cv::imread("./images/standard/milkdrop.bmp");
 //	if (image_input.empty()) {
 //		std::cout << "画像を開くことができませんでした。\n";
 //		return -1;
@@ -437,19 +433,6 @@
 //		}
 //	}
 //
-//	// ... baseOffset 計算の直後に追加 -------------------
-//	GLuint texBaseOffset = 0;
-//	{
-//		glGenTextures(1, &texBaseOffset);
-//		glBindTexture(GL_TEXTURE_2D, texBaseOffset);
-//		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, NUM_LENS_X, NUM_LENS_Y, 0, GL_RG, GL_FLOAT, baseOffset.data());
-//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//		glBindTexture(GL_TEXTURE_2D, 0);
-//	}
-//
 //	const float uvScaleX = (DISPLAY_PX_PITCH / Z_PLANE_IMG_PITCH) * FLOAT_NUM_ELEM_IMG_PX_X / (float)Z_PLANE_IMG_PX_X; // = BOX_DETAIL_N * NUM_ELEM_IMG_PX_X / Z_PLANE_IMG_PX_X
 //	const float uvScaleY = (DISPLAY_PX_PITCH / Z_PLANE_IMG_PITCH) * FLOAT_NUM_ELEM_IMG_PX_Y / (float)Z_PLANE_IMG_PX_Y; // = BOX_DETAIL_N * NUM_ELEM_IMG_PX_Y / Z_PLANE_IMG_PX_Y
 //
@@ -458,14 +441,22 @@
 //
 //	glfwSetFramebufferSizeCallback(gridWin, framebuffer_size_callback);
 //
-//	long long sum_time = 0;
+//	float sum_cpu_time = 0.0f;
+//	double sum_gpu_time = 0;
 //	int numFrame = 0;
 //	const float invZo = 1.0f / MIN_OBSERVE_Z;
+//	size_t pointCount = 0;
+//
 //	int rowsPerThread;
 //	int startRow, endRow;
 //
 //	while (!glfwWindowShouldClose(gridWin))
 //	{
+//
+//		// GPU時間測定開始
+//		GLuint q = 0; glGenQueries(1, &q);
+//		glBeginQuery(GL_TIME_ELAPSED, q);
+//
 //		// 測定開始時刻を記録
 //		auto start = std::chrono::high_resolution_clock::now();
 //
@@ -484,6 +475,17 @@
 //			if (t.joinable()) { t.join(); }
 //		}
 //		threads.clear();
+//
+//		// … zerosBox 後の位置に置くと分かりやすい
+//		const size_t planePixels = size_t(Z_PLANE_IMG_PX_X) * Z_PLANE_IMG_PX_Y;
+//		const size_t N = size_t(NUM_Z_PLANE) * planePixels;
+//
+//		uint64_t sumRed = std::reduce(std::execution::par_unseq, red, red + N, uint64_t{ 0 });
+//		uint64_t sumGreen = std::reduce(std::execution::par_unseq, green, green + N, uint64_t{ 0 });
+//		uint64_t sumBlue = std::reduce(std::execution::par_unseq, blue, blue + N, uint64_t{ 0 });
+//		uint64_t sumNumPoints = std::reduce(std::execution::par_unseq, numPoints, numPoints + N, uint64_t{ 0 });
+//
+//		std::cout << "sum of red:" << sumRed << ", green:" << sumGreen << ", blue:" << sumBlue << ", num of points:" << sumNumPoints << std::endl;
 //
 //		// 2) 点群のビニング（幾何変換 → 量子化 → 近傍書き込み）
 //		for (int k = 0; k < NUM_POINTS * 3; k += 3) {
@@ -538,6 +540,7 @@
 //		for (auto& t : threads) if (t.joinable()) t.join();
 //		threads.clear();
 //
+//
 //		// 4) 各層をテクスチャ配列へアップロード（RGBA8, A=存在フラグ）
 //		glBindTexture(GL_TEXTURE_2D_ARRAY, texSlices);
 //		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -563,51 +566,47 @@
 //		);
 //		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 //
-//		// 5) 合成パス（深度テスト: 層ごとに1ドロー、近→遠）
-//		glViewport(0, 0, NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y);
-//		glDisable(GL_SCISSOR_TEST);
+//		// 5) 合成パス（各タイル=1ドロー、シェーダ内で60層ループ＋早期終了）
+//		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//		glClear(GL_COLOR_BUFFER_BIT);
 //
-//		glEnable(GL_DEPTH_TEST);
-//		glDepthFunc(GL_LESS);
-//		glDepthMask(GL_TRUE);
-//		glClearDepth(1.0);
+//		compose.use();
+//		compose.setInt("uSlices", 0);
+//		compose.setInt("uNZ", NZ);
+//		compose.setVec2("uUvScale", glm::vec2(uvScaleX, uvScaleY));
+//		compose.setVec2("uTexelSize", glm::vec2(1.0f / Z_PLANE_IMG_PX_X, 1.0f / Z_PLANE_IMG_PX_Y));
 //
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		// invZ はフレーム毎に一度設定（UBOがない前提）
+//		glUniform1fv(locInvZ, NZ, invZ.data());
 //
-//		composeDepth.use();
-//
-//		// テクスチャバインド
-//		composeDepth.setInt("uSlices", 0);
-//		composeDepth.setInt("uBaseOffsetTex", 1);
 //		glActiveTexture(GL_TEXTURE0);
 //		glBindTexture(GL_TEXTURE_2D_ARRAY, texSlices);
-//		glActiveTexture(GL_TEXTURE1);
-//		glBindTexture(GL_TEXTURE_2D, texBaseOffset);
 //
-//		// 共通uniform
-//		composeDepth.setInt("uNZ", NZ);
-//		composeDepth.setVec2("uUvScale", glm::vec2(uvScaleX, uvScaleY));
-//		composeDepth.setVec2("uTexelSize", glm::vec2(1.0f / Z_PLANE_IMG_PX_X, 1.0f / Z_PLANE_IMG_PX_Y));
-//		composeDepth.setFloat("uInvZo", invZo);
-//		glUniform1fv(locInvZ, NZ, invZ.data());
-//		glUniform2i(locTileSizePx, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
-//		glUniform2i(locNumLens, NUM_LENS_X, NUM_LENS_Y);
-//
-//		// フルスクリーンのクアッド
+//		glEnable(GL_SCISSOR_TEST);
 //		glBindVertexArray(quadVAO);
 //
-//		// 近い層（nが大きい）から遠い層（nが小さい）へ
-//		for (int n = NZ - 1; n >= 0; --n) {
-//			// NDC深度 [-1,1]。近い層ほど小さい値にする（LESS）
-//			float ndcZ = -1.0f + 2.0f * float(NZ - 1 - n) / float(NZ); // near(n=NZ-1)->-1, far(n=0)->~1
+//		for (int r = -HALF_NUM_LENS_Y; r < HALF_NUM_LENS_Y; ++r) {
+//			int row = r + HALF_NUM_LENS_Y;
+//			for (int c = -HALF_NUM_LENS_X; c < HALF_NUM_LENS_X; ++c) {
+//				int col = c + HALF_NUM_LENS_X;
+//				int idx = row * NUM_LENS_X + col;
 //
-//			glUniform1i(locLayer, n);
-//			glUniform1f(locLayerNdcZ, ndcZ);
+//				int vx = lround(col * FLOAT_NUM_ELEM_IMG_PX_X);
+//				int vy = lround(row * FLOAT_NUM_ELEM_IMG_PX_Y);
 //
-//			glDrawArrays(GL_TRIANGLES, 0, 6);
+//				glViewport(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
+//				glScissor(vx, vy, NUM_ELEM_IMG_PX_X, NUM_ELEM_IMG_PX_Y);
+//
+//				compose.setVec2("uBaseOffset", baseOffset[idx]);
+//				glm::vec2 frustumUVShift = baseOffset[idx] * invZo;
+//				compose.setVec2("uFrustumUVShift", frustumUVShift);
+//
+//				glDrawArrays(GL_TRIANGLES, 0, 6);
+//			}
 //		}
 //
 //		glBindVertexArray(0);
+//		glDisable(GL_SCISSOR_TEST);
 //		glUseProgram(0);
 //
 //		glfwSwapBuffers(gridWin);
@@ -615,49 +614,59 @@
 //
 //		// 測定終了時刻を記録
 //		auto end = std::chrono::high_resolution_clock::now();
+//
+//		// GPU時間測定終了
+//		glEndQuery(GL_TIME_ELAPSED);
+//		GLuint64 ns = 0; glGetQueryObjectui64v(q, GL_QUERY_RESULT, &ns);
+//		double gpuMs = ns / 1.0e6;
+//		glDeleteQueries(1, &q);
+//
+//		// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-//		sum_time += duration.count();
+//
+//		sum_cpu_time += duration.count();
+//		sum_gpu_time += gpuMs;
 //		numFrame++;
 //
 //	}
 //
-//	std::cout << "フレーム数:" << numFrame << std::endl;
-//	std::cout << "平均実行時間: " << sum_time / numFrame << " ms" << std::endl;
+//	std::cout << "フレーム数:" << numFrame << endl;
+//	std::cout << "平均CPU実行時間: " << sum_cpu_time / numFrame << " ms" << endl;
+//	std::cout << "平均GPU実行時間: " << sum_gpu_time / numFrame << " ms" << endl;
 //
 //	//------------------------------
 //
 //
-//	// 表示画像の保存
-//	//------------------------------
+//	//// 表示画像の保存
+//	////------------------------------
 //
-//	vector<unsigned char> buf(NUM_DISPLAY_IMG_PX_X * NUM_DISPLAY_IMG_PX_Y * 3);
-//	glReadBuffer(GL_FRONT);
-//	glReadPixels(0, 0, NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
+//	//vector<unsigned char> buf(NUM_DISPLAY_IMG_PX_X * NUM_DISPLAY_IMG_PX_Y * 3);
+//	//glReadBuffer(GL_FRONT);
+//	//glReadPixels(0, 0, NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
 //
-//	cv::Mat img(NUM_DISPLAY_IMG_PX_Y, NUM_DISPLAY_IMG_PX_X, CV_8UC3);
-//	for (int y = 0; y < NUM_DISPLAY_IMG_PX_Y; ++y) {
-//		unsigned char* dst = img.ptr<unsigned char>(NUM_DISPLAY_IMG_PX_Y - 1 - y);
-//		const unsigned char* src = buf.data() + y * NUM_DISPLAY_IMG_PX_X * 3;
-//		for (int x = 0; x < NUM_DISPLAY_IMG_PX_X; ++x) {
-//			dst[x * 3 + 0] = src[x * 3 + 2]; // B
-//			dst[x * 3 + 1] = src[x * 3 + 1]; // G
-//			dst[x * 3 + 2] = src[x * 3 + 0]; // R
-//		}
-//	}
+//	//cv::Mat img(NUM_DISPLAY_IMG_PX_Y, NUM_DISPLAY_IMG_PX_X, CV_8UC3);
+//	//for (int y = 0; y < NUM_DISPLAY_IMG_PX_Y; ++y) {
+//	//	unsigned char* dst = img.ptr<unsigned char>(NUM_DISPLAY_IMG_PX_Y - 1 - y);
+//	//	const unsigned char* src = buf.data() + y * NUM_DISPLAY_IMG_PX_X * 3;
+//	//	for (int x = 0; x < NUM_DISPLAY_IMG_PX_X; ++x) {
+//	//		dst[x * 3 + 0] = src[x * 3 + 2]; // B
+//	//		dst[x * 3 + 1] = src[x * 3 + 1]; // G
+//	//		dst[x * 3 + 2] = src[x * 3 + 0]; // R
+//	//	}
+//	//}
 //
-//	std::ostringstream stream;
-//	stream << "D:/ForStudy/reconstruction/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1-pepper_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
-//	std::string outPath = stream.str();
+//	//std::ostringstream stream;
+//	//stream << "D:/ForStudy/reconstruction/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1-milkdrop_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << ".png";
+//	//std::string outPath = stream.str();
 //
-//	cv::imwrite(outPath, img);
+//	//cv::imwrite(outPath, img);
 //
-//	//------------------------------
+//	////------------------------------
 //
 //
 //	// 後処理
 //	//------------------------------
 //
-//	glDeleteTextures(1, &texBaseOffset);
 //	glDeleteVertexArrays(1, &quadVAO);
 //	glDeleteBuffers(1, &quadVBO);
 //	glDeleteTextures(1, &texSlices);

@@ -144,8 +144,25 @@
 //// 定数(そのほか)
 ////------------------------------
 //
-//const int NUM_THREADS = 30;
+////const unsigned int NUM_THREADS = std::thread::hardware_concurrency(); // 並列スレッド数
+//const unsigned int NUM_THREADS = 30;
+//const int TIMES = 10; // フレーム数
 //
+//// 追加: 表示ウィンドウと貼り付け先ROIの指定
+//const int WINDOW_X = 3280;   // 表示するモニタ左上X（環境に合わせて調整）
+//const int WINDOW_Y = 0;      // 表示するモニタ左上Y
+//const int WINDOW_W = 3840;   // ウィンドウ幅（全画面サイズ）
+//const int WINDOW_H = 2400;   // ウィンドウ高
+//
+//// img_display を貼り付ける先のROI（ウィンドウ内の範囲）
+//const int ROI_X = 0;
+//const int ROI_Y = 0;
+//const int ROI_W = WINDOW_W;  // 必要に応じて部分領域にも設定可能
+//const int ROI_H = WINDOW_H;
+//
+//// 追加: 画像ウィンドウの表示オフセット（デスクトップ座標）
+//const int OFFSET_X = 0; // 例: サブモニタ左上X（環境に合わせて調整）
+//const int OFFSET_Y = 0;    // 例: サブモニタ左上Y
 ////------------------------------
 //
 //void insert_pixels(int start, int end, int NUM_ELEM_IMG_PX_X, int NUM_LENS_X, int NUM_LENS_Y, float FLOAT_NUM_ELEM_IMG_PX_X, int NUM_Z_PLANE, int Z_PLANE_IMG_PX_X, int Z_PLANE_IMG_PX_Y, cv::Mat& img_display, int*** red, int*** green, int*** blue, bool*** alpha, int*** nx, int*** ny, int** u_px, int** v_px);
@@ -159,13 +176,25 @@
 //
 //    cout << "PCSJ2025 wideview v1" << endl;
 //
-//    //std::string WINNAME = "image";
-//    //cv::namedWindow(WINNAME);
-//    //HWND window = FindWindow(NULL, L"image");
-//    //SetWindowLongPtr(window, GWL_STYLE, WS_POPUP);
-//    //SetWindowPos(window, NULL, 3280, 0, 3840, 2400, SWP_DRAWFRAME | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//    // 画像サイズそのままのボーダレスウィンドウを準備
+//    const std::string WINNAME = "image";
+//    cv::namedWindow(WINNAME, cv::WINDOW_AUTOSIZE);
 //
-//    //std::vector<std::vector<float>> array(5, std::vector<float>(6)); // 横：subz, 縦：BOX_DETAIL_N
+//    // 初回の空描画でウィンドウ実体を作成しサイズ確定
+//    {
+//        cv::Mat blank(NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y, CV_8UC3, cv::Scalar(0, 0, 0));
+//        cv::imshow(WINNAME, blank);
+//        cv::waitKey(1);
+//
+//        // ウィンドウをボーダレス化 + 画面上のオフセットへ移動
+//        HWND hwnd = FindWindowA(NULL, WINNAME.c_str());
+//        if (hwnd) {
+//            SetWindowLongPtr(hwnd, GWL_STYLE, WS_POPUP); // 枠なし
+//            SetWindowPos(hwnd, HWND_TOP, OFFSET_X, OFFSET_Y,
+//                NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y,
+//                SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+//        }
+//    }
 //
 //    int index = 0;
 //    bool interpolation = true;
@@ -192,7 +221,39 @@
 //
 //            //------------------------------
 //
-//            int TIMES = 10;
+//            std::cout << "MIN OBSERVE Z:" << MIN_OBSERVE_Z << std::endl;
+//            std::cout << "//----------------------------" << std::endl;
+//            std::cout << "DISPLAY PIXEL PITCH:" << DISPLAY_PX_PITCH << std::endl;
+//            std::cout << "NUM LENS WIDTH:" << NUM_LENS_X << std::endl;
+//            std::cout << "NUM LENS HEIGHT:" << NUM_LENS_Y << std::endl;
+//            std::cout << "LENS PITCH X:" << LENS_PITCH_X << std::endl;
+//            std::cout << "LENS PITCH Y:" << LENS_PITCH_Y << std::endl;
+//            std::cout << "ELEMENTAL IMAGE PITCH X:" << ELEM_IMG_PITCH_X << std::endl;
+//            std::cout << "ELEMENTAL IMAGE PITCH Y:" << ELEM_IMG_PITCH_Y << std::endl;
+//            std::cout << "FLOAT NUM ELEMENTAL IMAGE PX X:" << FLOAT_NUM_ELEM_IMG_PX_X << std::endl;
+//            std::cout << "FLOAT NUM ELEMENTAL IMAGE PX Y:" << FLOAT_NUM_ELEM_IMG_PX_Y << std::endl;
+//            std::cout << "NUM ELEMENTAL IMAGE PX X:" << NUM_ELEM_IMG_PX_X << std::endl;
+//            std::cout << "NUM ELEMENTAL IMAGE PX Y:" << NUM_ELEM_IMG_PX_Y << std::endl;
+//            std::cout << "DISPLAY IMG SIZE X:" << DISPLAY_IMG_SIZE_X << std::endl;
+//            std::cout << "DISPLAY IMG SIZE Y:" << DISPLAY_IMG_SIZE_Y << std::endl;
+//            std::cout << "FOCAL LENGTH:" << FOCAL_LENGTH << std::endl;
+//            std::cout << "TAN HALF Y:" << TAN_YALF_Y << std::endl;
+//            std::cout << "FOV Y:" << FOV_Y << std::endl;
+//            std::cout << "WINDOW WIDTH:" << NUM_DISPLAY_IMG_PX_X << std::endl;
+//            std::cout << "WINDOW HEIGHT:" << NUM_DISPLAY_IMG_PX_Y << std::endl;
+//            std::cout << "//----------------------------" << std::endl;
+//            std::cout << "SUBJECT Z:" << SUBJECT_Z << std::endl;
+//            std::cout << "NUM SUBJECT POINTS X:" << NUM_SUBJECT_POINTS_X << std::endl;
+//            std::cout << "NUM SUBJECT POINTS Y:" << NUM_SUBJECT_POINTS_Y << std::endl;
+//            std::cout << "NUM POINTS:" << NUM_POINTS << std::endl;
+//            std::cout << "SUBJECT SIZE X:" << SUBJECT_SIZE_X << std::endl;
+//            std::cout << "SUBJECT SIZE Y:" << SUBJECT_SIZE_Y << std::endl;
+//            std::cout << "SUBJECT POINTS PITCH X:" << SUBJECT_POINTS_PITCH_X << std::endl;
+//            std::cout << "SUBJECT POINTS PITCH Y:" << SUBJECT_POINTS_PITCH_Y << std::endl;
+//            std::cout << "//----------------------------" << std::endl;
+//            std::cout << "NUM_THREADS:" << NUM_THREADS << std::endl;
+//            std::cout << "//----------------------------" << std::endl;
+//            std::cout << std::endl;
 //
 //            // 各要素画像の原点画素位置(左上)
 //            int** u_px = (int**)malloc(sizeof(int*) * NUM_ELEM_IMG_PX_X);
@@ -272,7 +333,7 @@
 //                data[i] = (float*)malloc(sizeof(float) * 6);
 //            }
 //
-//            std::string filenamein = "./images/standard/pepper.bmp";
+//            std::string filenamein = "./images/standard/milkdrop.bmp";
 //            cv::Mat image_input = cv::imread(filenamein);
 //
 //            if (image_input.empty())
@@ -360,14 +421,13 @@
 //
 //            cv::Mat img_display = cv::Mat::zeros(cv::Size(NUM_DISPLAY_IMG_PX_X, NUM_DISPLAY_IMG_PX_Y), CV_8UC3);
 //
-//            float sum_time = 0;
+//            float sum_time = 0.0f;
+//            int frame_count = 0;
 //            int rowsPerThread;
 //            int startRow, endRow;
 //            // フレーム処理
 //            for (int tt = 0; tt < TIMES; tt++) {
 //
-//                // 測定開始時刻を記録
-//                auto start = std::chrono::high_resolution_clock::now();
 //
 //                // 1) 各層バッファの初期化（並列）
 //                vector<thread> threads;
@@ -381,8 +441,6 @@
 //                    if (t.joinable()) { t.join(); }
 //                }
 //                threads.clear();
-//
-//                img_display.setTo(cv::Scalar(0, 0, 0));
 //
 //                float tmp_pcd_x, tmp_pcd_y, tmp_pcd_z, tmp_pcd_b, tmp_pcd_g, tmp_pcd_r;
 //                float tmp_xt, tmp_yt, tmp_zt;
@@ -527,6 +585,10 @@
 //                }
 //                threads.clear();
 //
+//                img_display.setTo(cv::Scalar(0, 0, 0));
+//
+//                // 測定開始時刻を記録
+//                auto start = std::chrono::high_resolution_clock::now();
 //
 //                // insert_pixels(0, NUM_ELEM_IMG_PX_X, img_display, red, green, blue, alpha, nx, ny, startu, startv);
 //                // 3) 対応画素の探索（並列）
@@ -545,23 +607,45 @@
 //                // 測定終了時刻を記録
 //                auto end = std::chrono::high_resolution_clock::now();
 //
+//                //// 追加: img_display をウィンドウの指定ROIに貼り付け（スケーリング）
+//                //img_window.setTo(cv::Scalar(0, 0, 0));
+//                //{
+//                //    cv::Rect roi(ROI_X, ROI_Y, ROI_W, ROI_H);
+//                //    cv::Mat dst = img_window(roi);
+//                //    // ダウンサンプリング: 幾何忠実度重視なら INTER_NEAREST、画質重視なら INTER_AREA
+//                //    cv::resize(img_display, dst, dst.size(), 0, 0, cv::INTER_NEAREST);
+//                //}
+//                //cv::imshow(WINNAME, img_window);
+//                //cv::waitKey(1);
+//
+//                cv::imshow(WINNAME, img_display);
+//                cv::waitKey(1);
+//
+//
+//                //if (cv::waitKey(10) == 27)  // ESCキーで終了
+//                //{
+//                //    cv::destroyAllWindows;
+//                //    break;
+//                //}
+//
 //                // 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 //                sum_time += duration.count();
+//                frame_count++;
 //
 //            }
 //
 //            //cv::imshow("image", img_display);
 //            //cv::waitKey(0);
 //
-//            // 表示画像の保存
-//            ostringstream stream;
-//            stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-pepper_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << SUBJECT_SIZE_X << "_zi" << (int)subz << ".png";
-//            cv::String filename = stream.str();
-//            imwrite(filename, img_display);
+//            //// 表示画像の保存
+//            //ostringstream stream;
+//            //stream << "D:/ForStudy/reconstruction/PCSJ2025-prop-wideview-v1/prop-wideview-v1-milkdrop_f" << std::fixed << std::setprecision(4) << FOCAL_LENGTH << "_subsize" << std::fixed << std::setprecision(2) << SUBJECT_SIZE_X << "_zi" << (int)subz << ".png";
+//            //cv::String filename = stream.str();
+//            //imwrite(filename, img_display);
 //
-//            stream.str("");
-//            stream.clear(ostringstream::goodbit);
+//            //stream.str("");
+//            //stream.clear(ostringstream::goodbit);
 //
 //            // 各イメージプレーンの画像を保存（テスト用）
 //            //ostringstream stream;
@@ -569,7 +653,7 @@
 //            //   cv::Mat img = cv::Mat::zeros(cv::Size(Z_PLANE_IMG_PX_X, Z_PLANE_IMG_PX_Y), CV_8UC3);
 //            //for (int zi = 24; zi < 25; zi++) {
 //
-//            //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-pepper_tileExpand_Nz" << nzl << "_N" << BOX_DETAIL_N << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
+//            //    stream << "E:/EvacuatedStorage/image-plane/prop-improve/prop-improve-v1-detail-milkdrop_tileExpand_Nz" << nzl << "_N" << BOX_DETAIL_N << "_subjectZ" << (int)subz << "_zi" << zi << ".png";
 //            //    cout << "zi:" << zi << endl;
 //
 //            //    for (int i = 0; i < Z_PLANE_IMG_PX_Y; i++) {
@@ -589,9 +673,12 @@
 //
 //            //}
 //
-//            cout << "平均実行時間: " << sum_time / TIMES << " ms" << std::endl;
-//            array[idx] = sum_time / TIMES;
+//            cout << "平均実行時間: " << sum_time / frame_count << " ms" << std::endl;
+//            std::cout << std::endl;
+//            std::cout << std::endl;
+//            array[idx] = sum_time / frame_count;
 //            idx++;
+//            frame_count = 0;
 //
 //            // 使用したメモリを解放
 //            for (int i = 0; i < NUM_POINTS; ++i) {
@@ -650,7 +737,7 @@
 //
 //        }
 //
-//        writeCSV1(array);
+//        //writeCSV1(array);
 //    }
 //
 //    MessageBeep(-1);
@@ -695,7 +782,7 @@
 //int writeCSV1(const std::vector<double> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/PCSJ2025-prop-wideview-v1-pepper.csv");
+//    std::ofstream file("./numbers/speed/PCSJ2025-prop-wideview-v1-milkdrop.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
@@ -721,7 +808,7 @@
 //int writeCSV2(const std::vector<std::vector<float>> array) {
 //
 //    // 出力ファイルを開く
-//    std::ofstream file("./numbers/speed/speed-IE-prop-wideview-v1-2-pepper.csv");
+//    std::ofstream file("./numbers/speed/speed-IE-prop-wideview-v1-2-milkdrop.csv");
 //
 //    // ファイルが正しく開けたか確認
 //    if (!file.is_open()) {
