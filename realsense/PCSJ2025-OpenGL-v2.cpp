@@ -104,7 +104,7 @@
 ////------------------------------
 //
 //// 被写体平面の奥行位置
-//const float SUBJECT_Z = 1.0f;
+//const float SUBJECT_Z = 32.0f;
 //
 //// 被写体平面の各軸点群数
 //const unsigned int NUM_SUBJECT_POINTS_X = 554;
@@ -616,7 +616,7 @@
 //		sum_gpu_time += gpuMs;
 //		numFrame++;
 //
-//		if (numFrame == 100) glfwSetWindowShouldClose(gridWin, true);
+//		if (numFrame == 10) glfwSetWindowShouldClose(gridWin, true);
 //
 //	}
 //
@@ -653,6 +653,49 @@
 //
 //	////------------------------------
 //
+//	//// 3次元配列のテクスチャ画像の保存
+//	////------------------------------
+//
+//	std::ostringstream stream;
+//	cv::Mat sliceImage = cv::Mat::zeros(Z_PLANE_IMG_PX_Y, Z_PLANE_IMG_PX_X, CV_8UC3);
+//	int count_color;
+//	for (int n = 0; n < NUM_Z_PLANE; n++)
+//	{
+//		stream.str("");
+//		stream << "D:/ForStudy/slice-images/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1/PCSJ2025-OpenGL-" << VIEW_MODE << "-v1-pepper_f" << std::fixed << std::setprecision(4) << (FOCAL_LENGTH * 1e3) << "_subsize" << std::fixed << std::setprecision(2) << (SUBJECT_SIZE_X * 1000.f) << "_zi" << (int)(SUBJECT_Z * 1000.f) << "_nz" << n << ".png";
+//
+//		count_color = 0;
+//		sliceImage = cv::Scalar(0);
+//
+//		for (int y = 0; y < Z_PLANE_IMG_PX_Y; y++)
+//		{
+//			int idx_y = Z_PLANE_IMG_PX_Y - y - 1;
+//			for (int x = 0; x < Z_PLANE_IMG_PX_X; x++)
+//			{
+//				int idx = (n * Z_PLANE_IMG_PX_Y + y) * Z_PLANE_IMG_PX_X + x;
+//				sliceImage.at<cv::Vec3b>(idx_y, x)[0] = blue[idx];
+//				sliceImage.at<cv::Vec3b>(idx_y, x)[1] = green[idx];
+//				sliceImage.at<cv::Vec3b>(idx_y, x)[2] = red[idx];
+//				
+//				if (blue[idx] + green[idx] + red[idx] > 0)
+//				{
+//					count_color++;
+//				}
+//			}
+//		}
+//
+//		if (count_color > 0)
+//		{
+//			std::string outPath = stream.str();
+//			cv::imwrite(outPath, sliceImage);
+//		}
+//
+//	}
+//
+//
+//
+//
+//	////------------------------------
 //
 //	// 後処理
 //	//------------------------------
@@ -707,6 +750,18 @@
 //	return mons[index];
 //}
 //
+////void zerosBox(int start, int end, unsigned int* red, unsigned int* green, unsigned int* blue, unsigned int* numPoints) {
+////
+////	const size_t planePixels = size_t(Z_PLANE_IMG_PX_X) * Z_PLANE_IMG_PX_Y;
+////	const size_t offset = size_t(start) * planePixels;
+////	const size_t count = size_t(end - start) * planePixels;
+////
+////	std::memset(red + offset, 0, count * sizeof(unsigned int));
+////	std::memset(green + offset, 0, count * sizeof(unsigned int));
+////	std::memset(blue + offset, 0, count * sizeof(unsigned int));
+////	std::memset(numPoints + offset, 0, count * sizeof(unsigned int));
+////}
+//
 //void zerosBox(int start, int end, unsigned int* red, unsigned int* green, unsigned int* blue, unsigned int* numPoints) {
 //
 //	const size_t planePixels = size_t(Z_PLANE_IMG_PX_X) * Z_PLANE_IMG_PX_Y;
@@ -718,6 +773,7 @@
 //	std::memset(blue + offset, 0, count * sizeof(unsigned int));
 //	std::memset(numPoints + offset, 0, count * sizeof(unsigned int));
 //}
+//
 //
 //void averageSlices(int start, int end, unsigned int* red, unsigned int* green, unsigned int* blue, const unsigned int* numPoints) {
 //
