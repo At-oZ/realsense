@@ -104,7 +104,7 @@
 ////------------------------------
 //
 //// 被写体平面の奥行位置
-//const float SUBJECT_Z = 32.0f;
+//const float SUBJECT_Z = 1.0f;
 //
 //// 被写体平面の各軸点群数
 //const unsigned int NUM_SUBJECT_POINTS_X = 554;
@@ -475,6 +475,15 @@
 //		}
 //		threads.clear();
 //
+//		// 測定終了時刻を記録
+//		auto end = std::chrono::high_resolution_clock::now();
+//
+//		// GPU時間測定終了
+//		glEndQuery(GL_TIME_ELAPSED);
+//		GLuint64 ns = 0; glGetQueryObjectui64v(q, GL_QUERY_RESULT, &ns);
+//		double gpuMs = ns / 1.0e6;
+//		glDeleteQueries(1, &q);
+//
 //		// 2) 点群のビニング（幾何変換 → 量子化 → 近傍書き込み）
 //		for (int k = 0; k < NUM_POINTS * 3; k += 3) {
 //			float tmp_pcd_x = pointsPos[k + 0];
@@ -600,15 +609,6 @@
 //		glfwSwapBuffers(gridWin);
 //		glfwPollEvents();
 //
-//		// 測定終了時刻を記録
-//		auto end = std::chrono::high_resolution_clock::now();
-//
-//		// GPU時間測定終了
-//		glEndQuery(GL_TIME_ELAPSED);
-//		GLuint64 ns = 0; glGetQueryObjectui64v(q, GL_QUERY_RESULT, &ns);
-//		double gpuMs = ns / 1.0e6;
-//		glDeleteQueries(1, &q);
-//
 //		// 開始時刻と終了時刻の差を計算し、ミリ秒単位で出力
 //		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 //
@@ -616,7 +616,7 @@
 //		sum_gpu_time += gpuMs;
 //		numFrame++;
 //
-//		if (numFrame == 10) glfwSetWindowShouldClose(gridWin, true);
+//		if (numFrame == 100) glfwSetWindowShouldClose(gridWin, true);
 //
 //	}
 //

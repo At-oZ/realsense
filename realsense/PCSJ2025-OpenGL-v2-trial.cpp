@@ -48,8 +48,8 @@
 //const float DISPLAY_PX_PITCH = 13.4f * 0.0254f / std::sqrt(3840.f * 3840.f + 2400.f * 2400.f);
 //
 //// ƒŒƒ“ƒY”
-//const unsigned int NUM_LENS_X = 128;
-//const unsigned int NUM_LENS_Y = 80;
+//const unsigned int NUM_LENS_X = 80;
+//const unsigned int NUM_LENS_Y = 64;
 //
 //// ƒŒƒ“ƒY”‚Ì”¼•ª
 //const int HALF_NUM_LENS_X = NUM_LENS_X * 0.5f;
@@ -106,8 +106,8 @@
 //
 //const int BOX_DETAIL_N = 3;
 //const float Z_PLANE_IMG_PITCH = DISPLAY_PX_PITCH / (float)BOX_DETAIL_N;
-//const int Z_PLANE_IMG_PX_X = 960;
-//const int Z_PLANE_IMG_PX_Y = 600;
+//const int Z_PLANE_IMG_PX_X = 600;
+//const int Z_PLANE_IMG_PX_Y = 480;
 //const int NUM_Z_PLANE = 60;
 //const float BOX_MIN_Z = 0.2f;
 //const float COEF_TRANS = ((float)NUM_Z_PLANE - 0.0f) * BOX_MIN_Z;
@@ -124,8 +124,8 @@
 //// ’è”(RGB-DƒJƒƒ‰‘¤)
 ////------------------------------
 //
-//const int RGBD_IMG_WIDTH = 1000;
-//const int RGBD_IMG_HEIGHT = 512;
+//const int RGBD_IMG_WIDTH = 640;
+//const int RGBD_IMG_HEIGHT = 480;
 //const int FPS = 30;
 //const int NUM_POINTS = RGBD_IMG_WIDTH * RGBD_IMG_HEIGHT;
 //const float INV_RGBD_IMG_WIDTH = 1.0f / (float)RGBD_IMG_WIDTH;
@@ -137,6 +137,7 @@
 ////------------------------------
 //
 //const int NUM_THREADS = 30;
+//constexpr float DISTANCE_CAMERA_DISPLAY = 0.1f;
 //
 ////------------------------------
 //
@@ -208,7 +209,7 @@
 //#endif
 //	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 //
-//	int offsetX = 0;
+//	int offsetX = 2560;
 //	int offsetY = 0;
 //	int winW = max((int)NUM_DISPLAY_IMG_PX_X, mode->width - offsetX);
 //	int winH = max((int)NUM_DISPLAY_IMG_PX_Y, mode->height - offsetY);
@@ -452,7 +453,7 @@
 //
 //			float tmp_pcd_x = verts[k].x;
 //			float tmp_pcd_y = -verts[k].y;
-//			float tmp_pcd_z = verts[k].z;
+//			float tmp_pcd_z = verts[k].z + DISTANCE_CAMERA_DISPLAY;
 //			unsigned char tmp_pcd_b = color_image.at<cv::Vec3b>(static_cast<int>(k * INV_RGBD_IMG_WIDTH), (k % RGBD_IMG_WIDTH))[2];
 //			unsigned char tmp_pcd_g = color_image.at<cv::Vec3b>(static_cast<int>(k * INV_RGBD_IMG_WIDTH), (k % RGBD_IMG_WIDTH))[1];
 //			unsigned char tmp_pcd_r = color_image.at<cv::Vec3b>(static_cast<int>(k * INV_RGBD_IMG_WIDTH), (k % RGBD_IMG_WIDTH))[0];
